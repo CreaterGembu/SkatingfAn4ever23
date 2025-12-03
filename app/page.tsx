@@ -1,0 +1,1281 @@
+'use client';
+import React, { useEffect, useState } from 'react';
+
+/**
+ * page.tsx — 完全版
+ *
+ * 追加／調整点（ユーザ指定どおり）
+ * - 「後半 (secondHalf)」チェック時は内部 BV が ×1.1（表示は BV に加えて "X" 表示）。
+ * - GOE の計算は secondHalf を反映しない BV を使う（ただし underrotation '<'/'<<', edge 'e', REP の BV 影響は GOE 用 BV に含める）。
+ * - '*' (Zayak) は BV=0・GOE=0。
+ * - ChSq1 は GOE に 0.5 を掛ける（GOE点 = BV_forGOE × 0.1 × GOE × 0.5）。
+ * - SEQチェックを REP/F と同じ欄に追加（SEQ は BV に影響しない）。
+ * - 行ごとのハイライト（F: 赤系、GOE>0: 緑系、secondHalf: 黄系）
+ * - スマホ/iPad優先でタップしやすい UI（横スクロール、ボタン大きめ）
+ * - 「決定して表示」ボタンでページが切り替わり（編集 → プロトコル表示）
+ *
+ * 注意：
+ * - 実運用での細かいルール（例えば GOE の係数やREPの厳密な適用タイミング等）は現行の要望に合わせて実装していますが、
+ *   もし ISU の最新版ルールと厳密に照合する必要がある場合は具体ルールを提示してください。
+ */
+
+/* ---------- 型定義 ---------- */
+type Element = {
+  name: string;
+  baseValue: number;
+  type: 'jump' | 'spin' | 'step' | 'choreo';
+};
+
+type LineSubElement = {
+  id: number;
+  element: Element;
+  underRotation?: '' | 'q' | '<' | '<<';
+  edge?: '' | '!' | 'e';
+  goe: number; // integer -5..5
+  marks: string[]; // "F","REP","*","V","SEQ","COMBO"
+  secondHalf?: boolean;
+};
+
+type Line = {
+  id: number;
+  subs: LineSubElement[];
+};
+
+type PCS = {
+  comp: number;
+  pres: number;
+  skills: number;
+};
+
+type HistoryItem = {
+  id: number;
+  playerName: string;
+  country: string;
+  competition: string;
+  category: string;
+  tes: number;
+  pcsRaw: number;
+  pcsApplied: number;
+  total: number;
+  timestamp: string;
+  protocolHtml?: string;
+};
+
+const uid = () => Math.floor(Math.random() * 1e9);
+
+/* ---------- 要素テーブル ---------- */
+const JUMPS: Element[] = [
+  { name: 'A', baseValue: 0.0, type: 'jump' },
+  { name: '1A', baseValue: 1.1, type: 'jump' },
+  { name: '2A', baseValue: 3.3, type: 'jump' },
+  { name: '3A', baseValue: 8.0, type: 'jump' },
+  { name: '4A', baseValue: 12.5, type: 'jump' },
+
+  { name: 'Lz', baseValue: 0.0, type: 'jump' },
+  { name: '1Lz', baseValue: 0.6, type: 'jump' },
+  { name: '2Lz', baseValue: 2.1, type: 'jump' },
+  { name: '3Lz', baseValue: 5.9, type: 'jump' },
+  { name: '4Lz', baseValue: 11.5, type: 'jump' },
+  { name: '5Lz', baseValue: 14.0, type: 'jump' },
+
+  { name: 'F', baseValue: 0.0, type: 'jump' },
+  { name: '1F', baseValue: 0.5, type: 'jump' },
+  { name: '2F', baseValue: 1.8, type: 'jump' },
+  { name: '3F', baseValue: 5.3, type: 'jump' },
+  { name: '4F', baseValue: 11.0, type: 'jump' },
+  { name: '5F', baseValue: 14.0, type: 'jump' },
+
+  { name: '1Eu', baseValue: 0.5, type: 'jump' },
+  { name: 'Lo', baseValue: 0.0, type: 'jump' },
+  { name: '1Lo', baseValue: 0.5, type: 'jump' },
+  { name: '2Lo', baseValue: 1.7, type: 'jump' },
+  { name: '3Lo', baseValue: 4.9, type: 'jump' },
+  { name: '4Lo', baseValue: 10.5, type: 'jump' },
+  { name: '5Lo', baseValue: 14.0, type: 'jump' },
+
+  { name: 'S', baseValue: 0.0, type: 'jump' },
+  { name: '1S', baseValue: 0.4, type: 'jump' },
+  { name: '2S', baseValue: 1.3, type: 'jump' },
+  { name: '3S', baseValue: 4.3, type: 'jump' },
+  { name: '4S', baseValue: 9.7, type: 'jump' },
+  { name: '5S', baseValue: 14.0, type: 'jump' },
+
+  { name: 'T', baseValue: 0.0, type: 'jump' },
+  { name: '1T', baseValue: 0.4, type: 'jump' },
+  { name: '2T', baseValue: 1.3, type: 'jump' },
+  { name: '3T', baseValue: 4.2, type: 'jump' },
+  { name: '4T', baseValue: 9.5, type: 'jump' },
+  { name: '5T', baseValue: 14.0, type: 'jump' },
+];
+
+const SPINS: Element[] = [
+  { name: 'USp4', baseValue: 2.4, type: 'spin' },
+  { name: 'USp3', baseValue: 1.9, type: 'spin' },
+  { name: 'USp2', baseValue: 1.5, type: 'spin' },
+  { name: 'USp1', baseValue: 1.2, type: 'spin' },
+  { name: 'USpB', baseValue: 1.0, type: 'spin' },
+  { name: 'LSp4', baseValue: 2.7, type: 'spin' },
+  { name: 'LSp3', baseValue: 2.4, type: 'spin' },
+  { name: 'LSp2', baseValue: 1.9, type: 'spin' },
+  { name: 'LSp1', baseValue: 1.5, type: 'spin' },
+  { name: 'LSpB', baseValue: 1.2, type: 'spin' },
+  { name: 'CSp4', baseValue: 2.6, type: 'spin' },
+  { name: 'CSp3', baseValue: 2.3, type: 'spin' },
+  { name: 'CSp2', baseValue: 1.8, type: 'spin' },
+  { name: 'CSp1', baseValue: 1.4, type: 'spin' },
+  { name: 'CSpB', baseValue: 1.1, type: 'spin' },
+  { name: 'SSp4', baseValue: 2.5, type: 'spin' },
+  { name: 'SSp3', baseValue: 2.1, type: 'spin' },
+  { name: 'SSp2', baseValue: 1.6, type: 'spin' },
+  { name: 'SSp1', baseValue: 1.3, type: 'spin' },
+  { name: 'SSpB', baseValue: 1.1, type: 'spin' },
+  { name: '(F/C/FC)USp4', baseValue: 2.9, type: 'spin' },
+  { name: '(F/C/FC)USp3', baseValue: 2.4, type: 'spin' },
+  { name: '(F/C/FC)USp2', baseValue: 2.0, type: 'spin' },
+  { name: '(F/C/FC)USp1', baseValue: 1.7, type: 'spin' },
+  { name: '(F/C/FC)USpB', baseValue: 1.5, type: 'spin' },
+  { name: '(F/C/FC)LSp4', baseValue: 3.2, type: 'spin' },
+  { name: '(F/C/FC)LSp3', baseValue: 2.9, type: 'spin' },
+  { name: '(F/C/FC)LSp2', baseValue: 2.4, type: 'spin' },
+  { name: '(F/C/FC)LSp1', baseValue: 2.0, type: 'spin' },
+  { name: '(F/C/FC)LSpB', baseValue: 1.7, type: 'spin' },
+  { name: '(F/C/FC)CSp4', baseValue: 3.2, type: 'spin' },
+  { name: '(F/C/FC)CSp3', baseValue: 2.8, type: 'spin' },
+  { name: '(F/C/FC)CSp2', baseValue: 2.3, type: 'spin' },
+  { name: '(F/C/FC)CSp1', baseValue: 1.9, type: 'spin' },
+  { name: '(F/C/FC)CSpB', baseValue: 1.6, type: 'spin' },
+  { name: '(F/C/FC)SSp4', baseValue: 3.0, type: 'spin' },
+  { name: '(F/C/FC)SSp3', baseValue: 2.6, type: 'spin' },
+  { name: '(F/C/FC)SSp2', baseValue: 2.3, type: 'spin' },
+  { name: '(F/C/FC)SSp1', baseValue: 2.0, type: 'spin' },
+  { name: '(F/C/FC)SSpB', baseValue: 1.7, type: 'spin' },
+  { name: '(F)CoSp4', baseValue: 3.0, type: 'spin' },
+  { name: '(F)CoSp3', baseValue: 2.5, type: 'spin' },
+  { name: '(F)CoSp2', baseValue: 2.0, type: 'spin' },
+  { name: '(F)CoSp1', baseValue: 1.7, type: 'spin' },
+  { name: '(F)CoSpB', baseValue: 1.5, type: 'spin' },
+  { name: '(FC/C)CoSp4', baseValue: 3.5, type: 'spin' },
+  { name: '(FC/C)CoSp3', baseValue: 3.0, type: 'spin' },
+  { name: '(FC/C)CoSp2', baseValue: 2.5, type: 'spin' },
+  { name: '(FC/C)CoSp1', baseValue: 2.0, type: 'spin' },
+  { name: '(FC/C)CoSpB', baseValue: 1.7, type: 'spin' },
+];
+
+const STEPS: Element[] = [
+  { name: 'StSqBV', baseValue: 1.5, type: 'step' },
+  { name: 'StSq1', baseValue: 1.8, type: 'step' },
+  { name: 'StSq2', baseValue: 2.6, type: 'step' },
+  { name: 'StSq3', baseValue: 3.3, type: 'step' },
+  { name: 'StSq4', baseValue: 3.9, type: 'step' },
+];
+
+const CHOREO: Element[] = [{ name: 'ChSq1', baseValue: 3.0, type: 'choreo' }];
+
+const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
+
+const PCS_MULTIPLIERS: Record<string, number> = {
+  MenSP: 1.67,
+  MenFS: 3.33,
+  WomenSP: 1.33,
+  WomenFS: 2.67,
+};
+
+/* ---------- BV / GOE ヘルパー ---------- */
+
+/** downgrade map for '<<' (one rotation less) */
+function getLowerRotationJump(name: string): Element | null {
+  const map: Record<string, string> = {
+    '4A': '3A',
+    '3A': '2A',
+    '2A': '1A',
+    '1A': 'A',
+    '5Lz': '4Lz',
+    '4Lz': '3Lz',
+    '3Lz': '2Lz',
+    '2Lz': '1Lz',
+    '1Lz': 'Lz',
+    '5F': '4F',
+    '4F': '3F',
+    '3F': '2F',
+    '2F': '1F',
+    '1F': 'F',
+    '5Lo': '4Lo',
+    '4Lo': '3Lo',
+    '3Lo': '2Lo',
+    '2Lo': '1Lo',
+    '1Lo': 'Lo',
+    '5S': '4S',
+    '4S': '3S',
+    '3S': '2S',
+    '2S': '1S',
+    '1S': 'S',
+    '5T': '4T',
+    '4T': '3T',
+    '3T': '2T',
+    '2T': '1T',
+    '1T': 'T',
+  };
+  const lower = map[name];
+  return lower ? ALL_ELEMENTS.find((e) => e.name === lower) || null : null;
+}
+
+/**
+ * 表示・合計用の BV（secondHalf を含む）
+ * - '*' -> 0 優先
+ * - underRotation '<' => BV × 0.8
+ * - underRotation '<<' => lower rotation baseValue
+ * - edge 'e' => BV × 0.8
+ * - REP => BV × 0.7
+ * - V (spin) => BV × 0.75
+ * - secondHalf (jump) => BV × 1.1  ← 表示 / 合計に反映
+ */
+function getBVWithMods(sub: LineSubElement): number {
+  if (sub.marks.includes('*')) return 0;
+  let bv = sub.element.baseValue;
+
+  if (sub.underRotation === '<') bv *= 0.8;
+  if (sub.underRotation === '<<') {
+    const lower = getLowerRotationJump(sub.element.name);
+    if (lower) bv = lower.baseValue;
+  }
+
+  if (sub.edge === 'e') bv *= 0.8;
+  if (sub.marks.includes('REP')) bv *= 0.7;
+  if (sub.marks.includes('V') && sub.element.type === 'spin') {
+    bv *= 0.75;
+    bv = Math.round(bv * 100) / 100; // *少数第2位へ丸め
+  }
+
+  if (sub.secondHalf && sub.element.type === 'jump') bv *= 1.1;
+
+  return Number(bv);
+}
+
+/**
+ * GOE 計算用 BV（secondHalf を除く）
+ * 要望: GOE の際には secondHalf の ×1.1 を使わないが、
+ * underRotation / edge / REP の影響は含める（ただし '*' の場合は GOE = 0）
+ */
+function getBVForGOE(sub: LineSubElement): number {
+  if (sub.marks.includes('*')) return 0;
+  let bv = sub.element.baseValue;
+
+  if (sub.underRotation === '<') bv *= 0.8;
+  if (sub.underRotation === '<<') {
+    const lower = getLowerRotationJump(sub.element.name);
+    if (lower) bv = lower.baseValue;
+  }
+
+  if (sub.edge === 'e') bv *= 0.8;
+  if (sub.marks.includes('REP')) bv *= 0.7;
+  if (sub.marks.includes('V') && sub.element.type === 'spin') bv *= 0.75;
+
+  // NOTE: intentionally NOT applying secondHalf multiplier here
+  return Number(bv);
+}
+
+/** 転倒ペナルティ（累積） */
+function calcTotalFallPenalty(allLines: Line[]): number {
+  const totalF = allLines.reduce(
+    (sum, line) =>
+      sum +
+      line.subs.reduce(
+        (s2, sub) => s2 + sub.marks.filter((m) => m === 'F').length,
+        0
+      ),
+    0
+  );
+  if (totalF === 0) return 0;
+  let penalty = 0;
+  for (let i = 1; i <= totalF; i++) {
+    if (i === 1 || i === 2) penalty -= 1;
+    else if (i === 3 || i === 4) penalty -= 2;
+    else penalty -= 3;
+  }
+  return penalty;
+}
+
+/* ---------- GOE / subtotal ---------- */
+
+function getOriginalBV(sub: LineSubElement): number {
+  let bv = sub.element.baseValue;
+
+  if (sub.underRotation === '<') bv *= 0.8;
+  if (sub.underRotation === '<<') {
+    const lower = getLowerRotationJump(sub.element.name);
+    if (lower) bv = lower.baseValue;
+  }
+
+  if (sub.edge === 'e') bv *= 0.8;
+
+  if (sub.element.type === 'spin' && sub.marks.includes('V')) bv *= 0.75;
+
+  return bv;
+}
+
+function calcGOEPoint(
+  sub: LineSubElement,
+  maxSub: LineSubElement | null
+): number {
+  // ChSq1 special: GOE is halved
+  if (sub.element.name === 'ChSq1') {
+    return Number((0.5 * sub.goe).toFixed(2));
+  }
+
+  // spin/step/choreo: always GOE allowed (if not '*')
+  if (
+    sub.element.type === 'spin' ||
+    sub.element.type === 'step' ||
+    sub.element.type === 'choreo'
+  ) {
+    if (sub.marks.includes('*')) return 0;
+    const originalBV = getOriginalBV(sub);
+    return Number((originalBV * 0.1 * sub.goe).toFixed(2));
+  }
+
+  // jump: only highest-BV in the combo receives GOE
+  if (sub.element.type === 'jump') {
+    if (!maxSub) return 0;
+    if (sub.id !== maxSub.id) return 0;
+    if (sub.marks.includes('*')) return 0;
+    const originalBV = getOriginalBV(sub);
+    return Number((originalBV * 0.1 * sub.goe).toFixed(2));
+  }
+
+  return 0;
+}
+
+/** 1要素の subtotal = BV(with mods, includes secondHalf) + GOEpoint */
+function calcSubTotal(
+  sub: LineSubElement,
+  maxSub: LineSubElement | null
+): number {
+  const bv = getBVWithMods(sub);
+  const goe = calcGOEPoint(sub, maxSub);
+  return Number((bv + goe).toFixed(2));
+}
+
+/** 行合計 */
+function calcLineTotal(line: Line): number {
+  if (line.subs.length === 0) return 0;
+  const maxSub = line.subs.reduce(
+    (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
+    line.subs[0]
+  );
+  return line.subs.reduce((sum, s) => sum + calcSubTotal(s, maxSub), 0);
+}
+
+/* ---------- React コンポーネント ---------- */
+
+export default function Page() {
+  const [lines, setLines] = useState<Line[]>([]);
+  const [tempLine, setTempLine] = useState<Element[]>([]);
+
+  const [playerName, setPlayerName] = useState('');
+  const [country, setCountry] = useState('');
+  const [competition, setCompetition] = useState('');
+  const [category, setCategory] =
+    useState<keyof typeof PCS_MULTIPLIERS>('MenSP');
+
+  const [pcs, setPcs] = useState<PCS>({ comp: 0, pres: 0, skills: 0 });
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("fs_protocol_history_v1");
+      if (raw) setHistory(JSON.parse(raw));
+    } catch {}
+  }, []);
+
+  // show ISU-like protocol view after pressing 決定して表示
+  const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
+  }, [history]);
+
+  /* UI 操作 */
+  const addToTemp = (el: Element) => setTempLine((t) => [...t, el]);
+  const clearTemp = () => setTempLine([]);
+
+  const addLineFromTemp = () => {
+    if (tempLine.length === 0) return;
+    const newLine: Line = {
+      id: uid(),
+      subs: tempLine.map((el) => ({
+        id: uid(),
+        element: el,
+        underRotation: '',
+        edge: '',
+        goe: 0,
+        marks: [],
+        secondHalf: false,
+      })),
+    };
+    setLines((l) => [...l, newLine]);
+    setTempLine([]);
+  };
+
+  const addComboToLine = (lineId: number) => {
+    setLines((l) =>
+      l.map((line) =>
+        line.id !== lineId
+          ? line
+          : {
+              ...line,
+              subs: [
+                ...line.subs,
+                {
+                  id: uid(),
+                  element: JUMPS[0],
+                  underRotation: '',
+                  edge: '',
+                  goe: 0,
+                  marks: [],
+                  secondHalf: false,
+                },
+              ],
+            }
+      )
+    );
+  };
+
+  const updateSub = (
+    lineId: number,
+    subId: number,
+    updated: Partial<LineSubElement>
+  ) => {
+    setLines((l) =>
+      l.map((line) => {
+        if (line.id !== lineId) return line;
+        return {
+          ...line,
+          subs: line.subs.map((s) =>
+            s.id !== subId ? s : { ...s, ...updated }
+          ),
+        };
+      })
+    );
+  };
+
+  const toggleMark = (lineId: number, subId: number, mark: string) => {
+    setLines(l =>
+      l.map(line => {
+        if (line.id !== lineId) return line;
+        return {
+          ...line,
+          subs: line.subs.map(s => {
+            if (s.id !== subId) return s;
+            const has = s.marks.includes(mark);
+            const newMarks = has
+              ? s.marks.filter(m => m !== mark)
+              : [...s.marks, mark];
+  
+            let newGOE = s.goe;
+  
+            // ⭐ COMBO → GOE を自動で -5 にする
+            if (!has && mark === "COMBO") {
+              newGOE = -5;
+            }
+            // ⭐ COMBO を外したら GOE は 0 に戻す（必要なら）
+            if (has && mark === "COMBO") {
+              newGOE = 0;
+            }
+  
+            return { ...s, marks: newMarks, goe: newGOE };
+          })
+        };
+      })
+    );
+  };
+  
+
+  const deleteLine = (lineId: number) =>
+    setLines((l) => l.filter((line) => line.id !== lineId));
+  const deleteSub = (lineId: number, subId: number) =>
+    setLines((l) =>
+      l.map((line) =>
+        line.id !== lineId
+          ? line
+          : { ...line, subs: line.subs.filter((s) => s.id !== subId) }
+      )
+    );
+
+  /* totals */
+  const totalTESbeforeFalls = lines.reduce(
+    (sum, line) => sum + calcLineTotal(line),
+    0
+  );
+  const totalFallPenalty = calcTotalFallPenalty(lines);
+  const totalTES = Number((totalTESbeforeFalls + totalFallPenalty).toFixed(2));
+  const pcsRaw = Number((pcs.comp + pcs.pres + pcs.skills).toFixed(2));
+  const pcsApplied = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
+  const grandTotal = Number((totalTES + pcsApplied).toFixed(2));
+
+  /* history 操作 */
+  const saveResultToHistory = () => {
+    const item: HistoryItem = {
+      id: uid(),
+      playerName,
+      country,
+      competition,
+      category,
+      tes: totalTES,
+      pcsRaw,
+      pcsApplied,
+      total: grandTotal,
+      timestamp: new Date().toISOString(),
+    };
+    setHistory((h) => [item, ...h]);
+    alert('履歴に保存しました');
+  };
+
+  const saveAndShowProtocol = () => {
+    const html = renderProtocolHtml({
+      playerName,
+      country,
+      competition,
+      category,
+      lines,
+      pcsRaw,
+      pcsApplied,
+      totalTES,
+      grandTotal,
+    });
+    const item: HistoryItem = {
+      id: uid(),
+      playerName,
+      country,
+      competition,
+      category,
+      tes: totalTES,
+      pcsRaw,
+      pcsApplied,
+      total: grandTotal,
+      timestamp: new Date().toISOString(),
+      protocolHtml: html,
+    };
+    setHistory((h) => [item, ...h]);
+    setShowProtocol(item);
+    // simulate page refresh by scrolling to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const clearHistory = () => {
+    if (!confirm('履歴を全て削除しますか？')) return;
+    setHistory([]);
+  };
+  const deleteHistoryItem = (id: number) =>
+    setHistory((h) => h.filter((x) => x.id !== id));
+  const exportHistory = () => {
+    const blob = new Blob([JSON.stringify(history, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `skating-history-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+  const importHistory = (file: File | null) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result || '[]'));
+        if (!Array.isArray(parsed)) throw new Error('invalid');
+        setHistory(parsed);
+        alert('履歴をインポートしました');
+      } catch (e) {
+        alert('読み込み失敗: ' + e);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  /* Protocol view */
+  if (showProtocol) {
+    return (
+      <div
+    
+        style={{
+          padding: 18,
+          fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
+          maxWidth: 980,
+          margin: '0 auto',
+        }}
+      >
+        <button
+          onClick={() => setShowProtocol(null)}
+          style={{ marginBottom: 12, padding: '8px 10px' }}
+        >
+          ← 編集に戻る
+        </button>
+        <div
+          dangerouslySetInnerHTML={{
+            __html:
+              showProtocol.protocolHtml ||
+              'プロトコルが生成されていません',
+          }}
+        />
+      </div>
+    );
+  }
+
+  /* ---------- JSX Editor UI ---------- */
+  return (
+    <div
+      style={{
+        padding: 14,
+        fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
+        maxWidth: 980,
+        margin: '0 auto',
+      }}
+    >
+      <h1 style={{ fontSize: 22, marginBottom: 10 }}>
+        Skating Judgement Simulation
+      </h1>
+
+      {/* header */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 8,
+          marginBottom: 12,
+        }}
+      >
+        <input
+          placeholder="選手名"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+          style={inputStyle}
+        />
+        <input
+          placeholder="国名"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          style={inputStyle}
+        />
+        <input
+          placeholder="大会名"
+          value={competition}
+          onChange={(e) => setCompetition(e.target.value)}
+          style={{ ...inputStyle, gridColumn: '1 / -1' }}
+        />
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ minWidth: 120 }}>種目（PCS）</div>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as any)}
+            style={{ padding: 8, borderRadius: 8, border: '1px solid #ccc' }}
+          >
+            <option value="MenSP">Men&apos;s SP (1.67)</option>
+            <option value="MenFS">Men&apos;s FS (3.33)</option>
+            <option value="WomenSP">Women&apos;s SP (1.33)</option>
+            <option value="WomenFS">Women&apos;s FS (2.67)</option>
+          </select>
+        </label>
+      </div>
+
+      {/* element buttons (mobile friendly) */}
+      <div
+        style={{
+          marginBottom: 12,
+          padding: 12,
+          border: '1px solid #eee',
+          borderRadius: 10,
+          background: '#fafafa',
+        }}
+      >
+        <div style={{ marginBottom: 8, fontWeight: 700 }}>要素一覧</div>
+        <div
+          style={{
+            display: 'flex',
+            gap: 8,
+            flexWrap: 'wrap',
+            maxHeight: 160,
+            overflowY: 'auto',
+          }}
+        >
+          {ALL_ELEMENTS.map((el) => (
+            <button
+              key={el.name + Math.random()}
+              onClick={() => addToTemp(el)}
+              style={{
+                padding: '10px 12px',
+                borderRadius: 8,
+                border: '1px solid #ccc',
+                background: '#fff',
+                minWidth: 80,
+              }}
+            >
+              <div style={{ fontWeight: 700 }}>{el.name}</div>
+              <div style={{ fontSize: 12 }}>BV {el.baseValue}</div>
+            </button>
+          ))}
+        </div>
+
+        {tempLine.length > 0 && (
+          <div style={{ marginTop: 10 }}>
+            <div>
+              追加予定：{' '}
+              {tempLine.map((t, i) => (
+                <span key={i} style={{ marginRight: 6 }}>
+                  {t.name}
+                  {i < tempLine.length - 1 ? ' + ' : ''}
+                </span>
+              ))}
+            </div>
+            <div style={{ marginTop: 8 }}>
+              <button
+                onClick={addLineFromTemp}
+                style={{ padding: '8px 12px', marginRight: 8 }}
+              >
+                行追加
+              </button>
+              <button onClick={clearTemp} style={{ padding: '8px 12px' }}>
+                クリア
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* lines (responsive table with horizontal scroll) */}
+      <div style={{ overflowX: 'auto' }}>
+        {lines.map((line) => {
+          const maxSub = line.subs.reduce(
+            (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
+            line.subs[0]
+          );
+          return (
+            <div
+              key={line.id}
+              style={{
+                border: '1px solid #eee',
+                padding: 8,
+                borderRadius: 10,
+                marginBottom: 12,
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                }}
+              >
+                <strong>
+                  行 #{line.id} 合計: {calcLineTotal(line).toFixed(2)}
+                </strong>
+                <div>
+                  <button
+                    onClick={() => addComboToLine(line.id)}
+                    style={{ marginRight: 8, padding: '6px 10px' }}
+                  >
+                    ＋コンボ追加
+                  </button>
+                  <button
+                    onClick={() => deleteLine(line.id)}
+                    style={{ padding: '6px 10px' }}
+                  >
+                    削除
+                  </button>
+                </div>
+              </div>
+
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  minWidth: 980,
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th style={thStyle}>要素</th>
+                    <th style={thStyle}>BV</th>
+                    <th style={thStyle}>GOE</th>
+                    <th style={thStyle}>合計</th>
+                    <th style={thStyle}>回転</th>
+                    <th style={thStyle}>エッジ</th>
+                    <th style={thStyle}>V</th>
+                    <th style={thStyle}>後半 (X)</th>
+                    <th style={thStyle}>その他</th>
+                    <th style={thStyle}>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {line.subs.map((sub) => {
+                    const bvWithMods = getBVWithMods(sub);
+                    const isMax = sub.id === maxSub.id;
+                    const goePoint = calcGOEPoint(sub, maxSub);
+                    const subtotal = calcSubTotal(sub, maxSub);
+
+                    // highlighting
+                    const hasF = sub.marks.includes('F');
+                    const positiveGo = sub.goe > 0;
+                    const secondHalfHighlight =
+                      sub.secondHalf && sub.element.type === 'jump';
+                    const rowStyle: React.CSSProperties = {};
+                    if (hasF) rowStyle.background = '#fff0f0'; // light red
+                    else if (positiveGo)
+                      rowStyle.background = '#f0fff4'; // light green
+                    else if (secondHalfHighlight)
+                      rowStyle.background = '#fffaf0'; // light yellow
+
+                    return (
+                      <tr key={sub.id} style={rowStyle}>
+                        <td style={tdStyle}>
+                          <select
+                            value={sub.element.name}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                element: ALL_ELEMENTS.find(
+                                  (x) => x.name === e.target.value
+                                )!,
+                              })
+                            }
+                          >
+                            <optgroup label="Jump">
+                              {JUMPS.map((j) => (
+                                <option key={j.name} value={j.name}>
+                                  {j.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Spin">
+                              {SPINS.map((s) => (
+                                <option key={s.name} value={s.name}>
+                                  {s.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Step">
+                              {STEPS.map((s) => (
+                                <option key={s.name} value={s.name}>
+                                  {s.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Choreo">
+                              {CHOREO.map((c) => (
+                                <option key={c.name} value={c.name}>
+                                  {c.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                          </select>
+                        </td>
+
+                        <td style={{ ...tdStyle, textAlign: 'right' }}>
+                          {bvWithMods.toFixed(2)}
+                          {/* secondHalf UI: show 'X' label when checked */}
+                          {sub.secondHalf && sub.element.type === 'jump' && (
+                            <div style={{ fontSize: 11, color: '#666' }}>X</div>
+                          )}
+                        </td>
+
+                        <td style={{ ...tdStyle, textAlign: 'right' }}>
+                          {/* GOE input rules: jumps -> only highest BV gets input; spin/step/choreo always inputtable; ChSq1 also inputtable */}
+                          {(sub.element.type === 'jump' && isMax) ||
+                          sub.element.type !== 'jump' ||
+                          sub.element.name === 'ChSq1' ? (
+                            <input
+                              type="number"
+                              min={-5}
+                              max={5}
+                              step={1}
+                              value={sub.goe}
+                              onChange={(e) =>
+                                updateSub(line.id, sub.id, {
+                                  goe: Number(e.target.value),
+                                })
+                              }
+                              style={{ width: 68, padding: 6, borderRadius: 6 }}
+                            />
+                          ) : (
+                            <div style={{ padding: '6px 8px' }}>
+                              {goePoint.toFixed(2)}
+                            </div>
+                          )}
+                        </td>
+
+                        <td style={{ ...tdStyle, textAlign: 'right' }}>
+                          {subtotal.toFixed(2)}
+                        </td>
+
+                        <td style={tdStyle}>
+                          <select
+                            value={sub.underRotation || ''}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                underRotation: e.target.value as any,
+                              })
+                            }
+                          >
+                            <option value="">正常</option>
+                            <option value="q">q</option>
+                            <option value="<">&lt;</option>
+                            <option value="<<">&lt;&lt;</option>
+                          </select>
+                        </td>
+
+                        <td style={tdStyle}>
+                          <select
+                            value={sub.edge || ''}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                edge: e.target.value as any,
+                              })
+                            }
+                          >
+                            <option value="">正常</option>
+                            <option value="!">!</option>
+                            <option value="e">e</option>
+                          </select>
+                        </td>
+
+                        <td style={tdStyle}>
+                          <input
+                            type="checkbox"
+                            checked={sub.marks.includes('V')}
+                            onChange={() => toggleMark(line.id, sub.id, 'V')}
+                          />
+                        </td>
+
+                        <td style={tdStyle}>
+                          {/* secondHalf checkbox (UI shows 'X' in BV cell) */}
+                          <input
+                            type="checkbox"
+                            checked={!!sub.secondHalf}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                secondHalf: e.target.checked,
+                              })
+                            }
+                          />
+                        </td>
+
+                        <td style={tdStyle}>
+                          {["F", "REP", "*", "SEQ", "COMBO"].map(mark => (
+                            <label key={mark} style={{ marginRight: 6, display: 'block' }}>
+                              <input
+                                type="checkbox"
+                                checked={sub.marks.includes(mark)}
+                                onChange={() => toggleMark(line.id, sub.id, mark)}
+                              />
+                              {mark}
+                            </label>
+                          ))}
+                        </td>
+
+                        <td style={tdStyle}>
+                          <button
+                            onClick={() => deleteSub(line.id, sub.id)}
+                            style={{ padding: '6px 8px' }}
+                          >
+                            削除
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* PCS */}
+      <div
+        style={{
+          marginTop: 12,
+          padding: 12,
+          border: '1px solid #eee',
+          borderRadius: 10,
+          background: '#f7fbff',
+        }}
+      >
+        <div style={{ fontWeight: 700, marginBottom: 8 }}>
+          PCS（0〜10、0.25刻み）
+        </div>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <label style={{ display: 'flex', flexDirection: 'column' }}>
+            Composition
+            <input
+              type="number"
+              step={0.25}
+              min={0}
+              max={10}
+              value={pcs.comp}
+              onChange={(e) =>
+                setPcs((p) => ({ ...p, comp: Number(e.target.value) }))
+              }
+            />
+          </label>
+          <label style={{ display: 'flex', flexDirection: 'column' }}>
+            Presentation
+            <input
+              type="number"
+              step={0.25}
+              min={0}
+              max={10}
+              value={pcs.pres}
+              onChange={(e) =>
+                setPcs((p) => ({ ...p, pres: Number(e.target.value) }))
+              }
+            />
+          </label>
+          <label style={{ display: 'flex', flexDirection: 'column' }}>
+            Skating Skills
+            <input
+              type="number"
+              step={0.25}
+              min={0}
+              max={10}
+              value={pcs.skills}
+              onChange={(e) =>
+                setPcs((p) => ({ ...p, skills: Number(e.target.value) }))
+              }
+            />
+          </label>
+        </div>
+        <div style={{ marginTop: 8 }}>
+          PCS raw: {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)} × multiplier
+          ({PCS_MULTIPLIERS[category]}) = {pcsApplied.toFixed(2)}
+        </div>
+      </div>
+
+      {/* controls */}
+      <div
+        style={{
+          marginTop: 12,
+          display: 'flex',
+          gap: 8,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+        }}
+      >
+        <button
+          onClick={saveAndShowProtocol}
+          style={{
+            padding: '10px 14px',
+            background: '#1f7ae0',
+            color: '#fff',
+            borderRadius: 8,
+          }}
+        >
+          決定（合計得点）
+        </button>
+        <button
+          onClick={saveResultToHistory}
+          style={{ padding: '10px 14px', borderRadius: 8 }}
+        >
+          履歴に保存
+        </button>
+        <button
+          onClick={() => {
+            setLines([]);
+            setTempLine([]);
+          }}
+          style={{ padding: '10px 12px', borderRadius: 8 }}
+        >
+          新規クリア
+        </button>
+        <button
+          onClick={exportHistory}
+          style={{ padding: '10px 12px', borderRadius: 8 }}
+        >
+          履歴エクスポート
+        </button>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          インポート
+          <input
+            type="file"
+            accept="application/json"
+            onChange={(e) => importHistory(e.target.files?.[0] || null)}
+          />
+        </label>
+      </div>
+
+      {/* totals */}
+      <div
+        style={{
+          marginTop: 12,
+          padding: 12,
+          border: '1px solid #ddd',
+          borderRadius: 10,
+        }}
+      >
+        <div>技術点 (TES - fall penalty含む): {totalTES.toFixed(2)}</div>
+        <div>PCS applied: {pcsApplied.toFixed(2)}</div>
+        <div style={{ fontWeight: 800, marginTop: 6 }}>
+          合計: {grandTotal.toFixed(2)}
+        </div>
+      </div>
+
+      {/* history */}
+      <div style={{ marginTop: 12 }}>
+        <h3>履歴</h3>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+          <button
+            onClick={() => {
+              if (!confirm('履歴を全部消しますか？')) return;
+              clearHistory();
+            }}
+            style={{ padding: '8px 10px' }}
+          >
+            履歴を全削除
+          </button>
+        </div>
+        {history.length === 0 && <div>履歴はありません</div>}
+        {history.map((h) => (
+          <div
+            key={h.id}
+            style={{
+              border: '1px solid #f1f1f1',
+              padding: 10,
+              borderRadius: 8,
+              marginBottom: 8,
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontWeight: 700 }}>
+                  {h.playerName} ({h.country}) — {h.competition} [{h.category}]
+                </div>
+                <div>
+                  TES: {h.tes} ・ PCS raw: {h.pcsRaw} ・ PCS applied:{' '}
+                  {h.pcsApplied} ・ Total: {h.total}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 12, color: '#666' }}>
+                  {new Date(h.timestamp).toLocaleString()}
+                </div>
+                <div style={{ marginTop: 8 }}>
+                  <button
+                    onClick={() => {
+                      if (h.protocolHtml) setShowProtocol(h);
+                      else alert('プロトコル表示データがありません');
+                    }}
+                    style={{ marginRight: 6 }}
+                  >
+                    表示
+                  </button>
+                  <button onClick={() => deleteHistoryItem(h.id)}>削除</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ height: 48 }} />
+    </div>
+  );
+}
+
+/* ---------- スタイル小分け ---------- */
+const inputStyle: React.CSSProperties = {
+  padding: 10,
+  borderRadius: 8,
+  border: '1px solid #ccc',
+};
+const thStyle: React.CSSProperties = {
+  textAlign: 'left',
+  borderBottom: '1px solid #ddd',
+  padding: '8px 10px',
+  whiteSpace: 'nowrap',
+};
+const tdStyle: React.CSSProperties = {
+  padding: '8px 10px',
+  verticalAlign: 'middle',
+  whiteSpace: 'nowrap',
+};
+
+/* ---------- ISU 風プロトコル HTML レンダラ（簡易） ---------- */
+function renderProtocolHtml(params: {
+  playerName: string;
+  country: string;
+  competition: string;
+  category: string;
+  lines: Line[];
+  pcsRaw: number;
+  pcsApplied: number;
+  totalTES: number;
+  grandTotal: number;
+}) {
+  const {
+    playerName,
+    country,
+    competition,
+    category,
+    lines,
+    pcsRaw,
+    pcsApplied,
+    totalTES,
+    grandTotal,
+  } = params;
+
+  const rowsHtml = lines
+    .map((line, idx) => {
+      const maxSub = line.subs.reduce(
+        (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
+        line.subs[0]
+      );
+      const subsHtml = line.subs
+        .map((sub) => {
+          const bvDisp = getBVWithMods(sub).toFixed(2);
+          const bvForGoe = getBVForGOE(sub).toFixed(2);
+          const goe = calcGOEPoint(sub, maxSub).toFixed(2);
+          const total = calcSubTotal(sub, maxSub).toFixed(2);
+          const marks = sub.marks.join(',') || '';
+          const second = sub.secondHalf ? 'X' : '';
+          return `<div style="display:flex;gap:8px;padding:2px 0;font-size:13px">
+        <div style="width:110px">${sub.element.name}</div>
+        <div style="width:70px;text-align:right">BV:${bvDisp}</div>
+        <div style="width:110px;text-align:right">BV_forGOE:${bvForGoe}</div>
+        <div style="width:70px;text-align:right">GOE:${goe}</div>
+        <div style="width:70px;text-align:right">Total:${total}</div>
+        <div style="width:40px;text-align:center">${second}</div>
+        <div style="flex:1">${marks}</div>
+      </div>`;
+        })
+        .join('');
+      const lineTotal = calcLineTotal(line).toFixed(2);
+      return `<div style="margin-bottom:8px"><div style="font-weight:700">Row ${
+        idx + 1
+      } — ${lineTotal} pt</div>${subsHtml}</div>`;
+    })
+    .join('');
+
+  const header = `<div style="padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px">
+    <div style="font-size:18px;font-weight:700">${escapeHtml(competition)}</div>
+    <div>${escapeHtml(playerName)} (${escapeHtml(country)}) — ${escapeHtml(
+    category
+  )}</div>
+  </div>`;
+
+  const summary = `<div style="padding:12px;border:1px solid #ddd;border-radius:8px;margin-top:12px">
+    <div>TES: ${totalTES.toFixed(2)}</div>
+    <div>PCS raw: ${pcsRaw.toFixed(2)} ・ PCS applied: ${pcsApplied.toFixed(
+    2
+  )}</div>
+    <div style="font-weight:800;margin-top:6px">Total: ${grandTotal.toFixed(
+      2
+    )}</div>
+  </div>`;
+
+  return `<div style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto;padding:12px">${header}${rowsHtml}${summary}</div>`;
+}
+
+function escapeHtml(s: string) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
