@@ -325,6 +325,15 @@ function calcGOEPoint(
     return Number((0.5 * sub.goe).toFixed(2));
   }
 
+  function calcGOEPoint(
+  sub: LineSubElement,
+  maxSub: LineSubElement | null
+): number {
+  // ChSp1 special: GOE is halved
+  if (sub.element.name === 'ChSp1') {
+    return Number((0.5 * sub.goe).toFixed(2));
+  }
+    
   // spin/step/choreo: always GOE allowed (if not '*')
   if (
     sub.element.type === 'spin' ||
