@@ -320,17 +320,8 @@ function calcGOEPoint(
   sub: LineSubElement,
   maxSub: LineSubElement | null
 ): number {
-  // ChSq1 special: GOE is halved
-  if (sub.element.name === 'ChSq1') {
-    return Number((0.5 * sub.goe).toFixed(2));
-  }
-
-  function calcGOEPoint(
-  sub: LineSubElement,
-  maxSub: LineSubElement | null
-): number {
-  // ChSp1 special: GOE is halved
-  if (sub.element.name === 'ChSp1') {
+  // ChSq1 ChSp1 special: GOE is halved
+  if (sub.element.name === 'ChSq1','ChSp1') {
     return Number((0.5 * sub.goe).toFixed(2));
   }
     
