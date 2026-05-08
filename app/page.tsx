@@ -891,22 +891,43 @@ export default function Page() {
                           {(sub.element.type === 'jump' && isMax) ||
                           sub.element.type !== 'jump' ||
                           sub.element.name === 'ChSq1' ? (
-                            <input
-                              type="number"
-                              min={-5}
-                              max={5}
-                              step={1}
-                              value={sub.goe}
-                              onChange={(e) =>
-                                updateSub(line.id, sub.id, {
-                                  goe: Math.max(
-                                    -5,
-                                    Math.min(5,Number(e.target.value))
-                                  ),
-                                })
-                              }
-                              style={{ width: 68, padding: 6, borderRadius: 6 }}
-                            />
+                      <td style={{ ...tdStyle, textAlign: 'right' }}>
+  {(sub.element.type === 'jump' && isMax) ||
+  sub.element.type !== 'jump' ||
+  sub.element.name === 'ChSq1' ? (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.max(-5, sub.goe - 1),
+          })
+        }
+      >
+        -
+      </button>
+
+      <div style={{ minWidth: 24, textAlign: 'center' }}>
+        {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
+      </div>
+
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.min(5, sub.goe + 1),
+          })
+        }
+      >
+        +
+      </button>
+
+    </div>
+  ) : (
+    <div style={{ padding: '6px 8px' }}>
+      {goePoint.toFixed(2)}
+    </div>
+  )}
+</td>
                           ) : (
                             <div style={{ padding: '6px 8px' }}>
                               {goePoint.toFixed(2)}
