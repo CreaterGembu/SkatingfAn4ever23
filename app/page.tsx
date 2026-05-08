@@ -896,7 +896,10 @@ export default function Page() {
                               value={sub.goe}
                               onChange={(e) =>
                                 updateSub(line.id, sub.id, {
-                                  goe: Number(e.target.value),
+                                  goe: Math.max(
+                                    -5,
+                                    Math.min(5,Number(e.target.value))
+                                  ),
                                 })
                               }
                               style={{ width: 68, padding: 6, borderRadius: 6 }}
