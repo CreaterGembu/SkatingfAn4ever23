@@ -321,7 +321,10 @@ function calcGOEPoint(
   maxSub: LineSubElement | null
 ): number {
   // ChSq1 ChSp1 special: GOE is halved
-  if (sub.element.name === 'ChSq1','ChSp1') {
+  if (
+    sub.element.name === 'ChSq1' ||
+    sub.element.name === 'ChSp1'
+  ) {
     return Number((0.5 * sub.goe).toFixed(2));
   }
     
