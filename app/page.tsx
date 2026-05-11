@@ -690,7 +690,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
           style={inputStyle}
         />
         <input
-          placeholder="Comp Name"
+          placeholder="Event"
           value={competition}
           onChange={(e) => setCompetition(e.target.value)}
           style={{ ...inputStyle, gridColumn: '1 / -1' }}
@@ -747,7 +747,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
 
   {/* category */}
   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-    {['jump', 'spin', 'step', 'choreo'].map((cat) => (
+    {['JUMP', 'SPIN', 'STEP', 'CHOREO'].map((cat) => (
       <button
         key={cat}
         onClick={() => {
