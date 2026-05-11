@@ -1055,13 +1055,13 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
                     onClick={() => addComboToLine(line.id)}
                     style={{ marginRight: 8, padding: '6px 10px' }}
                   >
-                    ＋コンボ追加
+                    ＋Add Combo
                   </button>
                   <button
                     onClick={() => deleteLine(line.id)}
                     style={{ padding: '6px 10px' }}
                   >
-                    削除
+                    Delete
                   </button>
                 </div>
               </div>
@@ -1077,8 +1077,8 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
                   <tr>
                     <th style={thStyle}>Executed Elements</th>
                     <th style={thStyle}>BV</th>
-                    <th style={thStyle}>-5~5</th>
                     <th style={thStyle}>GOE</th>
+                    <th style={thStyle}>GOE Point</th>
                     <th style={thStyle}>Score of Panel</th>
                     <th style={thStyle}>Rotation</th>
                     <th style={thStyle}>Edge</th>
