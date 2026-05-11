@@ -1381,10 +1381,10 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
           borderRadius: 10,
         }}
       >
-        <div> Total Technical Element Score (TES - Ded): {totalTES.toFixed(2)}</div>
-        <div>PCS applied: {pcsApplied.toFixed(2)}</div>
+        <div> Total Technical Element Score (TES): {totalTES.toFixed(2)}</div>
+        <div>Program Conponent Score (PCS) : {pcsApplied.toFixed(2)}</div>
         <div style={{ fontWeight: 800, marginTop: 6 }}>
-          TOtal: {grandTotal.toFixed(2)}
+          Total Score: {grandTotal.toFixed(2)}
         </div>
       </div>
 
