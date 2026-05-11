@@ -1176,11 +1176,12 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
       <div style={{ minWidth: 70, textAlign: 'center' }}>
         {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
       </div>
-       <div style={{ fontSize: 11, color: '#666' }}>
-    {goePoint.toFixed(2)}
-  </div>
-</div>
-      <button
+      
+      <div style={{ fontSize: 11, color: '#666' }}>
+   　　 {goePoint.toFixed(2)}
+      </div>
+
+      </button>
         onClick={() =>
           updateSub(line.id, sub.id, {
             goe: Math.min(5, sub.goe + 1),
