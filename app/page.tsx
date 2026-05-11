@@ -470,21 +470,37 @@ const [selectedSpinType, setSelectedSpinType] = useState('');
 const [selectedSpinMode, setSelectedSpinMode] = useState('');
 
 const [recentElements, setRecentElements] = useState<Element[]>([]);
-  useEffect(() => {
+const [isComboMode, setIsComboMode] = useState(false);
+useEffect(() => {
     localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
   }, [history]);
 
   /* UI 操作 */
  const addToTemp = (el: Element) => {
-  setTempLine((t) => [...t, el]);
+  // コンボモードでない場合
+  if (!isComboMode) {
+    setTempLine([el]);
+  } else {
+    // コンボモードなら追加
+    setTempLine((t) => [...t, el]);
+  }
 
+  // 最近使用
+  setRecentElements((prev) => {
+    const filtered = prev.filter((p) => p.name !== el.name);
+    return [el, ...filtered].slice(0, 10);
+  });
+};
   // 最近使った要素を先頭へ
   setRecentElements((prev) => {
     const filtered = prev.filter((p) => p.name !== el.name);
     return [el, ...filtered].slice(0, 10);
   });
 };
-  const clearTemp = () => setTempLine([]);
+  const clearTemp = () => {
+  setTempLine([]);
+  setIsComboMode(false);
+};
 
   const addLineFromTemp = () => {
     if (tempLine.length === 0) return;
@@ -501,7 +517,8 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
       })),
     };
     setLines((l) => [...l,newLine]);
-    setTempLine([]);
+   setTempLine([]);
+   setIsComboMode(false);
   };
 
   const addComboToLine = (lineId: number) => {
@@ -996,7 +1013,18 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
       ))}
     </div>
   )}
-
+  <div style={{ marginTop: 12 }}>
+  <button
+    onClick={() => setIsComboMode(true)}
+    style={{
+      ...smallBtn,
+      background: isComboMode ? '#1f7ae0' : '#fff',
+      color: isComboMode ? '#fff' : '#000',
+    }}
+  >
+    ＋コンビネーション追加
+  </button>
+</div>
   {/* temp line */}
   {tempLine.length > 0 && (
     <div style={{ marginTop: 12 }}>
