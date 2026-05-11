@@ -971,30 +971,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   )}
 </div>
 
-        {tempLine.length > 0 && (
-          <div style={{ marginTop: 10 }}>
-            <div>
-              追加予定：{' '}
-              {tempLine.map((t, i) => (
-                <span key={i} style={{ marginRight: 6 }}>
-                  {t.name}
-                  {i < tempLine.length - 1 ? ' + ' : ''}
-                </span>
-              ))}
-            </div>
-            <div style={{ marginTop: 8 }}>
-              <button
-                onClick={addLineFromTemp}
-                style={{ padding: '8px 12px', marginRight: 8 }}
-              >
-                行追加
-              </button>
-              <button onClick={clearTemp} style={{ padding: '8px 12px' }}>
-                クリア
-              </button>
-            </div>
-          </div>
-        )}
+      
       </div>
 
       {/* lines (responsive table with horizontal scroll) */}
