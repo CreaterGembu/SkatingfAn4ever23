@@ -1241,7 +1241,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   }}
 >
   <div style={{ fontWeight: 700, marginBottom: 8 }}>
-    PCS（±ボタン式 / 0.25刻み）
+    Program Conponent Score
   </div>
 
   {(
@@ -1339,13 +1339,13 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
             borderRadius: 8,
           }}
         >
-          決定（合計得点）
+          Submit
         </button>
         <button
           onClick={saveResultToHistory}
           style={{ padding: '10px 14px', borderRadius: 8 }}
         >
-          履歴に保存
+          Add to memories
         </button>
         <button
           onClick={() => {
@@ -1354,16 +1354,16 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
           }}
           style={{ padding: '10px 12px', borderRadius: 8 }}
         >
-          新規クリア
+          Clear
         </button>
         <button
           onClick={exportHistory}
           style={{ padding: '10px 12px', borderRadius: 8 }}
         >
-          履歴エクスポート
+          Download file
         </button>
         <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          インポート
+          Import file
           <input
             type="file"
             accept="application/json"
@@ -1381,28 +1381,28 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
           borderRadius: 10,
         }}
       >
-        <div>技術点 (TES - fall penalty含む): {totalTES.toFixed(2)}</div>
+        <div> Total Technical Element Score (TES - Ded): {totalTES.toFixed(2)}</div>
         <div>PCS applied: {pcsApplied.toFixed(2)}</div>
         <div style={{ fontWeight: 800, marginTop: 6 }}>
-          合計: {grandTotal.toFixed(2)}
+          TOtal: {grandTotal.toFixed(2)}
         </div>
       </div>
 
       {/* history */}
       <div style={{ marginTop: 12 }}>
-        <h3>履歴</h3>
+        <h3>Memories</h3>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
           <button
             onClick={() => {
-              if (!confirm('履歴を全部消しますか？')) return;
+              if (!confirm('Delete History')) return;
               clearHistory();
             }}
             style={{ padding: '8px 10px' }}
           >
-            履歴を全削除
+            Delete All
           </button>
         </div>
-        {history.length === 0 && <div>履歴はありません</div>}
+        {history.length === 0 && <div>None</div>}
         {history.map((h) => (
           <div
             key={h.id}
@@ -1431,13 +1431,13 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
                   <button
                     onClick={() => {
                       if (h.protocolHtml) setShowProtocol(h);
-                      else alert('プロトコル表示データがありません');
+                      else alert('No data');
                     }}
                     style={{ marginRight: 6 }}
                   >
-                    表示
+                    Submit
                   </button>
-                  <button onClick={() => deleteHistoryItem(h.id)}>削除</button>
+                  <button onClick={() => deleteHistoryItem(h.id)}>Delete</button>
                 </div>
               </div>
             </div>
