@@ -780,20 +780,7 @@ useEffect(() => {
           </select>
         </label>
       </div>
-　　{/* Executed Elements History */}
-<div
-  style={{
-    marginBottom: 12,
-    padding: 12,
-    border: '1px solid #ddd',
-    borderRadius: 10,
-    background: '#f8f8f8',
-  }}
->
-  <div style={{ fontWeight: 700, marginBottom: 8 }}>
-    Executed Elements
-  </div>
-
+　　
   {lines.length === 0 ? (
     <div style={{ color: '#777' }}>No elements yet</div>
   ) : (
@@ -823,6 +810,280 @@ useEffect(() => {
     </div>
   )}
 </div>
+       {/* lines (responsive table with horizontal scroll) */}
+      <div style={{ overflowX: 'auto' }}>
+        {lines.map((line) => {
+          const maxSub = line.subs.reduce(
+            (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
+            line.subs[0]
+          );
+          return (
+            <div
+              key={line.id}
+              style={{
+                border: '1px solid #eee',
+                padding: 8,
+                borderRadius: 10,
+                marginBottom: 12,
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                }}
+              >
+                <strong>
+                  行 #{line.id} 合計: {calcLineTotal(line).toFixed(2)}
+                </strong>
+                <div>
+                  <button
+                    onClick={() => addComboToLine(line.id)}
+                    style={{ marginRight: 8, padding: '6px 10px' }}
+                  >
+                    ＋Add Combo
+                  </button>
+                  <button
+                    onClick={() => deleteLine(line.id)}
+                    style={{ padding: '6px 10px' }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+
+              <table
+                style={{
+                  width: '100%',
+                  borderCollapse: 'collapse',
+                  minWidth: 980,
+                }}
+              >
+                <thead>
+                  <tr>
+                    <th style={thStyle}>Executed Elements</th>
+                    <th style={thStyle}>BV</th>
+                    <th style={thStyle}>GOE</th>
+                    <th style={thStyle}>GOE Point</th>
+                    <th style={thStyle}>Score of Panel</th>
+                    <th style={thStyle}>Rotation</th>
+                    <th style={thStyle}>Edge</th>
+                    <th style={thStyle}>V</th>
+                    <th style={thStyle}>Second Half (X)</th>
+                    <th style={thStyle}>Otehers</th>
+                    <th style={thStyle}>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {line.subs.map((sub) => {
+                    const bvWithMods = getBVWithMods(sub);
+                    const isMax = sub.id === maxSub.id;
+                    const goePoint = calcGOEPoint(sub, maxSub);
+                    const subtotal = calcSubTotal(sub, maxSub);
+
+                    // highlighting
+                    const hasF = sub.marks.includes('F');
+                    const positiveGo = sub.goe > 0;
+                    const secondHalfHighlight =
+                      sub.secondHalf && sub.element.type === 'jump';
+                    const rowStyle: React.CSSProperties = {};
+                    if (hasF) rowStyle.background = '#fff0f0'; // light red
+                    else if (positiveGo)
+                      rowStyle.background = '#f0fff4'; // light green
+                    else if (secondHalfHighlight)
+                      rowStyle.background = '#fffaf0'; // light yellow
+
+                    return (
+                      <tr key={sub.id} style={rowStyle}>
+                        <td style={tdStyle}>
+                          <select
+                            value={sub.element.name}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                element: ALL_ELEMENTS.find(
+                                  (x) => x.name === e.target.value
+                                )!,
+                              })
+                            }
+                          >
+                            <optgroup label="Jump">
+                              {JUMPS.map((j) => (
+                                <option key={j.name} value={j.name}>
+                                  {j.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Spin">
+                              {SPINS.map((s) => (
+                                <option key={s.name} value={s.name}>
+                                  {s.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Step">
+                              {STEPS.map((s) => (
+                                <option key={s.name} value={s.name}>
+                                  {s.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Choreo">
+                              {CHOREO.map((c) => (
+                                <option key={c.name} value={c.name}>
+                                  {c.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                          </select>
+                        </td>
+
+                        <td style={{ ...tdStyle, textAlign: 'right' }}>
+                          {bvWithMods.toFixed(2)}
+                          {/* secondHalf UI: show 'X' label when checked */}
+                          {sub.secondHalf && sub.element.type === 'jump' && (
+                            <div style={{ fontSize: 11, color: '#666' }}>X</div>
+                          )}
+                        </td>
+
+<td style={tdStyle}>
+  {(sub.element.type === 'jump' && isMax) ||
+  sub.element.type !== 'jump' ||
+  sub.element.name === 'ChSq1' ? (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+      }}
+    >
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.max(-5, sub.goe - 1),
+          })
+        }
+      >
+        -
+      </button>
+
+      <div
+        style={{
+          minWidth: 40,
+          textAlign: 'center',
+          fontWeight: 700,
+        }}
+      >
+        {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
+      </div>
+
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.min(5, sub.goe + 1),
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+  ) : (
+    <div style={{ color: '#999' }}>—</div>
+  )}
+</td>
+
+<td style={{ ...tdStyle, textAlign: 'right' }}>
+  {goePoint.toFixed(2)}
+</td>
+
+<td style={{ ...tdStyle, textAlign: 'right' }}>
+  {subtotal.toFixed(2)}
+</td>
+
+                        <td style={tdStyle}>
+                          <select
+                            value={sub.underRotation || ''}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                underRotation: e.target.value as any,
+                              })
+                            }
+                          >
+                            <option value="">正常</option>
+                            <option value="q">q</option>
+                            <option value="<">&lt;</option>
+                            <option value="<<">&lt;&lt;</option>
+                          </select>
+                        </td>
+
+                        <td style={tdStyle}>
+                          <select
+                            value={sub.edge || ''}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                edge: e.target.value as any,
+                              })
+                            }
+                          >
+                            <option value="">正常</option>
+                            <option value="!">!</option>
+                            <option value="e">e</option>
+                          </select>
+                        </td>
+
+                        <td style={tdStyle}>
+                          <input
+                            type="checkbox"
+                            checked={sub.marks.includes('V')}
+                            onChange={() => toggleMark(line.id, sub.id, 'V')}
+                          />
+                        </td>
+
+                        <td style={tdStyle}>
+                          {/* secondHalf checkbox (UI shows 'X' in BV cell) */}
+                          <input
+                            type="checkbox"
+                            checked={!!sub.secondHalf}
+                            onChange={(e) =>
+                              updateSub(line.id, sub.id, {
+                                secondHalf: e.target.checked,
+                              })
+                            }
+                   
+                            />
+                        </td>
+
+                        <td style={tdStyle}>
+                          {["F", "REP", "*", "SEQ", "COMBO"].map(mark => (
+                            <label key={mark} style={{ marginRight: 6, display: 'block' }}>
+                              <input
+                                type="checkbox"
+                                checked={sub.marks.includes(mark)}
+                                onChange={() => toggleMark(line.id, sub.id, mark)}
+                              />
+                              {mark}
+                            </label>
+                          ))}
+                        </td>
+
+                        <td style={tdStyle}>
+                          <button
+                            onClick={() => deleteSub(line.id, sub.id)}
+                            style={{ padding: '6px 8px' }}
+                          >
+                            削除
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </div>    
    {/* compact selector */}
 <div
   style={{
@@ -1115,281 +1376,6 @@ useEffect(() => {
     </div>
   )}
 </div>
-
-      {/* lines (responsive table with horizontal scroll) */}
-      <div style={{ overflowX: 'auto' }}>
-        {lines.map((line) => {
-          const maxSub = line.subs.reduce(
-            (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
-            line.subs[0]
-          );
-          return (
-            <div
-              key={line.id}
-              style={{
-                border: '1px solid #eee',
-                padding: 8,
-                borderRadius: 10,
-                marginBottom: 12,
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: 8,
-                }}
-              >
-                <strong>
-                  行 #{line.id} 合計: {calcLineTotal(line).toFixed(2)}
-                </strong>
-                <div>
-                  <button
-                    onClick={() => addComboToLine(line.id)}
-                    style={{ marginRight: 8, padding: '6px 10px' }}
-                  >
-                    ＋Add Combo
-                  </button>
-                  <button
-                    onClick={() => deleteLine(line.id)}
-                    style={{ padding: '6px 10px' }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-
-              <table
-                style={{
-                  width: '100%',
-                  borderCollapse: 'collapse',
-                  minWidth: 980,
-                }}
-              >
-                <thead>
-                  <tr>
-                    <th style={thStyle}>Executed Elements</th>
-                    <th style={thStyle}>BV</th>
-                    <th style={thStyle}>GOE</th>
-                    <th style={thStyle}>GOE Point</th>
-                    <th style={thStyle}>Score of Panel</th>
-                    <th style={thStyle}>Rotation</th>
-                    <th style={thStyle}>Edge</th>
-                    <th style={thStyle}>V</th>
-                    <th style={thStyle}>Second Half (X)</th>
-                    <th style={thStyle}>Otehers</th>
-                    <th style={thStyle}>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {line.subs.map((sub) => {
-                    const bvWithMods = getBVWithMods(sub);
-                    const isMax = sub.id === maxSub.id;
-                    const goePoint = calcGOEPoint(sub, maxSub);
-                    const subtotal = calcSubTotal(sub, maxSub);
-
-                    // highlighting
-                    const hasF = sub.marks.includes('F');
-                    const positiveGo = sub.goe > 0;
-                    const secondHalfHighlight =
-                      sub.secondHalf && sub.element.type === 'jump';
-                    const rowStyle: React.CSSProperties = {};
-                    if (hasF) rowStyle.background = '#fff0f0'; // light red
-                    else if (positiveGo)
-                      rowStyle.background = '#f0fff4'; // light green
-                    else if (secondHalfHighlight)
-                      rowStyle.background = '#fffaf0'; // light yellow
-
-                    return (
-                      <tr key={sub.id} style={rowStyle}>
-                        <td style={tdStyle}>
-                          <select
-                            value={sub.element.name}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                                element: ALL_ELEMENTS.find(
-                                  (x) => x.name === e.target.value
-                                )!,
-                              })
-                            }
-                          >
-                            <optgroup label="Jump">
-                              {JUMPS.map((j) => (
-                                <option key={j.name} value={j.name}>
-                                  {j.name}
-                                </option>
-                              ))}
-                            </optgroup>
-                            <optgroup label="Spin">
-                              {SPINS.map((s) => (
-                                <option key={s.name} value={s.name}>
-                                  {s.name}
-                                </option>
-                              ))}
-                            </optgroup>
-                            <optgroup label="Step">
-                              {STEPS.map((s) => (
-                                <option key={s.name} value={s.name}>
-                                  {s.name}
-                                </option>
-                              ))}
-                            </optgroup>
-                            <optgroup label="Choreo">
-                              {CHOREO.map((c) => (
-                                <option key={c.name} value={c.name}>
-                                  {c.name}
-                                </option>
-                              ))}
-                            </optgroup>
-                          </select>
-                        </td>
-
-                        <td style={{ ...tdStyle, textAlign: 'right' }}>
-                          {bvWithMods.toFixed(2)}
-                          {/* secondHalf UI: show 'X' label when checked */}
-                          {sub.secondHalf && sub.element.type === 'jump' && (
-                            <div style={{ fontSize: 11, color: '#666' }}>X</div>
-                          )}
-                        </td>
-
-<td style={tdStyle}>
-  {(sub.element.type === 'jump' && isMax) ||
-  sub.element.type !== 'jump' ||
-  sub.element.name === 'ChSq1' ? (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 6,
-      }}
-    >
-      <button
-        onClick={() =>
-          updateSub(line.id, sub.id, {
-            goe: Math.max(-5, sub.goe - 1),
-          })
-        }
-      >
-        -
-      </button>
-
-      <div
-        style={{
-          minWidth: 40,
-          textAlign: 'center',
-          fontWeight: 700,
-        }}
-      >
-        {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
-      </div>
-
-      <button
-        onClick={() =>
-          updateSub(line.id, sub.id, {
-            goe: Math.min(5, sub.goe + 1),
-          })
-        }
-      >
-        +
-      </button>
-    </div>
-  ) : (
-    <div style={{ color: '#999' }}>—</div>
-  )}
-</td>
-
-<td style={{ ...tdStyle, textAlign: 'right' }}>
-  {goePoint.toFixed(2)}
-</td>
-
-<td style={{ ...tdStyle, textAlign: 'right' }}>
-  {subtotal.toFixed(2)}
-</td>
-
-                        <td style={tdStyle}>
-                          <select
-                            value={sub.underRotation || ''}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                                underRotation: e.target.value as any,
-                              })
-                            }
-                          >
-                            <option value="">正常</option>
-                            <option value="q">q</option>
-                            <option value="<">&lt;</option>
-                            <option value="<<">&lt;&lt;</option>
-                          </select>
-                        </td>
-
-                        <td style={tdStyle}>
-                          <select
-                            value={sub.edge || ''}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                                edge: e.target.value as any,
-                              })
-                            }
-                          >
-                            <option value="">正常</option>
-                            <option value="!">!</option>
-                            <option value="e">e</option>
-                          </select>
-                        </td>
-
-                        <td style={tdStyle}>
-                          <input
-                            type="checkbox"
-                            checked={sub.marks.includes('V')}
-                            onChange={() => toggleMark(line.id, sub.id, 'V')}
-                          />
-                        </td>
-
-                        <td style={tdStyle}>
-                          {/* secondHalf checkbox (UI shows 'X' in BV cell) */}
-                          <input
-                            type="checkbox"
-                            checked={!!sub.secondHalf}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                                secondHalf: e.target.checked,
-                              })
-                            }
-                   
-                            />
-                        </td>
-
-                        <td style={tdStyle}>
-                          {["F", "REP", "*", "SEQ", "COMBO"].map(mark => (
-                            <label key={mark} style={{ marginRight: 6, display: 'block' }}>
-                              <input
-                                type="checkbox"
-                                checked={sub.marks.includes(mark)}
-                                onChange={() => toggleMark(line.id, sub.id, mark)}
-                              />
-                              {mark}
-                            </label>
-                          ))}
-                        </td>
-
-                        <td style={tdStyle}>
-                          <button
-                            onClick={() => deleteSub(line.id, sub.id)}
-                            style={{ padding: '6px 8px' }}
-                          >
-                            削除
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          );
-        })}
-      </div>
 
      {/* PCS */}
 <div
