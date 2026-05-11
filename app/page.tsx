@@ -1607,26 +1607,51 @@ function mangleSpin(
   mode: string,
   level: string
 ) {
-  if (!mode) return `${type}${level}`;
-  if (mode === 'FC') {
-    return 'FCCoSp${level1}';
+  // Normal
+  if (!mode) {
+    return `${type}${level}`;
   }
-  if (mode === 'C') {
-    return 'CCoSp${level1}';
-  }
+
+  // F + type
   if (mode === 'F') {
-    return 'FCoSp${level1}';
+    return `F${type}${level}`;
   }
-  return `(${mode})${type}${level}`;
+
+  // C + type
+  if (mode === 'C') {
+    return `C${type}${level}`;
+  }
+
+  // FC + type
+  if (mode === 'FC') {
+    return `FC${type}${level}`;
+  }
+
+  return `${type}${level}`;
 }
 
 function mangleCoSp(
   mode: string,
   level: string
 ) {
-  if (!mode) return `CoSp${level}`;
+  // CoSp は特殊命名
+  if (!mode) {
+    return `CoSp${level}`;
+  }
 
-  return `(${mode})CoSp${level}`;
+  if (mode === 'F') {
+    return `FCoSp${level}`;
+  }
+
+  if (mode === 'C') {
+    return `CCoSp${level}`;
+  }
+
+  if (mode === 'FC') {
+    return `FCCoSp${level}`;
+  }
+
+  return `CoSp${level}`;
 }
 function escapeHtml(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
