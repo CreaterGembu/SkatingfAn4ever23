@@ -1419,7 +1419,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
                   {h.playerName} ({h.country}) — {h.competition} [{h.category}]
                 </div>
                 <div>
-                  TES: {h.tes} ・ PCS raw: {h.pcsRaw} ・ PCS applied:{' '}
+                  TES: {h.tes} ・ PCS raw: {h.pcsRaw} ・ PCS :{' '}
                   {h.pcsApplied} ・ Total: {h.total}
                 </div>
               </div>
