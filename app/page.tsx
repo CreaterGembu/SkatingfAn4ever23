@@ -491,12 +491,7 @@ useEffect(() => {
     return [el, ...filtered].slice(0, 10);
   });
 };
-  // 最近使った要素を先頭へ
-  setRecentElements((prev) => {
-    const filtered = prev.filter((p) => p.name !== el.name);
-    return [el, ...filtered].slice(0, 10);
-  });
-};
+  
   const clearTemp = () => {
   setTempLine([]);
   setIsComboMode(false);
