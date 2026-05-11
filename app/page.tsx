@@ -886,12 +886,41 @@ export default function Page() {
                           )}
                         </td>
 
-                        <td style={{ ...tdStyle, textAlign: 'right' }}>
-                          {/* GOE input rules: jumps -> only highest BV gets input; spin/step/choreo always inputtable; ChSq1 also inputtable */}
-                          {(sub.element.type === 'jump' && isMax) ||
-                          sub.element.type !== 'jump' ||
-                          sub.element.name === 'ChSq1' ? (
-                      <td style={{ ...tdStyle, textAlign: 'right' }}>
+                       <td style={{ ...tdStyle, textAlign: 'right' }}>
+  {(sub.element.type === 'jump' && isMax) ||
+  sub.element.type !== 'jump' ||
+  sub.element.name === 'ChSq1' ? (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.max(-5, sub.goe - 1),
+          })
+        }
+      >
+        -
+      </button>
+
+      <div style={{ minWidth: 24, textAlign: 'center' }}>
+        {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
+      </div>
+
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.min(5, sub.goe + 1),
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+  ) : (
+    <div style={{ padding: '6px 8px' }}>
+      {goePoint.toFixed(2)}
+    </div>
+  )}
+</td>
   {(sub.element.type === 'jump' && isMax) ||
   sub.element.type !== 'jump' ||
   sub.element.name === 'ChSq1' ? (
