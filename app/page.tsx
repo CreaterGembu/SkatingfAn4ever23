@@ -1075,16 +1075,16 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
               >
                 <thead>
                   <tr>
-                    <th style={thStyle}>要素</th>
+                    <th style={thStyle}>Executed Elements</th>
                     <th style={thStyle}>BV</th>
+                    <th style={thStyle}>-5~5</th>
                     <th style={thStyle}>GOE</th>
-                    <th style={thStyle}>合計</th>
-                    <th style={thStyle}>回転</th>
-                    <th style={thStyle}>エッジ</th>
+                    <th style={thStyle}>Score of Panel/th>
+                    <th style={thStyle}>Rotation</th>
+                    <th style={thStyle}>Edge</th>
                     <th style={thStyle}>V</th>
-                    <th style={thStyle}>後半 (X)</th>
-                    <th style={thStyle}>その他</th>
-                    <th style={thStyle}>操作</th>
+                    <th style={thStyle}>Second Half (X)</th>
+                    <th style={thStyle}>Otehers</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1173,6 +1173,63 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
         -
       </button>
 
+      <div
+        style={{
+          minWidth: 70,
+          textAlign: 'center',
+          fontSize: 16,
+          fontWeight: 600,
+          color: '#000',
+        }}
+      >
+        {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
+      </div>
+
+      {/* 出来栄え点 */}
+      <div
+        style={{
+          fontSize: 16,
+          fontWeight: 600,
+          color: '#000',
+          minWidth: 70,
+          textAlign: 'center',
+        }}
+      >
+        {goePoint.toFixed(2)}
+      </div>
+
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.min(5, sub.goe + 1),
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+  ) : (
+    <div
+      style={{
+        fontSize: 16,
+        fontWeight: 600,
+        color: '#000',
+      }}
+    >
+      {goePoint.toFixed(2)}
+    </div>
+  )}
+</td>
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.max(-5, sub.goe - 1),
+          })
+        }
+      >
+        -
+      </button>
+
       <div style={{ minWidth: 70, textAlign: 'center' }}>
         {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
       </div>
@@ -1224,9 +1281,21 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   )}
 </td>
 
-                        <td style={{ ...tdStyle, textAlign: 'right' }}>
-                          {subtotal.toFixed(2)}
-                        </td>
+                      <td style={{ ...tdStyle, textAlign: 'right' }}>
+  <span
+    style={{
+      fontSize: 16,
+      fontWeight: 600,
+      color: '#000',
+    }}
+  >
+    {goePoint.toFixed(2)}
+  </span>
+</td>
+
+<td style={{ ...tdStyle, textAlign: 'right' }}>
+  {subtotal.toFixed(2)}
+</td>
 
                         <td style={tdStyle}>
                           <select
