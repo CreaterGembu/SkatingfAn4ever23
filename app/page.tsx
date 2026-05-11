@@ -1177,11 +1177,30 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
         {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
       </div>
       
-      <div style={{ fontSize: 11, color: '#666' }}>
-   　　 {goePoint.toFixed(2)}
+      <td style={{ ...tdStyle, textAlign: 'right' }}>
+  {(sub.element.type === 'jump' && isMax) ||
+  sub.element.type !== 'jump' ||
+  sub.element.name === 'ChSq1' ? (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.max(-5, sub.goe - 1),
+          })
+        }
+      >
+        -
+      </button>
+
+      <div style={{ minWidth: 70, textAlign: 'center' }}>
+        {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
       </div>
 
-      </button>
+      <div style={{ fontSize: 11, color: '#666' }}>
+        {goePoint.toFixed(2)}
+      </div>
+
+      <button
         onClick={() =>
           updateSub(line.id, sub.id, {
             goe: Math.min(5, sub.goe + 1),
@@ -1190,6 +1209,13 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
       >
         +
       </button>
+    </div>
+  ) : (
+    <div style={{ padding: '6px 8px' }}>
+      {goePoint.toFixed(2)}
+    </div>
+  )}
+</td>
     </div>
   ) : (
     <div style={{ padding: '6px 8px' }}>
