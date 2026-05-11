@@ -678,25 +678,25 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
         }}
       >
         <input
-          placeholder="選手名"
+          placeholder="Skater"
           value={playerName}
           onChange={(e) => setPlayerName(e.target.value)}
           style={inputStyle}
         />
         <input
-          placeholder="国名"
+          placeholder="Nation"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           style={inputStyle}
         />
         <input
-          placeholder="大会名"
+          placeholder="Comp Name"
           value={competition}
           onChange={(e) => setCompetition(e.target.value)}
           style={{ ...inputStyle, gridColumn: '1 / -1' }}
         />
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ minWidth: 120 }}>種目（PCS）</div>
+          <div style={{ minWidth: 120 }}> Segment </div>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value as any)}
@@ -721,14 +721,14 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   }}
 >
   <div style={{ fontWeight: 700, marginBottom: 10 }}>
-    要素追加
+    Add Element
   </div>
 
-  {/* 最近使用 */}
+  {/* Recent Used */}
   {recentElements.length > 0 && (
     <div style={{ marginBottom: 12 }}>
       <div style={{ fontSize: 13, marginBottom: 6 }}>
-        最近使用
+        Recently Used
       </div>
 
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
