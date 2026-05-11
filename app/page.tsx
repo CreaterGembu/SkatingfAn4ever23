@@ -1488,7 +1488,7 @@ const thStyle: React.CSSProperties = {
   padding: '8px 10px',
   whiteSpace: 'nowrap',
 };
-const tdStyle: React.CSSProperties = {
+
   const smallBtn: React.CSSProperties = {
   padding: '8px 10px',
   borderRadius: 8,
@@ -1496,6 +1496,8 @@ const tdStyle: React.CSSProperties = {
   background: '#fff',
   fontSize: 14,
 };
+
+const tdStyle: React.CSSProperties = {
 padding: '8px 10px',
   verticalAlign: 'middle',
   whiteSpace: 'nowrap',
