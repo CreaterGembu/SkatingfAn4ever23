@@ -1608,7 +1608,15 @@ function mangleSpin(
   level: string
 ) {
   if (!mode) return `${type}${level}`;
-
+  if (mode === 'FC') {
+    return 'FCCoSp${level1}';
+  }
+  if (mode === 'C') {
+    return 'CCoSp${level1}';
+  }
+  if (mode === 'F') {
+    return 'FCoSp${level1}';
+  }
   return `(${mode})${type}${level}`;
 }
 
