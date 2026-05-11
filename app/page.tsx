@@ -383,7 +383,7 @@ export default function Page() {
   const [category, setCategory] =
     useState<keyof typeof PCS_MULTIPLIERS>('MenSP');
 
-  const [pcs, setPcs] = useState<PCS>({ comp: 8.00, pres: 8.00, skills: 8.00 });
+  const [pcs, setPcs] = useState<PCS>({ comp: 8, pres: 8, skills: 8 });
   const [history, setHistory] = useState<HistoryItem[]>([]);
   useEffect(() => {
     try {
