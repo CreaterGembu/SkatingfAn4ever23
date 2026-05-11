@@ -403,7 +403,7 @@ export default function Page() {
 
   /* ---------- compact selector states ---------- */
 const [selectedCategory, setSelectedCategory] = useState<
-  'jump' | 'spin' | 'step' | 'choreo' | ''
+  'JUMP' | 'SPIN' | 'STEP' | 'CHOREO' | ''
 >('');
 
 const [selectedJumpType, setSelectedJumpType] = useState('');
@@ -769,7 +769,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   </div>
 
   {/* jump selector */}
-  {selectedCategory === 'jump' && (
+  {selectedCategory === 'JUMP' && (
     <div style={{ marginTop: 12 }}>
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {JUMP_TYPES.map((j) => (
@@ -816,7 +816,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   )}
 
   {/* spin selector */}
-  {selectedCategory === 'spin' && (
+  {selectedCategory === 'SPIN' && (
     <div style={{ marginTop: 12 }}>
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {SPIN_TYPES.map((s) => (
@@ -895,7 +895,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   )}
 
   {/* step */}
-  {selectedCategory === 'step' && (
+  {selectedCategory === 'STEP' && (
     <div
       style={{
         display: 'flex',
@@ -917,7 +917,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   )}
 
   {/* choreo */}
-  {selectedCategory === 'choreo' && (
+  {selectedCategory === 'CHOREO' && (
     <div
       style={{
         display: 'flex',
