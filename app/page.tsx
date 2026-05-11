@@ -226,7 +226,7 @@ const CHOREO: Element[] = [
 
 const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
 
-const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T'];
+const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T', 'Eu'];
 const ROTATIONS = ['1', '2', '3', '4', '5'];
 
 const SPIN_TYPES = ['USp', 'LSp', 'SSp', 'CSp', 'CoSp'];
@@ -854,35 +854,56 @@ useEffect(() => {
         ))}
       </div>
 
-      {selectedJumpType && (
-        <div
-          style={{
-            display: 'flex',
-            gap: 6,
-            flexWrap: 'wrap',
-            marginTop: 8,
-          }}
-        >
-          {ROTATIONS.map((r) => {
-            const name = `${r}${selectedJumpType}`;
-            const el = ALL_ELEMENTS.find(
-              (x) => x.name === name
-            );
+   {selectedJumpType && (
+  <div
+    style={{
+      display: 'flex',
+      gap: 6,
+      flexWrap: 'wrap',
+      marginTop: 8,
+    }}
+  >
+    {selectedJumpType === 'Eu' ? (
+      (() => {
+        const el = ALL_ELEMENTS.find(
+          (x) => x.name === '1Eu'
+        );
 
-            if (!el) return null;
+        if (!el) return null;
 
-            return (
-              <button
-                key={name}
-                onClick={() => addToTemp(el)}
-                style={smallBtn}
-              >
-                {name}
-              </button>
-            );
-          })}
-        </div>
-      )}
+        return (
+          <button
+            key="1Eu"
+            onClick={() => addToTemp(el)}
+            style={smallBtn}
+          >
+            1Eu
+          </button>
+        );
+      })()
+    ) : (
+      ROTATIONS.map((r) => {
+        const name = `${r}${selectedJumpType}`;
+
+        const el = ALL_ELEMENTS.find(
+          (x) => x.name === name
+        );
+
+        if (!el) return null;
+
+        return (
+          <button
+            key={name}
+            onClick={() => addToTemp(el)}
+            style={smallBtn}
+          >
+            {name}
+          </button>
+        );
+      })
+    )}
+  </div>
+)}
     </div>
   )}
 
