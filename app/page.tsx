@@ -1038,7 +1038,7 @@ useEffect(() => {
       color: isComboMode ? '#fff' : '#000',
     }}
   >
-    ＋コンビネーション追加
+    ＋Add Combo
   </button>
 </div>
   {/* temp line */}
