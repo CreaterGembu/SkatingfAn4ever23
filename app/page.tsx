@@ -781,7 +781,7 @@ useEffect(() => {
         </label>
       </div>
 　　
-  {lines.length === 0 ? (
+      {lines.length === 0 ? (
     <div style={{ color: '#777' }}>No elements yet</div>
   ) : (
     <div
@@ -809,7 +809,7 @@ useEffect(() => {
       ))}
     </div>
   )}
-</div>
+      
        {/* lines (responsive table with horizontal scroll) */}
       <div style={{ overflowX: 'auto' }}>
         {lines.map((line) => {
