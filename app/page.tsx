@@ -552,15 +552,6 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   
             let newGOE = s.goe;
   
-            // ⭐ COMBO → GOE を自動で -5 にする
-            if (!has && mark === "COMBO") {
-              newGOE = -5;
-            }
-            // ⭐ COMBO を外したら GOE は 0 に戻す（必要なら）
-            if (has && mark === "COMBO") {
-              newGOE = 0;
-            }
-  
             return { ...s, marks: newMarks, goe: newGOE };
           })
         };
@@ -1172,10 +1163,13 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
         -
       </button>
 
-      <div style={{ minWidth: 24, textAlign: 'center' }}>
+      <div style={{ minWidth: 70, textAlign: 'center' }}>
         {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
       </div>
-
+       <div style={{ fontSize: 11, color: '#666' }}>
+    {goePoint.toFixed(2)}
+  </div>
+</div>
       <button
         onClick={() =>
           updateSub(line.id, sub.id, {
@@ -1246,7 +1240,8 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
                                 secondHalf: e.target.checked,
                               })
                             }
-                          />
+                   
+                            />
                         </td>
 
                         <td style={tdStyle}>
