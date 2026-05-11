@@ -780,7 +780,49 @@ useEffect(() => {
           </select>
         </label>
       </div>
+　　{/* Executed Elements History */}
+<div
+  style={{
+    marginBottom: 12,
+    padding: 12,
+    border: '1px solid #ddd',
+    borderRadius: 10,
+    background: '#f8f8f8',
+  }}
+>
+  <div style={{ fontWeight: 700, marginBottom: 8 }}>
+    Executed Elements
+  </div>
 
+  {lines.length === 0 ? (
+    <div style={{ color: '#777' }}>No elements yet</div>
+  ) : (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 6,
+      }}
+    >
+      {lines.map((line, index) => (
+        <div
+          key={line.id}
+          style={{
+            padding: '6px 8px',
+            borderRadius: 6,
+            background: '#fff',
+            border: '1px solid #eee',
+          }}
+        >
+          {index + 1}.{' '}
+          {line.subs
+            .map((s) => s.element.name)
+            .join(' + ')}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
    {/* compact selector */}
 <div
   style={{
