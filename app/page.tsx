@@ -665,7 +665,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
       }}
     >
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>
-        Skating Judgement Simulation
+        Figure Skating Judge Simulation(26/27)
       </h1>
 
       {/* header */}
