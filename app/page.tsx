@@ -971,9 +971,6 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   )}
 </div>
 
-      
-      </div>
-
       {/* lines (responsive table with horizontal scroll) */}
       <div style={{ overflowX: 'auto' }}>
         {lines.map((line) => {
@@ -1466,7 +1463,7 @@ const thStyle: React.CSSProperties = {
   whiteSpace: 'nowrap',
 };
 
-  const smallBtn: React.CSSProperties = {
+const smallBtn: React.CSSProperties = {
   padding: '8px 10px',
   borderRadius: 8,
   border: '1px solid #ccc',
