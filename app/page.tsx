@@ -194,7 +194,7 @@ const SPINS: Element[] = [
   { name: 'CoSp2', baseValue: 2.4, type: 'spin' },
   { name: 'CoSp1', baseValue: 2.0, type: 'spin' },
   { name: 'CoSpB', baseValue: 1.8, type: 'spin' },
-　{ name: 'FCoSp4', baseValue: 3.6, type: 'spin' },
+  { name: 'FCoSp4', baseValue: 3.6, type: 'spin' },
   { name: 'FCoSp3', baseValue: 3.0, type: 'spin' },
   { name: 'FCoSp2', baseValue: 2.4, type: 'spin' },
   { name: 'FCoSp1', baseValue: 2.0, type: 'spin' },
@@ -376,6 +376,15 @@ function calcGOEPoint(
   sub: LineSubElement,
   maxSub: LineSubElement | null
 ): number {
+  if (sub.marks.includes('*')) return 0;
+
+// ===== 5回転専用 =====
+const quintJumps = ['5T', '5S', '5Lo', '5F', '5Lz'];
+
+if (quintJumps.includes(sub.element.name)) {
+return Number((sub.goe * 0.56).toFixed(2));
+}
+
   // ChSq1 ChSp1 special: GOE is halved
   if (
     sub.element.name === 'ChSq1' ||
@@ -740,7 +749,8 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
           <div style={{ minWidth: 120 }}> Segment </div>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value as any)}
+            onChange={(e) => setCategory(e.target.value as keyof typeof PCS_MULTIPLIERS)
+            }
             style={{ padding: 8, borderRadius: 8, border: '1px solid #ccc' }}
           >
             <option value="MenSP">Men&apos;s SP (1.67)</option>
@@ -1148,7 +1158,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
                           )}
                         </td>
 
-                       <td style={{ ...tdStyle, textAlign: 'right' }}>
+<td style={{ ...tdStyle, textAlign: 'right' }}>
   {(sub.element.type === 'jump' && isMax) ||
   sub.element.type !== 'jump' ||
   sub.element.name === 'ChSq1' ? (
