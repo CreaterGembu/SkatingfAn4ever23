@@ -641,13 +641,13 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
           onClick={() => setShowProtocol(null)}
           style={{ marginBottom: 12, padding: '8px 10px' }}
         >
-          ← 編集に戻る
+          ← Back
         </button>
         <div
           dangerouslySetInnerHTML={{
             __html:
               showProtocol.protocolHtml ||
-              'プロトコルが生成されていません',
+              'No data',
           }}
         />
       </div>
