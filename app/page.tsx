@@ -1079,12 +1079,13 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
                     <th style={thStyle}>BV</th>
                     <th style={thStyle}>-5~5</th>
                     <th style={thStyle}>GOE</th>
-                    <th style={thStyle}>Score of Panel/th>
+                    <th style={thStyle}>Score of Panel</th>
                     <th style={thStyle}>Rotation</th>
                     <th style={thStyle}>Edge</th>
                     <th style={thStyle}>V</th>
                     <th style={thStyle}>Second Half (X)</th>
                     <th style={thStyle}>Otehers</th>
+                    <th style={thStyle}>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1268,16 +1269,57 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
   )}
 </td>
 
-                      <td style={{ ...tdStyle, textAlign: 'right' }}>
-  <span
-    style={{
-      fontSize: 16,
-      fontWeight: 600,
-      color: '#000',
-    }}
-  >
-    {goePoint.toFixed(2)}
-  </span>
+      <td style={tdStyle}>
+  {(sub.element.type === 'jump' && isMax) ||
+  sub.element.type !== 'jump' ? (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+      }}
+    >
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.max(-5, sub.goe - 1),
+          })
+        }
+      >
+        -
+      </button>
+
+      <div
+        style={{
+          minWidth: 40,
+          textAlign: 'center',
+          fontWeight: 700,
+        }}
+      >
+        {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
+      </div>
+
+      <button
+        onClick={() =>
+          updateSub(line.id, sub.id, {
+            goe: Math.min(5, sub.goe + 1),
+          })
+        }
+      >
+        +
+      </button>
+    </div>
+  ) : (
+    <div style={{ color: '#999' }}>—</div>
+  )}
+</td>
+
+<td style={{ ...tdStyle, textAlign: 'right' }}>
+  {goePoint.toFixed(2)}
+</td>
+
+<td style={{ ...tdStyle, textAlign: 'right' }}>
+  {subtotal.toFixed(2)}
 </td>
 
 <td style={{ ...tdStyle, textAlign: 'right' }}>
