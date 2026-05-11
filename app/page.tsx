@@ -176,6 +176,12 @@ const CHOREO: Element[] = [
 
 const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
 
+const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T'];
+const ROTATIONS = ['1', '2', '3', '4', '5'];
+
+const SPIN_TYPES = ['USp', 'LSp', 'SSp', 'CSp', 'CoSp'];
+const SPIN_MODES = ['', 'F', 'C', 'FC'];
+
 const PCS_MULTIPLIERS: Record<string, number> = {
   MenSP: 1.67,
   MenFS: 3.33,
@@ -395,12 +401,30 @@ export default function Page() {
   // show ISU-like protocol view after pressing 決定して表示
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
 
+  /* ---------- compact selector states ---------- */
+const [selectedCategory, setSelectedCategory] = useState<
+  'jump' | 'spin' | 'step' | 'choreo' | ''
+>('');
+
+const [selectedJumpType, setSelectedJumpType] = useState('');
+const [selectedSpinType, setSelectedSpinType] = useState('');
+const [selectedSpinMode, setSelectedSpinMode] = useState('');
+
+const [recentElements, setRecentElements] = useState<Element[]>([]);
   useEffect(() => {
     localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
   }, [history]);
 
   /* UI 操作 */
-  const addToTemp = (el: Element) => setTempLine((t) => [...t, el]);
+ const addToTemp = (el: Element) => {
+  setTempLine((t) => [...t, el]);
+
+  // 最近使った要素を先頭へ
+  setRecentElements((prev) => {
+    const filtered = prev.filter((p) => p.name !== el.name);
+    return [el, ...filtered].slice(0, 10);
+  });
+};
   const clearTemp = () => setTempLine([]);
 
   const addLineFromTemp = () => {
@@ -686,43 +710,266 @@ export default function Page() {
         </label>
       </div>
 
-      {/* element buttons (mobile friendly) */}
-      <div
+   {/* compact selector */}
+<div
+  style={{
+    marginBottom: 12,
+    padding: 12,
+    border: '1px solid #eee',
+    borderRadius: 10,
+    background: '#fafafa',
+  }}
+>
+  <div style={{ fontWeight: 700, marginBottom: 10 }}>
+    要素追加
+  </div>
+
+  {/* 最近使用 */}
+  {recentElements.length > 0 && (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ fontSize: 13, marginBottom: 6 }}>
+        最近使用
+      </div>
+
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {recentElements.map((el) => (
+          <button
+            key={el.name}
+            onClick={() => addToTemp(el)}
+            style={smallBtn}
+          >
+            {el.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {/* category */}
+  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+    {['jump', 'spin', 'step', 'choreo'].map((cat) => (
+      <button
+        key={cat}
+        onClick={() => {
+          setSelectedCategory(cat as any);
+          setSelectedJumpType('');
+          setSelectedSpinType('');
+        }}
         style={{
-          marginBottom: 12,
-          padding: 12,
-          border: '1px solid #eee',
-          borderRadius: 10,
-          background: '#fafafa',
+          ...smallBtn,
+          background:
+            selectedCategory === cat ? '#1f7ae0' : '#fff',
+          color:
+            selectedCategory === cat ? '#fff' : '#000',
         }}
       >
-        <div style={{ marginBottom: 8, fontWeight: 700 }}>要素一覧</div>
+        {cat}
+      </button>
+    ))}
+  </div>
+
+  {/* jump selector */}
+  {selectedCategory === 'jump' && (
+    <div style={{ marginTop: 12 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {JUMP_TYPES.map((j) => (
+          <button
+            key={j}
+            onClick={() => setSelectedJumpType(j)}
+            style={smallBtn}
+          >
+            {j}
+          </button>
+        ))}
+      </div>
+
+      {selectedJumpType && (
         <div
           style={{
             display: 'flex',
-            gap: 8,
+            gap: 6,
             flexWrap: 'wrap',
-            maxHeight: 160,
-            overflowY: 'auto',
+            marginTop: 8,
           }}
         >
-          {ALL_ELEMENTS.map((el) => (
+          {ROTATIONS.map((r) => {
+            const name = `${r}${selectedJumpType}`;
+            const el = ALL_ELEMENTS.find(
+              (x) => x.name === name
+            );
+
+            if (!el) return null;
+
+            return (
+              <button
+                key={name}
+                onClick={() => addToTemp(el)}
+                style={smallBtn}
+              >
+                {name}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  )}
+
+  {/* spin selector */}
+  {selectedCategory === 'spin' && (
+    <div style={{ marginTop: 12 }}>
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        {SPIN_TYPES.map((s) => (
+          <button
+            key={s}
+            onClick={() => setSelectedSpinType(s)}
+            style={smallBtn}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+
+      {selectedSpinType && (
+        <div
+          style={{
+            display: 'flex',
+            gap: 6,
+            flexWrap: 'wrap',
+            marginTop: 8,
+          }}
+        >
+          {SPIN_MODES.map((m) => (
             <button
-              key={el.name + Math.random()}
-              onClick={() => addToTemp(el)}
-              style={{
-                padding: '10px 12px',
-                borderRadius: 8,
-                border: '1px solid #ccc',
-                background: '#fff',
-                minWidth: 80,
-              }}
+              key={m || 'normal'}
+              onClick={() => setSelectedSpinMode(m)}
+              style={smallBtn}
             >
-              <div style={{ fontWeight: 700 }}>{el.name}</div>
-              <div style={{ fontSize: 12 }}>BV {el.baseValue}</div>
+              {m || 'Normal'}
             </button>
           ))}
         </div>
+      )}
+
+      {selectedSpinType && (
+        <div
+          style={{
+            display: 'flex',
+            gap: 6,
+            flexWrap: 'wrap',
+            marginTop: 8,
+          }}
+        >
+          {['B', '1', '2', '3', '4'].map((lv) => {
+            let name = '';
+
+            if (selectedSpinType === 'CoSp') {
+              name = mangleCoSp(selectedSpinMode, lv);
+            } else {
+              name = mangleSpin(
+                selectedSpinType,
+                selectedSpinMode,
+                lv
+              );
+            }
+
+            const el = ALL_ELEMENTS.find(
+              (x) => x.name === name
+            );
+
+            if (!el) return null;
+
+            return (
+              <button
+                key={name}
+                onClick={() => addToTemp(el)}
+                style={smallBtn}
+              >
+                {name}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  )}
+
+  {/* step */}
+  {selectedCategory === 'step' && (
+    <div
+      style={{
+        display: 'flex',
+        gap: 6,
+        flexWrap: 'wrap',
+        marginTop: 12,
+      }}
+    >
+      {STEPS.map((s) => (
+        <button
+          key={s.name}
+          onClick={() => addToTemp(s)}
+          style={smallBtn}
+        >
+          {s.name}
+        </button>
+      ))}
+    </div>
+  )}
+
+  {/* choreo */}
+  {selectedCategory === 'choreo' && (
+    <div
+      style={{
+        display: 'flex',
+        gap: 6,
+        flexWrap: 'wrap',
+        marginTop: 12,
+      }}
+    >
+      {CHOREO.map((c) => (
+        <button
+          key={c.name}
+          onClick={() => addToTemp(c)}
+          style={smallBtn}
+        >
+          {c.name}
+        </button>
+      ))}
+    </div>
+  )}
+
+  {/* temp line */}
+  {tempLine.length > 0 && (
+    <div style={{ marginTop: 12 }}>
+      <div>
+        追加予定：
+        {tempLine.map((t, i) => (
+          <span key={i}>
+            {' '}
+            {t.name}
+            {i < tempLine.length - 1 ? ' + ' : ''}
+          </span>
+        ))}
+      </div>
+
+      <div style={{ marginTop: 8 }}>
+        <button
+          onClick={addLineFromTemp}
+          style={{ ...smallBtn, marginRight: 8 }}
+        >
+          行追加
+        </button>
+
+        <button
+          onClick={clearTemp}
+          style={smallBtn}
+        >
+          クリア
+        </button>
+      </div>
+    </div>
+  )}
+</div>
 
         {tempLine.length > 0 && (
           <div style={{ marginTop: 10 }}>
@@ -1242,7 +1489,14 @@ const thStyle: React.CSSProperties = {
   whiteSpace: 'nowrap',
 };
 const tdStyle: React.CSSProperties = {
+  const smallBtn: React.CSSProperties = {
   padding: '8px 10px',
+  borderRadius: 8,
+  border: '1px solid #ccc',
+  background: '#fff',
+  fontSize: 14,
+};
+padding: '8px 10px',
   verticalAlign: 'middle',
   whiteSpace: 'nowrap',
 };
@@ -1322,7 +1576,24 @@ function renderProtocolHtml(params: {
 
   return `<div style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto;padding:12px">${header}${rowsHtml}${summary}</div>`;
 }
+function mangleSpin(
+  type: string,
+  mode: string,
+  level: string
+) {
+  if (!mode) return `${type}${level}`;
 
+  return `(${mode})${type}${level}`;
+}
+
+function mangleCoSp(
+  mode: string,
+  level: string
+) {
+  if (!mode) return `CoSp${level}`;
+
+  return `(${mode})CoSp${level}`;
+}
 function escapeHtml(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
