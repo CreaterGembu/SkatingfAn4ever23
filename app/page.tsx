@@ -685,6 +685,10 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
           fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
           maxWidth: 980,
           margin: '0 auto',
+
+           backgroundColor: '#ffffff',
+           color: '#000000',
+           minHeight: '100vh',
         }}
       >
         <button
@@ -712,6 +716,10 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
         fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
         maxWidth: 980,
         margin: '0 auto',
+
+       backgroundColor: '#ffffff',
+       color: '#000000',
+       minHeight: '100vh',
       }}
     >
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>
