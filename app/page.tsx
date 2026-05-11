@@ -1175,24 +1175,19 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
 
       <div
         style={{
-          minWidth: 70,
+          minWidth: 40,
           textAlign: 'center',
-          fontSize: 16,
           fontWeight: 600,
-          color: '#000',
         }}
       >
         {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
       </div>
 
-      {/* 出来栄え点 */}
       <div
         style={{
-          fontSize: 16,
+          minWidth: 60,
+          textAlign: 'right',
           fontWeight: 600,
-          color: '#000',
-          minWidth: 70,
-          textAlign: 'center',
         }}
       >
         {goePoint.toFixed(2)}
@@ -1209,15 +1204,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
       </button>
     </div>
   ) : (
-    <div
-      style={{
-        fontSize: 16,
-        fontWeight: 600,
-        color: '#000',
-      }}
-    >
-      {goePoint.toFixed(2)}
-    </div>
+    <div>{goePoint.toFixed(2)}</div>
   )}
 </td>
       <button
