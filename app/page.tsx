@@ -383,7 +383,7 @@ export default function Page() {
   const [category, setCategory] =
     useState<keyof typeof PCS_MULTIPLIERS>('MenSP');
 
-  const [pcs, setPcs] = useState<PCS>({ comp: 0, pres: 0, skills: 0 });
+  const [pcs, setPcs] = useState<PCS>({ comp: 8.00, pres: 8.00, skills: 8.00 });
   const [history, setHistory] = useState<HistoryItem[]>([]);
   useEffect(() => {
     try {
@@ -1051,65 +1051,95 @@ export default function Page() {
         })}
       </div>
 
-      {/* PCS */}
-      <div
+     {/* PCS */}
+<div
+  style={{
+    marginTop: 12,
+    padding: 12,
+    border: '1px solid #eee',
+    borderRadius: 10,
+    background: '#f7fbff',
+  }}
+>
+  <div style={{ fontWeight: 700, marginBottom: 8 }}>
+    PCS（±ボタン式 / 0.25刻み）
+  </div>
+
+  {(
+    [
+      ['comp', 'Composition'],
+      ['pres', 'Presentation'],
+      ['skills', 'Skating Skills'],
+    ] as const
+  ).map(([key, label]) => (
+    <div
+      key={key}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        marginBottom: 10,
+      }}
+    >
+      <div style={{ width: 140, fontWeight: 600 }}>{label}</div>
+
+      <button
+        onClick={() =>
+          setPcs((p) => ({
+            ...p,
+            [key]: Math.max(
+              0,
+              Number((p[key] - 0.25).toFixed(2))
+            ),
+          }))
+        }
         style={{
-          marginTop: 12,
-          padding: 12,
-          border: '1px solid #eee',
-          borderRadius: 10,
-          background: '#f7fbff',
+          padding: '8px 14px',
+          fontSize: 18,
+          borderRadius: 8,
         }}
       >
-        <div style={{ fontWeight: 700, marginBottom: 8 }}>
-          PCS（0〜10、0.25刻み）
-        </div>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-          <label style={{ display: 'flex', flexDirection: 'column' }}>
-            Composition
-            <input
-              type="number"
-              step={0.25}
-              min={0}
-              max={10}
-              value={pcs.comp}
-              onChange={(e) =>
-                setPcs((p) => ({ ...p, comp: Number(e.target.value) }))
-              }
-            />
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column' }}>
-            Presentation
-            <input
-              type="number"
-              step={0.25}
-              min={0}
-              max={10}
-              value={pcs.pres}
-              onChange={(e) =>
-                setPcs((p) => ({ ...p, pres: Number(e.target.value) }))
-              }
-            />
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column' }}>
-            Skating Skills
-            <input
-              type="number"
-              step={0.25}
-              min={0}
-              max={10}
-              value={pcs.skills}
-              onChange={(e) =>
-                setPcs((p) => ({ ...p, skills: Number(e.target.value) }))
-              }
-            />
-          </label>
-        </div>
-        <div style={{ marginTop: 8 }}>
-          PCS raw: {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)} × multiplier
-          ({PCS_MULTIPLIERS[category]}) = {pcsApplied.toFixed(2)}
-        </div>
+        −
+      </button>
+
+      <div
+        style={{
+          minWidth: 70,
+          textAlign: 'center',
+          fontSize: 18,
+          fontWeight: 700,
+        }}
+      >
+        {pcs[key].toFixed(2)}
       </div>
+
+      <button
+        onClick={() =>
+          setPcs((p) => ({
+            ...p,
+            [key]: Math.min(
+              10,
+              Number((p[key] + 0.25).toFixed(2))
+            ),
+          }))
+        }
+        style={{
+          padding: '8px 14px',
+          fontSize: 18,
+          borderRadius: 8,
+        }}
+      >
+        ＋
+      </button>
+    </div>
+  ))}
+
+  <div style={{ marginTop: 8 }}>
+    PCS raw: {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)}
+    × multiplier ({PCS_MULTIPLIERS[category]})
+    = {pcsApplied.toFixed(2)}
+  </div>
+</div>
 
       {/* controls */}
       <div
