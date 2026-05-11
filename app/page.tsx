@@ -491,7 +491,7 @@ const [recentElements, setRecentElements] = useState<Element[]>([]);
         secondHalf: false,
       })),
     };
-    setLines((l) => [newLine,...l]);
+    setLines((l) => [...l,newLine]);
     setTempLine([]);
   };
 
