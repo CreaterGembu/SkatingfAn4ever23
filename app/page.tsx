@@ -1514,7 +1514,6 @@ useEffect(() => {
   >
     Total Deduction: {totalDeduction.toFixed(2)}
   </div>
-</div>
      {/* PCS */}
 <div
   style={{
