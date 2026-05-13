@@ -1126,33 +1126,6 @@ useEffect(() => {
     background: '#fafafa',
   }}
 >
- <div
-  onClick={() => setIsDeductionOpen(!isDeductionOpen)}
-  style={{
-    fontWeight: 700,
-    marginBottom: 10,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    cursor: 'pointer',
-  }}
->
-  <span>Deduction</span>
-
-  <button
-    style={{
-      width: 28,
-      height: 28,
-      borderRadius: 999,
-      border: '1px solid #ccc',
-      background: '#fff',
-      fontSize: 18,
-      cursor: 'pointer',
-    }}
-  >
-    {isDeductionOpen ? '−' : '+'}
-  </button>
-</div>
 
   {/* Recent Used */}
   {recentElements.length > 0 && (
@@ -1522,6 +1495,39 @@ useEffect(() => {
     × multiplier ({PCS_MULTIPLIERS[category]})
     = {pcsApplied.toFixed(2)}
   </div>
+</div>
+      {/* Deduction Toggle */}
+<div
+  onClick={() => setIsDeductionOpen(!isDeductionOpen)}
+  style={{
+    marginTop: 12,
+    padding: 12,
+    border: '1px solid #eee',
+    borderRadius: 10,
+    background: '#fff5f5',
+
+    fontWeight: 700,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    cursor: 'pointer',
+  }}
+>
+  <span>Deduction</span>
+
+  <button
+    style={{
+      width: 32,
+      height: 32,
+      borderRadius: 999,
+      border: '1px solid #ccc',
+      background: '#fff',
+      fontSize: 20,
+      cursor: 'pointer',
+    }}
+  >
+    {isDeductionOpen ? '−' : '+'}
+  </button>
 </div>
     <div
   style={{
