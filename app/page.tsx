@@ -332,7 +332,17 @@ function getBVForGOE(sub: LineSubElement): number {
   // NOTE: intentionally NOT applying secondHalf multiplier here
   return Number(bv);
 }
-
+function countTotalFalls(allLines: Line[]): number {
+  return allLines.reduce(
+    (sum, line) =>
+      sum +
+      line.subs.reduce(
+        (s2, sub) => s2 + sub.marks.filter((m) => m === 'F').length,
+        0
+      ),
+    0
+  );
+}
 /** 転倒ペナルティ（累積） */
 function calcTotalFallPenalty(allLines: Line[]): number {
   const totalF = allLines.reduce(
@@ -602,6 +612,7 @@ useEffect(() => {
     );
 
   /* totals */
+  const totalFalls = countTotalFalls(lines);
   const totalTESbeforeFalls = lines.reduce(
     (sum, line) => sum + calcLineTotal(line),
     0
@@ -1603,18 +1614,160 @@ useEffect(() => {
     = {pcsApplied.toFixed(2)}
   </div>
 </div>
- {/* Deduction */}
+{/* Deduction */}
 <div
   style={{
-    marginTop: 18,
-    paddingTop: 12,
-    borderTop: '1px solid #ccc',
+    marginTop: 12,
+    padding: 12,
+    border: '1px solid #eee',
+    borderRadius: 10,
+    background: '#fff5f5',
   }}
 >
   <div style={{ fontWeight: 700, marginBottom: 10 }}>
     Deduction
   </div>
 
+  {/* Falls */}
+  <div
+    style={{
+      padding: 10,
+      borderRadius: 8,
+      background: '#ffeaea',
+      marginBottom: 12,
+    }}
+  >
+    <div style={{ fontWeight: 700 }}>
+      Falls
+    </div>
+
+    <div style={{ marginTop: 6 }}>
+      Number of Falls : {totalFalls}
+    </div>
+
+    <div>
+      Fall Deduction : {totalFallPenalty.toFixed(2)}
+    </div>
+  </div>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.programTime}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          programTime: e.target.checked,
+        }))
+      }
+    />
+    Program time (-1)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.illegalElement}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          illegalElement: e.target.checked,
+        }))
+      }
+    />
+    Illegal element (-2)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.illegalMovement}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          illegalMovement: e.target.checked,
+        }))
+      }
+    />
+    Illegal movement (-2)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.costumeProp}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          costumeProp: e.target.checked,
+        }))
+      }
+    />
+    Costume and prop violation (-1)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.costumeFall}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          costumeFall: e.target.checked,
+        }))
+      }
+    />
+    Part of costume/decoration falls on ice (-1)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.lateStart}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          lateStart: e.target.checked,
+        }))
+      }
+    />
+    Late start (-1)
+  </label>
+
+  <div style={{ marginTop: 10 }}>
+    Interruption in performing the program
+  </div>
+
+  <select
+    value={deductions.interruption}
+    onChange={(e) =>
+      setDeductions((d) => ({
+        ...d,
+        interruption: Number(e.target.value),
+      }))
+    }
+    style={{
+      padding: 8,
+      borderRadius: 8,
+      marginTop: 6,
+    }}
+  >
+    <option value={0}>None</option>
+    <option value={-1}>-1</option>
+    <option value={-2}>-2</option>
+  </select>
+
+  <div
+    style={{
+      marginTop: 14,
+      fontWeight: 700,
+      fontSize: 18,
+      color: '#c62828',
+    }}
+  >
+    Total Deduction: {totalDeduction.toFixed(2)}
+  </div>
+</div>
       {/* controls */}
       <div
         style={{
@@ -1676,16 +1829,48 @@ useEffect(() => {
           borderRadius: 10,
         }}
       >
-        <div>
-  TES before deduction : {totalTESbeforeFalls.toFixed(2)}
+  <div
+  style={{
+    padding: 10,
+    borderRadius: 8,
+    background: '#f5faff',
+    marginBottom: 10,
+  }}
+>
+  <div style={{ fontWeight: 700 }}>
+    TES
+  </div>
+
+  <div>
+    Technical Element Score :
+    {' '}
+    {totalTESbeforeFalls.toFixed(2)}
+  </div>
+</div>
+
+<div
+  style={{
+    padding: 10,
+    borderRadius: 8,
+    background: '#fff1f1',
+    marginBottom: 10,
+  }}
+>
+  <div style={{ fontWeight: 700 }}>
+    Deduction
+  </div>
+
+  <div>
+    Deduction :
+    {' '}
+    {totalDeduction.toFixed(2)}
+  </div>
 </div>
 
 <div>
-  Deduction : {totalDeduction.toFixed(2)}
-</div>
-
-<div>
-  Total Technical Element Score : {totalTES.toFixed(2)}
+  Total Technical Element Score :
+  {' '}
+  {totalTES.toFixed(2)}
 </div>
         <div>Program Conpoment Score (factored) : {pcsApplied.toFixed(2)}</div>
         <div style={{ fontWeight: 800, marginTop: 6 }}>
