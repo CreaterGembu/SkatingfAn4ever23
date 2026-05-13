@@ -801,7 +801,7 @@ useEffect(() => {
           </select>
         </label>
       </div>
-　　
+      
       {lines.length === 0 ? (
     <div style={{ color: '#777' }}>No elements yet</div>
   ) : (
@@ -1380,7 +1380,23 @@ useEffect(() => {
       </div>
 
       <div style={{ marginTop: 8 }}>
+    <button
+          onClick={addLineFromTemp}
+          style={{ ...smallBtn, marginRight: 8 }}
+        >
+          行追加
+        </button>
 
+        <button
+          onClick={clearTemp}
+          style={smallBtn}
+        >
+          クリア
+        </button>
+      </div>
+    </div>
+  )}
+</div>
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
@@ -1499,24 +1515,6 @@ useEffect(() => {
     Total Deduction: {totalDeduction.toFixed(2)}
   </div>
 </div>
-    <button
-          onClick={addLineFromTemp}
-          style={{ ...smallBtn, marginRight: 8 }}
-        >
-          行追加
-        </button>
-
-        <button
-          onClick={clearTemp}
-          style={smallBtn}
-        >
-          クリア
-        </button>
-      </div>
-    </div>
-  )}
-</div>
-
      {/* PCS */}
 <div
   style={{
