@@ -904,7 +904,7 @@ useEffect(() => {
                     <th style={thStyle}>Edge</th>
                     <th style={thStyle}>V</th>
                     <th style={thStyle}>Second Half (X)</th>
-                    <th style={thStyle}>Otehers</th>
+                    <th style={thStyle}>Others</th>
                     <th style={thStyle}>Delete</th>
                   </tr>
                 </thead>
@@ -1936,8 +1936,7 @@ useEffect(() => {
       </div>
 
           <div style={{ height: 48 }} />
-    </div> {/* Deduction wrapper end */}
-  </div>
+    </div> 
   );
 }
 
