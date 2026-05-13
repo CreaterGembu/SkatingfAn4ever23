@@ -479,6 +479,7 @@ export default function Page() {
   // show ISU-like protocol view after pressing 決定して表示
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
   const [isDeductionOpen, setIsDeductionOpen] = useState(false);
+  const [isPCSOpen, setIsPCSOpen] = useState(false);
   /* ---------- compact selector states ---------- */
 const [selectedCategory, setSelectedCategory] = useState<
   'JUMP' | 'SPIN' | 'STEP' | 'CHOREO' | ''
@@ -1407,93 +1408,133 @@ useEffect(() => {
     </div>
   )}
 </div>
-     {/* PCS */}
+    {/* PCS Toggle */}
 <div
+  onClick={() => setIsPCSOpen(!isPCSOpen)}
   style={{
     marginTop: 12,
     padding: 12,
     border: '1px solid #eee',
     borderRadius: 10,
     background: '#f7fbff',
+
+    fontWeight: 700,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    cursor: 'pointer',
   }}
 >
-  <div style={{ fontWeight: 700, marginBottom: 8 }}>
-    Program Component Score
-  </div>
+  <span>Program Component Score</span>
 
-  {(
-    [
-      ['comp', 'Composition'],
-      ['pres', 'Presentation'],
-      ['skills', 'Skating Skills'],
-    ] as const
-  ).map(([key, label]) => (
-    <div
-      key={key}
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        marginBottom: 10,
-      }}
-    >
-      <div style={{ width: 140, fontWeight: 600 }}>{label}</div>
+  <button
+    style={{
+      width: 32,
+      height: 32,
+      borderRadius: 999,
+      border: '1px solid #ccc',
+      background: '#fff',
+      fontSize: 20,
+      cursor: 'pointer',
+    }}
+  >
+    {isPCSOpen ? '−' : '+'}
+  </button>
+</div>
 
-      <button
-        onClick={() =>
-          setPcs((p) => ({
-            ...p,
-            [key]: Math.max(
-              0,
-              Number((p[key] - 0.25).toFixed(2))
-            ),
-          }))
-        }
-        style={{
-          padding: '8px 14px',
-          fontSize: 18,
-          borderRadius: 8,
-        }}
-      >
-        −
-      </button>
-
+<div
+  style={{
+    maxHeight: isPCSOpen ? 1000 : 0,
+    overflow: 'hidden',
+    transition: '0.25s ease',
+  }}
+>
+  <div
+    style={{
+      marginTop: 8,
+      padding: 12,
+      border: '1px solid #eee',
+      borderRadius: 10,
+      background: '#f7fbff',
+    }}
+  >
+    {(
+      [
+        ['comp', 'Composition'],
+        ['pres', 'Presentation'],
+        ['skills', 'Skating Skills'],
+      ] as const
+    ).map(([key, label]) => (
       <div
+        key={key}
         style={{
-          minWidth: 70,
-          textAlign: 'center',
-          fontSize: 18,
-          fontWeight: 700,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          marginBottom: 10,
         }}
       >
-        {pcs[key].toFixed(2)}
+        <div style={{ width: 140, fontWeight: 600 }}>
+          {label}
+        </div>
+
+        <button
+          onClick={() =>
+            setPcs((p) => ({
+              ...p,
+              [key]: Math.max(
+                0,
+                Number((p[key] - 0.25).toFixed(2))
+              ),
+            }))
+          }
+          style={{
+            padding: '8px 14px',
+            fontSize: 18,
+            borderRadius: 8,
+          }}
+        >
+          −
+        </button>
+
+        <div
+          style={{
+            minWidth: 70,
+            textAlign: 'center',
+            fontSize: 18,
+            fontWeight: 700,
+          }}
+        >
+          {pcs[key].toFixed(2)}
+        </div>
+
+        <button
+          onClick={() =>
+            setPcs((p) => ({
+              ...p,
+              [key]: Math.min(
+                10,
+                Number((p[key] + 0.25).toFixed(2))
+              ),
+            }))
+          }
+          style={{
+            padding: '8px 14px',
+            fontSize: 18,
+            borderRadius: 8,
+          }}
+        >
+          ＋
+        </button>
       </div>
+    ))}
 
-      <button
-        onClick={() =>
-          setPcs((p) => ({
-            ...p,
-            [key]: Math.min(
-              10,
-              Number((p[key] + 0.25).toFixed(2))
-            ),
-          }))
-        }
-        style={{
-          padding: '8px 14px',
-          fontSize: 18,
-          borderRadius: 8,
-        }}
-      >
-        ＋
-      </button>
+    <div style={{ marginTop: 8 }}>
+      PCS raw:{' '}
+      {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)}
+      × multiplier ({PCS_MULTIPLIERS[category]})
+      = {pcsApplied.toFixed(2)}
     </div>
-  ))}
-
-  <div style={{ marginTop: 8 }}>
-    PCS raw: {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)}
-    × multiplier ({PCS_MULTIPLIERS[category]})
-    = {pcsApplied.toFixed(2)}
   </div>
 </div>
       {/* Deduction Toggle */}
