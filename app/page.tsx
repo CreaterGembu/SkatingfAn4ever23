@@ -806,15 +806,6 @@ useEffect(() => {
           </select>
         </label>
       </div>
-        >
-          {index + 1}.{' '}
-          {line.subs
-            .map((s) => s.element.name)
-            .join(' + ')}
-        </div>
-      ))}
-    </div>
-  )}
       
        {/* lines (responsive table with horizontal scroll) */}
       <div style={{ overflowX: 'auto' }}>
@@ -954,9 +945,10 @@ useEffect(() => {
                         </td>
 
 <td style={tdStyle}>
-  {(sub.element.type === 'jump' && isMax) ||
-  sub.element.type !== 'jump' ||
-  sub.element.name === 'ChSq1' ? (
+  (sub.element.type === 'jump' && isMax) ||
+sub.element.type !== 'jump' ||
+sub.element.name === 'ChSq1' ||
+sub.element.name === 'ChSp1' ? (
     <div
       style={{
         display: 'flex',
@@ -1012,7 +1004,7 @@ useEffect(() => {
                             value={sub.underRotation || ''}
                             onChange={(e) =>
                               updateSub(line.id, sub.id, {
-                                underRotation: e.target.value as '' | 'q' | '<' | '<<'
+                                underRotation: e.target.value as '' | 'q' | '<' | '<<',
                               })
                             }
                           >
@@ -1028,7 +1020,7 @@ useEffect(() => {
                             value={sub.edge || ''}
                             onChange={(e) =>
                               updateSub(line.id, sub.id, {
-                                edge: e.target.value as any,
+                               edge: e.target.value as '' | '!' | 'e',
                               })
                             }
                           >
@@ -1795,7 +1787,7 @@ useEffect(() => {
   {' '}
   {totalTES.toFixed(2)}
 </div>
-        <div>Program Conpoment Score (factored) : {pcsApplied.toFixed(2)}</div>
+        <div>Program Component Score (factored) : {pcsApplied.toFixed(2)}</div>
         <div style={{ fontWeight: 800, marginTop: 6 }}>
           Total Segment Score: {grandTotal.toFixed(2)}
         </div>
@@ -1859,7 +1851,7 @@ useEffect(() => {
       </div>
 
           <div style={{ height: 48 }} />
-    </div> 
+    
   );
 }
 
