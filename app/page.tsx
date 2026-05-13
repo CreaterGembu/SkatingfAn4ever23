@@ -466,7 +466,7 @@ export default function Page() {
   costumeProp: false,
   costumeFall: false,
   lateStart: false,
-  interruption: 0, // 0,1,2
+  interruption: 0, // 0,-1,-2
 });
   const [history, setHistory] = useState<HistoryItem[]>([]);
   useEffect(() => {
@@ -1038,7 +1038,7 @@ useEffect(() => {
                             value={sub.underRotation || ''}
                             onChange={(e) =>
                               updateSub(line.id, sub.id, {
-                                underRotation: e.target.value as any,
+                                underRotation: e.target.value as '' | 'q' | '<' | '<<'
                               })
                             }
                           >
@@ -1181,7 +1181,9 @@ useEffect(() => {
       <button
         key={cat}
         onClick={() => {
-          setSelectedCategory(cat as any);
+          setSelectedCategory(
+  cat as 'JUMP' | 'SPIN' | 'STEP' | 'CHOREO'
+);
           setSelectedJumpType('');
           setSelectedSpinType('');
         }}
@@ -1520,14 +1522,6 @@ useEffect(() => {
     × multiplier ({PCS_MULTIPLIERS[category]})
     = {pcsApplied.toFixed(2)}
   </div>
-</div>
-{/* Deduction */}
-   Falls
-      checkbox
-      interruption
-      Total Deduction
-    </>
-  )}
 </div>
     <div
   style={{
