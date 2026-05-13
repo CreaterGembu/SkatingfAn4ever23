@@ -449,6 +449,15 @@ export default function Page() {
     useState<keyof typeof PCS_MULTIPLIERS>('MenSP');
 
   const [pcs, setPcs] = useState<PCS>({ comp: 8, pres: 8, skills: 8 });
+  const [deductions, setDeductions] = useState({
+  programTime: false,
+  illegalElement: false,
+  illegalMovement: false,
+  costumeProp: false,
+  costumeFall: false,
+  lateStart: false,
+  interruption: 0, // 0,1,2
+});
   const [history, setHistory] = useState<HistoryItem[]>([]);
   useEffect(() => {
     try {
@@ -598,7 +607,19 @@ useEffect(() => {
     0
   );
   const totalFallPenalty = calcTotalFallPenalty(lines);
-  const totalTES = Number((totalTESbeforeFalls + totalFallPenalty).toFixed(2));
+  const additionalDeduction =
+  (deductions.programTime ? -1 : 0) +
+  (deductions.illegalElement ? -2 : 0) +
+  (deductions.illegalMovement ? -2 : 0) +
+  (deductions.costumeProp ? -1 : 0) +
+  (deductions.costumeFall ? -1 : 0) +
+  (deductions.lateStart ? -1 : 0) +
+  deductions.interruption;
+  const totalDeduction =
+  totalFallPenalty + additionalDeduction;
+  const totalTES = Number(
+  (totalTESbeforeFalls + totalDeduction).toFixed(2)
+);
   const pcsRaw = Number((pcs.comp + pcs.pres + pcs.skills).toFixed(2));
   const pcsApplied = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
   const grandTotal = Number((totalTES + pcsApplied).toFixed(2));
@@ -1359,7 +1380,137 @@ useEffect(() => {
       </div>
 
       <div style={{ marginTop: 8 }}>
-        <button
+        {/* Deduction */}
+<div
+  style={{
+    marginTop: 18,
+    paddingTop: 12,
+    borderTop: '1px solid #ccc',
+  }}
+>
+  <div style={{ fontWeight: 700, marginBottom: 10 }}>
+    Deduction
+  </div>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.programTime}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          programTime: e.target.checked,
+        }))
+      }
+    />
+    Program time (-1)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.illegalElement}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          illegalElement: e.target.checked,
+        }))
+      }
+    />
+    Illegal element (-2)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.illegalMovement}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          illegalMovement: e.target.checked,
+        }))
+      }
+    />
+    Illegal movement (-2)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.costumeProp}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          costumeProp: e.target.checked,
+        }))
+      }
+    />
+    Costume and prop violation (-1)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.costumeFall}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          costumeFall: e.target.checked,
+        }))
+      }
+    />
+    Part of costume/decoration falls on ice (-1)
+  </label>
+
+  <label style={{ display: 'block', marginBottom: 6 }}>
+    <input
+      type="checkbox"
+      checked={deductions.lateStart}
+      onChange={(e) =>
+        setDeductions((d) => ({
+          ...d,
+          lateStart: e.target.checked,
+        }))
+      }
+    />
+    Late start (-1)
+  </label>
+
+  <div style={{ marginTop: 10 }}>
+    Interruption in performing the program
+  </div>
+
+  <select
+    value={deductions.interruption}
+    onChange={(e) =>
+      setDeductions((d) => ({
+        ...d,
+        interruption: Number(e.target.value),
+      }))
+    }
+    style={{
+      padding: 8,
+      borderRadius: 8,
+      marginTop: 6,
+    }}
+  >
+    <option value={0}>None</option>
+    <option value={-1}>-1</option>
+    <option value={-2}>-2</option>
+  </select>
+
+  <div
+    style={{
+      marginTop: 14,
+      fontWeight: 700,
+      fontSize: 18,
+      color: '#c62828',
+    }}
+  >
+    Total Deduction: {totalDeduction.toFixed(2)}
+  </div>
+</div>
+    <button
           onClick={addLineFromTemp}
           style={{ ...smallBtn, marginRight: 8 }}
         >
@@ -1528,7 +1679,17 @@ useEffect(() => {
           borderRadius: 10,
         }}
       >
-        <div> Total Technical Element Score : {totalTES.toFixed(2)}</div>
+        <div>
+  TES before deduction : {totalTESbeforeFalls.toFixed(2)}
+</div>
+
+<div>
+  Deduction : {totalDeduction.toFixed(2)}
+</div>
+
+<div>
+  Total Technical Element Score : {totalTES.toFixed(2)}
+</div>
         <div>Program Conpoment Score (factored) : {pcsApplied.toFixed(2)}</div>
         <div style={{ fontWeight: 800, marginTop: 6 }}>
           Total Segment Score: {grandTotal.toFixed(2)}
