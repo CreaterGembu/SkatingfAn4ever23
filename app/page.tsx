@@ -1750,8 +1750,9 @@ useEffect(() => {
         ))}
       </div>
 
-      <div style={{ height: 48 }} />
-    </div>
+          <div style={{ height: 48 }} />
+    </div> {/* Deduction wrapper end */}
+  </div>
   );
 }
 
