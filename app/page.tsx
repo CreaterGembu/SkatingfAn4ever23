@@ -520,7 +520,7 @@ useEffect(() => {
         underRotation: '',
         edge: '',
         goe: 0,
-        marks: [],
+        marks: [] as string[],
         secondHalf: false,
       })),
     };
@@ -544,7 +544,7 @@ useEffect(() => {
                   underRotation: '',
                   edge: '',
                   goe: 0,
-                  marks: [],
+                  marks: [] as string[],
                   secondHalf: false,
                 },
               ],
@@ -945,10 +945,10 @@ useEffect(() => {
                         </td>
 
 <td style={tdStyle}>
-  (sub.element.type === 'jump' && isMax) ||
-sub.element.type !== 'jump' ||
-sub.element.name === 'ChSq1' ||
-sub.element.name === 'ChSp1' ? (
+  {(sub.element.type === 'jump' && isMax) ||
+  sub.element.type !== 'jump' ||
+  sub.element.name === 'ChSq1' ||
+  sub.element.name === 'ChSp1' ? (
     <div
       style={{
         display: 'flex',
@@ -1850,11 +1850,10 @@ sub.element.name === 'ChSp1' ? (
         ))}
       </div>
 
-          <div style={{ height: 48 }} />
-    
+       <div style={{ height: 48 }} />
+    </div>
   );
 }
-
 /* ---------- スタイル小分け ---------- */
 const inputStyle: React.CSSProperties = {
   padding: 10,
