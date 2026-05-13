@@ -1522,18 +1522,6 @@ useEffect(() => {
   </div>
 </div>
 {/* Deduction */}
-<div
-  style={{
-    marginTop: 12,
-    padding: 12,
-    border: '1px solid #eee',
-    borderRadius: 10,
-    background: '#fff5f5',
-  }}
->
-  <div style={{ fontWeight: 700, marginBottom: 10 }}>
-    Deduction
-  </div>
    Falls
       checkbox
       interruption
