@@ -622,12 +622,16 @@ useEffect(() => {
   deductions.interruption;
   const totalDeduction =
   totalFallPenalty + additionalDeduction;
+  // TES は純粋に技術点のみ
   const totalTES = Number(
-  (totalTESbeforeFalls + totalDeduction).toFixed(2)
+  totalTESbeforeFalls.toFixed(2)
 );
   const pcsRaw = Number((pcs.comp + pcs.pres + pcs.skills).toFixed(2));
   const pcsApplied = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
-  const grandTotal = Number((totalTES + pcsApplied).toFixed(2));
+// Total Segment Score で deduction を引く
+  const grandTotal = Number(
+  (totalTES + pcsApplied + totalDeduction).toFixed(2)
+);
 
   /* history 操作 */
   const saveResultToHistory = () => {
@@ -1737,48 +1741,41 @@ useEffect(() => {
 
       {/* totals */}
       <div
-        style={{
-          marginTop: 12,
-          padding: 12,
-          border: '1px solid #ddd',
-          borderRadius: 10,
-        }}
-      >
-  <div
   style={{
-    padding: 10,
-    borderRadius: 8,
-    background: '#f5faff',
-    marginBottom: 10,
+    marginTop: 12,
+    padding: 12,
+    border: '1px solid #ddd',
+    borderRadius: 10,
   }}
 >
-  <div style={{ fontWeight: 700 }}>
-    TES
-  </div>
-
   <div>
     Technical Element Score :
     {' '}
-    {totalTESbeforeFalls.toFixed(2)}
+    {totalTES.toFixed(2)}
   </div>
-</div>
 
-<div
-  style={{
-    padding: 10,
-    borderRadius: 8,
-    background: '#fff1f1',
-    marginBottom: 10,
-  }}
->
-  <div style={{ fontWeight: 700 }}>
-    Deduction
+  <div>
+    Program Component Score (factored) :
+    {' '}
+    {pcsApplied.toFixed(2)}
   </div>
 
   <div>
     Deduction :
     {' '}
     {totalDeduction.toFixed(2)}
+  </div>
+
+  <div
+    style={{
+      fontWeight: 800,
+      marginTop: 6,
+      fontSize: 18,
+    }}
+  >
+    Total Segment Score :
+    {' '}
+    {grandTotal.toFixed(2)}
   </div>
 </div>
 
