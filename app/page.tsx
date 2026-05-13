@@ -478,7 +478,7 @@ export default function Page() {
 
   // show ISU-like protocol view after pressing 決定して表示
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
-
+  const [isDeductionOpen, setIsDeductionOpen] = useState(false);
   /* ---------- compact selector states ---------- */
 const [selectedCategory, setSelectedCategory] = useState<
   'JUMP' | 'SPIN' | 'STEP' | 'CHOREO' | ''
@@ -1126,9 +1126,33 @@ useEffect(() => {
     background: '#fafafa',
   }}
 >
-  <div style={{ fontWeight: 700, marginBottom: 10 }}>
-    Add Element
-  </div>
+ <div
+  onClick={() => setIsDeductionOpen(!isDeductionOpen)}
+  style={{
+    fontWeight: 700,
+    marginBottom: 10,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    cursor: 'pointer',
+  }}
+>
+  <span>Deduction</span>
+
+  <button
+    style={{
+      width: 28,
+      height: 28,
+      borderRadius: 999,
+      border: '1px solid #ccc',
+      background: '#fff',
+      fontSize: 18,
+      cursor: 'pointer',
+    }}
+  >
+    {isDeductionOpen ? '−' : '+'}
+  </button>
+</div>
 
   {/* Recent Used */}
   {recentElements.length > 0 && (
@@ -1510,7 +1534,20 @@ useEffect(() => {
   <div style={{ fontWeight: 700, marginBottom: 10 }}>
     Deduction
   </div>
-
+   Falls
+      checkbox
+      interruption
+      Total Deduction
+    </>
+  )}
+</div>
+    <div
+  style={{
+    maxHeight: isDeductionOpen ? 1000 : 0,
+    overflow: 'hidden',
+    transition: '0.25s ease',
+  }}
+>
   {/* Falls */}
   <div
     style={{
@@ -1651,6 +1688,7 @@ useEffect(() => {
     Total Deduction: {totalDeduction.toFixed(2)}
   </div>
 </div>
+  
       {/* controls */}
       <div
         style={{
