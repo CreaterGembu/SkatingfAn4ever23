@@ -1779,17 +1779,6 @@ useEffect(() => {
   </div>
 </div>
 
-<div>
-  Total Technical Element Score :
-  {' '}
-  {totalTES.toFixed(2)}
-</div>
-        <div>Program Component Score (factored) : {pcsApplied.toFixed(2)}</div>
-        <div style={{ fontWeight: 800, marginTop: 6 }}>
-          Total Segment Score: {grandTotal.toFixed(2)}
-        </div>
-      </div>
-
       {/* history */}
       <div style={{ marginTop: 12 }}>
         <h3>Memories</h3>
@@ -1904,10 +1893,14 @@ function renderProtocolHtml(params: {
 
   const rowsHtml = lines
     .map((line, idx) => {
-      const maxSub = line.subs.reduce(
-        (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
+     const maxSub =
+  line.subs.length > 0
+    ? line.subs.reduce(
+        (a, b) =>
+          getBVWithMods(a) > getBVWithMods(b) ? a : b,
         line.subs[0]
-      );
+      )
+    : null;
       const subsHtml = line.subs
         .map((sub) => {
           const bvDisp = getBVWithMods(sub).toFixed(2);
