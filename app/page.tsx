@@ -1380,17 +1380,6 @@ useEffect(() => {
       </div>
 
       <div style={{ marginTop: 8 }}>
-        {/* Deduction */}
-<div
-  style={{
-    marginTop: 18,
-    paddingTop: 12,
-    borderTop: '1px solid #ccc',
-  }}
->
-  <div style={{ fontWeight: 700, marginBottom: 10 }}>
-    Deduction
-  </div>
 
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
@@ -1617,6 +1606,17 @@ useEffect(() => {
     = {pcsApplied.toFixed(2)}
   </div>
 </div>
+ {/* Deduction */}
+<div
+  style={{
+    marginTop: 18,
+    paddingTop: 12,
+    borderTop: '1px solid #ccc',
+  }}
+>
+  <div style={{ fontWeight: 700, marginBottom: 10 }}>
+    Deduction
+  </div>
 
       {/* controls */}
       <div
