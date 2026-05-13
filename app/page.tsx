@@ -806,26 +806,6 @@ useEffect(() => {
           </select>
         </label>
       </div>
-      
-      {lines.length === 0 ? (
-    <div style={{ color: '#777' }}>No elements yet</div>
-  ) : (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 6,
-      }}
-    >
-      {lines.map((line, index) => (
-        <div
-          key={line.id}
-          style={{
-            padding: '6px 8px',
-            borderRadius: 6,
-            background: '#fff',
-            border: '1px solid #eee',
-          }}
         >
           {index + 1}.{' '}
           {line.subs
