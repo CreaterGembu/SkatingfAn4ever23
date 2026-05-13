@@ -388,13 +388,6 @@ function calcGOEPoint(
 ): number {
   if (sub.marks.includes('*')) return 0;
 
-// ===== 5回転専用 =====
-const quintJumps = ['5T', '5S', '5Lo', '5F', '5Lz'];
-
-if (quintJumps.includes(sub.element.name)) {
-return Number((sub.goe * 0.56).toFixed(2));
-}
-
   // ChSq1 ChSp1 special: GOE is halved
   if (
     sub.element.name === 'ChSq1' ||
