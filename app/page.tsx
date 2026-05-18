@@ -780,9 +780,7 @@ const [isComboMode, setIsComboMode] = useState(false);
   }
 
   /* ---------- JSX Editor UI ---------- */
-  return (
-    <div
-      style={{
+  return (<div style={{
         padding: 14,
         fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
         maxWidth: 980,
