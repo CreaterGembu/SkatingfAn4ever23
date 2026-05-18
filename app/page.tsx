@@ -699,11 +699,8 @@ useEffect(() => {
       timestamp: new Date().toISOString(),
       protocolHtml: html,
     };
-   setHistory((h) => [item, ...h]);
-setShowProtocol(item);
-
-// 追加
-downloadProtocol(html);
+    setHistory((h) => [item, ...h]);
+    setShowProtocol(item);
     // simulate page refresh by scrolling to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -714,13 +711,8 @@ downloadProtocol(html);
   };
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
-  const downloadProtocol = (html?: string) => {
-  const protocolHtml = html || showProtocol?.protocolHtml;
-
-  if (!protocolHtml) {
-    alert('No protocol data');
-    return;
-  }
+    const downloadProtocol = () => {
+  if (!showProtocol?.protocolHtml) return;
 
   const fullHtml = `
 <!DOCTYPE html>
@@ -730,7 +722,7 @@ downloadProtocol(html);
 <title>Protocol</title>
 </head>
 <body>
-${protocolHtml}
+${showProtocol.protocolHtml}
 </body>
 </html>
 `;
@@ -743,7 +735,7 @@ ${protocolHtml}
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${playerName || 'protocol'}.html`;
+  a.download = `${showProtocol.playerName || 'protocol'}.html`;
 
   document.body.appendChild(a);
   a.click();
@@ -1850,9 +1842,8 @@ ${protocolHtml}
           Clear
         </button>
        <button
-  onClick={() =>
-    downloadProtocol(showProtocol?.protocolHtml)
-  }
+  onClick={downloadProtocol}
+  style={{ padding: '10px 12px', borderRadius: 8 }}
 >
   Download file
 </button>
