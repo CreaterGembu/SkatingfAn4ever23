@@ -2183,7 +2183,7 @@ Figure Skating Score Sheet
 </div>
 </div>
 `;
-  
+}
 function mangleSpin(
   type: string,
   mode: string,
