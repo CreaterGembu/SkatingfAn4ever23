@@ -1045,19 +1045,32 @@ useEffect(() => {
                           />
                         </td>
 
-                        <td style={tdStyle}>
-                          {/* secondHalf checkbox (UI shows 'X' in BV cell) */}
-                          <input
-                            type="checkbox"
-                            checked={!!sub.secondHalf}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                                secondHalf: e.target.checked,
-                              })
-                            }
-                   
-                            />
-                        </td>
+                      <td style={tdStyle}>
+  {/* コンボの1個目だけ表示 */}
+  {line.subs[0].id === sub.id ? (
+    <input
+      type="checkbox"
+      checked={line.subs.every((s) => s.secondHalf)}
+      onChange={(e) => {
+        const checked = e.target.checked;
+
+        setLines((prev) =>
+          prev.map((l) => {
+            if (l.id !== line.id) return l;
+
+            return {
+              ...l,
+              subs: l.subs.map((s) => ({
+                ...s,
+                secondHalf: checked,
+              })),
+            };
+          })
+        );
+      }}
+    />
+  ) : null}
+</td>
 
                         <td style={tdStyle}>
                           {["F", "REP", "*", "SEQ", "COMBO"].map(mark => (
