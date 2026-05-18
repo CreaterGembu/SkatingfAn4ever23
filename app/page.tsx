@@ -475,7 +475,7 @@ export default function Page() {
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
   const [isDeductionOpen, setIsDeductionOpen] = useState(false);
   const [isPCSOpen, setIsPCSOpen] = useState(false);
-  const [isElementSelectorOpen, setIsElementSelectorOpen] = useState(true);
+  const [isElementSelectorOpen, setIsElementSelectorOpen] = useState(false);
   /* ---------- compact selector states ---------- */
 const [selectedCategory, setSelectedCategory] = useState<
   'JUMP' | 'SPIN' | 'STEP' | 'CHOREO' | ''
