@@ -883,7 +883,6 @@ useEffect(() => {
               >
                 <thead>
                   <tr>
-                    <th style={thStyle}>#</th>
                     <th style={thStyle}>Executed Elements</th>
                     <th style={thStyle}>BV</th>
                     <th style={thStyle}>GOE</th>
@@ -898,9 +897,7 @@ useEffect(() => {
                   </tr>
                 </thead>
                 <tbody>
-                  <td style={tdStyle}>
- {lineIndex + 1}
-</td>{line.subs.map((sub) => {
+                 {line.subs.map((sub) => {
                     const bvWithMods = getBVWithMods(sub);
                     const isMax = sub.id === maxSub.id;
                     const goePoint = calcGOEPoint(sub, maxSub);
