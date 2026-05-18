@@ -872,7 +872,6 @@ useEffect(() => {
                 <strong>
                  Executed Element #{lineIndex + 1} 合計: {calcLineTotal(line).toFixed(2)}
                  </strong>
-                </strong>
                 <div>
                   <button
                     onClick={() => addComboToLine(line.id)}
