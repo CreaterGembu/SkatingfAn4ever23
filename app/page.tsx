@@ -714,7 +714,7 @@ downloadProtocol(html);
   };
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
-   const downloadProtocol = (html?: string) => {
+  const downloadProtocol = (html?: string) => {
   const protocolHtml = html || showProtocol?.protocolHtml;
 
   if (!protocolHtml) {
@@ -744,22 +744,6 @@ ${protocolHtml}
   const a = document.createElement('a');
   a.href = url;
   a.download = `${playerName || 'protocol'}.html`;
-
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  URL.revokeObjectURL(url);
-};
-  const blob = new Blob([fullHtml], {
-    type: 'text/html',
-  });
-
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${showProtocol.playerName || 'protocol'}.html`;
 
   document.body.appendChild(a);
   a.click();
