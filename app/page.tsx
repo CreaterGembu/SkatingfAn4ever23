@@ -448,10 +448,16 @@ function calcSubTotal(
 /** 行合計 */
 function calcLineTotal(line: Line): number {
   if (line.subs.length === 0) return 0;
-  const maxSub = line.subs.reduce(
-    (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
-    line.subs[0]
-  );
+  const maxSub =
+  line.subs.length > 0
+    ? line.subs.reduce(
+        (a, b) =>
+          getBVWithMods(a) > getBVWithMods(b)
+            ? a
+            : b,
+        line.subs[0]
+      )
+    : null;
   return line.subs.reduce((sum, s) => sum + calcSubTotal(s, maxSub), 0);
 }
 
@@ -921,7 +927,7 @@ ${showProtocol.protocolHtml}
                 <tbody>
                  {line.subs.map((sub) => {
                     const bvWithMods = getBVWithMods(sub);
-                    const isMax = sub.id === maxSub.id;
+                    const isMax = maxSub ? sub.id === maxSub.id : false;
                     const goePoint = calcGOEPoint(sub, maxSub);
                     const subtotal = calcSubTotal(sub, maxSub);
 
