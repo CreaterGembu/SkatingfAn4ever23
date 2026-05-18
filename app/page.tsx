@@ -1108,7 +1108,7 @@ useEffect(() => {
     cursor: 'pointer',
   }}
 >
-  <span>Element Selector</span>
+  <span>Elements</span>
 
   <button
     style={{
