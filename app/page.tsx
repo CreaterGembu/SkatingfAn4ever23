@@ -20,7 +20,7 @@ import React, { useEffect, useState } from 'react';
  */
 
 /* ---------- 型定義 ---------- */
-type SkateElement = {
+type Element = {
   name: string;
   baseValue: number;
   type: 'jump' | 'spin' | 'step' | 'choreo';
@@ -28,7 +28,7 @@ type SkateElement = {
 
 type LineSubElement = {
   id: number;
-  element: SkateElement;
+  element: Element;
   underRotation?: '' | 'q' | '<' | '<<';
   edge?: '' | '!' | 'e';
   goe: number; // integer -5..5
@@ -64,7 +64,7 @@ type HistoryItem = {
 const uid = () => Math.floor(Math.random() * 1e9);
 
 /* ---------- 要素テーブル ---------- */
-const JUMPS: SkateElement[] = [
+const JUMPS: Element[] = [
   { name: 'A', baseValue: 0.0, type: 'jump' },
   { name: '1A', baseValue: 1.1, type: 'jump' },
   { name: '2A', baseValue: 3.3, type: 'jump' },
@@ -108,7 +108,7 @@ const JUMPS: SkateElement[] = [
   { name: '5T', baseValue: 14.0, type: 'jump' },
 ];
 
-const SPINS: SkateElement[] = [
+const SPINS: Element[] = [
   { name: 'USp4', baseValue: 2.9, type: 'spin' },
   { name: 'USp3', baseValue: 2.3, type: 'spin' },
   { name: 'USp2', baseValue: 1.8, type: 'spin' },
@@ -211,7 +211,7 @@ const SPINS: SkateElement[] = [
   { name: 'FCCoSpB', baseValue: 2.0, type: 'spin' },
 ];
 
-const STEPS: SkateElement[] = [
+const STEPS: Element[] = [
   { name: 'StSqBV', baseValue: 1.6, type: 'step' },
   { name: 'StSq1', baseValue: 1.9, type: 'step' },
   { name: 'StSq2', baseValue: 2.7, type: 'step' },
@@ -219,12 +219,12 @@ const STEPS: SkateElement[] = [
   { name: 'StSq4', baseValue: 4.1, type: 'step' },
 ];
 
-const CHOREO: SkateElement[] = [
+const CHOREO: Element[] = [
   { name: 'ChSq1', baseValue: 3.5, type: 'choreo' },
   { name: 'ChSp1', baseValue: 3.5, type: 'choreo' },
 ];
 
-const ALL_ELEMENTS: SkateElement[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
+const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
 
 const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T', 'Eu'];
 const ROTATIONS = ['1', '2', '3', '4', '5'];
@@ -242,51 +242,40 @@ const PCS_MULTIPLIERS: Record<string, number> = {
 /* ---------- BV / GOE ヘルパー ---------- */
 
 /** downgrade map for '<<' (one rotation less) */
-function getLowerRotationJump(
-  name: string
-): SkateElement | null {
+function getLowerRotationJump(name: string): Element | null {
   const map: Record<string, string> = {
     '4A': '3A',
     '3A': '2A',
     '2A': '1A',
     '1A': 'A',
-
     '5Lz': '4Lz',
     '4Lz': '3Lz',
     '3Lz': '2Lz',
     '2Lz': '1Lz',
     '1Lz': 'Lz',
-
     '5F': '4F',
     '4F': '3F',
     '3F': '2F',
     '2F': '1F',
     '1F': 'F',
-
     '5Lo': '4Lo',
     '4Lo': '3Lo',
     '3Lo': '2Lo',
     '2Lo': '1Lo',
     '1Lo': 'Lo',
-
     '5S': '4S',
     '4S': '3S',
     '3S': '2S',
     '2S': '1S',
     '1S': 'S',
-
     '5T': '4T',
     '4T': '3T',
     '3T': '2T',
     '2T': '1T',
     '1T': 'T',
   };
-
   const lower = map[name];
-
-  return lower
-    ? ALL_ELEMENTS.find((e) => e.name === lower) || null
-    : null;
+  return lower ? ALL_ELEMENTS.find((e) => e.name === lower) || null : null;
 }
 
 /**
@@ -295,7 +284,7 @@ function getLowerRotationJump(
  * - underRotation '<' => BV × 0.8
  * - underRotation '<<' => lower rotation baseValue
  * - edge 'e' => BV × 0.8
-if (sub.marks.includes('REP')) bv *= 0.8;
+ * - REP => BV × 0.7
  * - V (spin) => BV × 0.75
  * - secondHalf (jump) => BV × 1.1  ← 表示 / 合計に反映
  */
@@ -317,7 +306,9 @@ if (
 ) {
   bv *= 0.8;
 }
-  if (sub.marks.includes('REP')) bv *= 0.8;
+  if (sub.marks.includes('REP')) bv *= 0.8
+    
+    ;
   if (sub.marks.includes('V') && sub.element.type === 'spin') {
     bv *= 0.75;
     bv = Math.round(bv * 100) / 100; // *少数第2位へ丸め
@@ -427,6 +418,7 @@ function calcGOEPoint(
     sub.element.type === 'step' ||
     sub.element.type === 'choreo'
   ) {
+    if (sub.marks.includes('*')) return 0;
     const originalBV = getOriginalBV(sub);
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));
   }
@@ -456,14 +448,10 @@ function calcSubTotal(
 /** 行合計 */
 function calcLineTotal(line: Line): number {
   if (line.subs.length === 0) return 0;
- const maxSub =
-  line.subs.length > 0
-    ? line.subs.reduce(
-        (a, b) =>
-          getBVWithMods(a) > getBVWithMods(b) ? a : b,
-        line.subs[0]
-      )
-    : null;
+  const maxSub = line.subs.reduce(
+    (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
+    line.subs[0]
+  );
   return line.subs.reduce((sum, s) => sum + calcSubTotal(s, maxSub), 0);
 }
 
@@ -471,7 +459,7 @@ function calcLineTotal(line: Line): number {
 
 export default function Page() {
   const [lines, setLines] = useState<Line[]>([]);
-  const [tempLine, setTempLine] = useState<SkateElement[]>([]);
+  const [tempLine, setTempLine] = useState<Element[]>([]);
 
   const [playerName, setPlayerName] = useState('');
   const [country, setCountry] = useState('');
@@ -511,14 +499,14 @@ const [selectedJumpType, setSelectedJumpType] = useState('');
 const [selectedSpinType, setSelectedSpinType] = useState('');
 const [selectedSpinMode, setSelectedSpinMode] = useState('');
 
-const [recentElements, setRecentElements] = useState<SkateElement[]>([]);
+const [recentElements, setRecentElements] = useState<Element[]>([]);
 const [isComboMode, setIsComboMode] = useState(false);
-  useEffect(() => {
-  localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
+useEffect(() => {
+    localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
   }, [history]);
 
   /* UI 操作 */
- const addToTemp = (el: SkateElement) => {
+ const addToTemp = (el: Element) => {
   // コンボモードでない場合
   if (!isComboMode) {
     setTempLine([el]);
@@ -780,18 +768,19 @@ const [isComboMode, setIsComboMode] = useState(false);
   }
 
   /* ---------- JSX Editor UI ---------- */
-return (
-  <div
-    style={{
-      padding: 14,
-      fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
-      maxWidth: 980,
-      margin: '0 auto',
-      backgroundColor: '#ffffff',
-      color: '#000000',
-      minHeight: '100vh',
-    }}
-  >
+  return (
+    <div
+      style={{
+        padding: 14,
+        fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
+        maxWidth: 980,
+        margin: '0 auto',
+
+       backgroundColor: '#ffffff',
+       color: '#000000',
+       minHeight: '100vh',
+      }}
+    >
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>
         Figure Skating Judge Simulation(2026/27)
       </h1>
@@ -842,14 +831,10 @@ return (
        {/* lines (responsive table with horizontal scroll) */}
       <div style={{ overflowX: 'auto' }}>
          {lines.map((line, lineIndex) => {
-         const maxSub =
-  line.subs.length > 0
-    ? line.subs.reduce(
-        (a, b) =>
-          getBVWithMods(a) > getBVWithMods(b) ? a : b,
-        line.subs[0]
-      )
-    : null;
+          const maxSub = line.subs.reduce(
+            (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
+            line.subs[0]
+          );
           return (
             <div
               key={line.id}
@@ -869,8 +854,10 @@ return (
                 }}
               >
                 <strong>
+                 <strong>
                  Executed Element #{lineIndex + 1} 合計: {calcLineTotal(line).toFixed(2)}
                  </strong>
+                </strong>
                 <div>
                   <button
                     onClick={() => addComboToLine(line.id)}
@@ -912,7 +899,7 @@ return (
                 <tbody>
                  {line.subs.map((sub) => {
                     const bvWithMods = getBVWithMods(sub);
-                    const isMax = maxSub ? sub.id === maxSub.id : false;
+                    const isMax = sub.id === maxSub.id;
                     const goePoint = calcGOEPoint(sub, maxSub);
                     const subtotal = calcSubTotal(sub, maxSub);
 
@@ -1089,13 +1076,8 @@ return (
                           />
                         </td>
 
-                      <td
-  style={{
-    ...tdStyle,
-    textAlign: 'center',
-    paddingLeft: 18,
-  }}
->
+                      <td style={tdStyle}>
+  {/* コンボの1個目だけ表示 */}
   {line.subs[0].id === sub.id ? (
     <input
       type="checkbox"
@@ -1116,7 +1098,7 @@ return (
             };
           })
         );
-      }
+      }}
     />
   ) : null}
 </td>
@@ -2013,7 +1995,7 @@ function renderProtocolHtml(params: {
         .map((sub) => {
           const bvDisp = getBVWithMods(sub).toFixed(2);
           const bvForGoe = getBVForGOE(sub).toFixed(2);
-         const goe = calcGOEPoint(sub, maxSub ?? null).toFixed(2);
+          const goe = calcGOEPoint(sub, maxSub).toFixed(2);
           const total = calcSubTotal(sub, maxSub).toFixed(2);
           const marks = sub.marks.join(',') || '';
           const second = sub.secondHalf ? 'X' : '';
