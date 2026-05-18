@@ -295,7 +295,7 @@ function getLowerRotationJump(
  * - underRotation '<' => BV × 0.8
  * - underRotation '<<' => lower rotation baseValue
  * - edge 'e' => BV × 0.8
- * - REP => BV × 0.7
+if (sub.marks.includes('REP')) bv *= 0.8;
  * - V (spin) => BV × 0.75
  * - secondHalf (jump) => BV × 1.1  ← 表示 / 合計に反映
  */
