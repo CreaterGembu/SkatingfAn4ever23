@@ -714,7 +714,7 @@ downloadProtocol(html);
   };
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
-    const downloadProtocol = (html?: string) => {
+   const downloadProtocol = (html?: string) => {
   const protocolHtml = html || showProtocol?.protocolHtml;
 
   if (!protocolHtml) {
