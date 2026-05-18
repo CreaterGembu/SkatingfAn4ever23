@@ -299,7 +299,9 @@ function getBVWithMods(sub: LineSubElement): number {
   }
 
   if (sub.edge === 'e') bv *= 0.8;
-  if (sub.marks.includes('REP')) bv *= 0.7;
+  if (sub.marks.includes('REP')) bv *= 0.8
+    
+    ;
   if (sub.marks.includes('V') && sub.element.type === 'spin') {
     bv *= 0.75;
     bv = Math.round(bv * 100) / 100; // *少数第2位へ丸め
@@ -326,7 +328,7 @@ function getBVForGOE(sub: LineSubElement): number {
   }
 
   if (sub.edge === 'e') bv *= 0.8;
-  if (sub.marks.includes('REP')) bv *= 0.7;
+  if (sub.marks.includes('REP')) bv *= 0.8;
   if (sub.marks.includes('V') && sub.element.type === 'spin') bv *= 0.75;
 
   // NOTE: intentionally NOT applying secondHalf multiplier here
