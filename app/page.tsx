@@ -780,17 +780,18 @@ const [isComboMode, setIsComboMode] = useState(false);
   }
 
   /* ---------- JSX Editor UI ---------- */
-  return (<div style={{
-        padding: 14,
-        fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
-        maxWidth: 980,
-        margin: '0 auto',
-
-       backgroundColor: '#ffffff',
-       color: '#000000',
-       minHeight: '100vh',
-      }}
-    >
+return (
+  <div
+    style={{
+      padding: 14,
+      fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
+      maxWidth: 980,
+      margin: '0 auto',
+      backgroundColor: '#ffffff',
+      color: '#000000',
+      minHeight: '100vh',
+    }}
+  >
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>
         Figure Skating Judge Simulation(2026/27)
       </h1>
