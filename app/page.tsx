@@ -298,7 +298,14 @@ function getBVWithMods(sub: LineSubElement): number {
     if (lower) bv = lower.baseValue;
   }
 
-  if (sub.edge === 'e') bv *= 0.8;
+  const jumpType = sub.element.name.replace(/[0-9]/g, '');
+
+if (
+  (jumpType === 'F' || jumpType === 'Lz') &&
+  sub.edge === 'e'
+) {
+  bv *= 0.8;
+}
   if (sub.marks.includes('REP')) bv *= 0.8
     
     ;
@@ -327,7 +334,14 @@ function getBVForGOE(sub: LineSubElement): number {
     if (lower) bv = lower.baseValue;
   }
 
-  if (sub.edge === 'e') bv *= 0.8;
+  const jumpType = sub.element.name.replace(/[0-9]/g, '');
+
+if (
+  (jumpType === 'F' || jumpType === 'Lz') &&
+  sub.edge === 'e'
+) {
+  bv *= 0.8;
+}
   if (sub.marks.includes('REP')) bv *= 0.8;
   if (sub.marks.includes('V') && sub.element.type === 'spin') bv *= 0.75;
 
@@ -1022,20 +1036,35 @@ useEffect(() => {
                           </select>
                         </td>
 
-                        <td style={tdStyle}>
-                          <select
-                            value={sub.edge || ''}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                               edge: e.target.value as '' | '!' | 'e',
-                              })
-                            }
-                          >
-                            <option value="">正常</option>
-                            <option value="!">!</option>
-                            <option value="e">e</option>
-                          </select>
-                        </td>
+                     <td style={tdStyle}>
+  {(() => {
+    // ジャンプ名から種類を取得
+    const jumpType = sub.element.name.replace(/[0-9]/g, '');
+
+    // F と Lz のみ edge 判定を表示
+    const canHaveEdgeCall =
+      jumpType === 'F' || jumpType === 'Lz';
+
+    if (!canHaveEdgeCall) {
+      return <div style={{ color: '#999' }}>—</div>;
+    }
+
+    return (
+      <select
+        value={sub.edge || ''}
+        onChange={(e) =>
+          updateSub(line.id, sub.id, {
+            edge: e.target.value as '' | '!' | 'e',
+          })
+        }
+      >
+        <option value="">正常</option>
+        <option value="!">!</option>
+        <option value="e">e</option>
+      </select>
+    );
+  })()}
+</td>
 
                         <td style={tdStyle}>
                           <input
