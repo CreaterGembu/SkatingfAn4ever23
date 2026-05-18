@@ -830,7 +830,7 @@ useEffect(() => {
       
        {/* lines (responsive table with horizontal scroll) */}
       <div style={{ overflowX: 'auto' }}>
-        {lines.map((line) => {
+         {lines.map((line, lineIndex) => {
           const maxSub = line.subs.reduce(
             (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
             line.subs[0]
@@ -854,7 +854,9 @@ useEffect(() => {
                 }}
               >
                 <strong>
-                  行 #{line.id} 合計: {calcLineTotal(line).toFixed(2)}
+                 <strong>
+                 Executed Element #{lineIndex + 1} 合計: {calcLineTotal(line).toFixed(2)}
+                 </strong>
                 </strong>
                 <div>
                   <button
@@ -881,6 +883,7 @@ useEffect(() => {
               >
                 <thead>
                   <tr>
+                    <th style={thStyle}>#</th>
                     <th style={thStyle}>Executed Elements</th>
                     <th style={thStyle}>BV</th>
                     <th style={thStyle}>GOE</th>
@@ -895,7 +898,9 @@ useEffect(() => {
                   </tr>
                 </thead>
                 <tbody>
-                  {line.subs.map((sub) => {
+                  <td style={tdStyle}>
+ {lineIndex + 1}
+</td>{line.subs.map((sub) => {
                     const bvWithMods = getBVWithMods(sub);
                     const isMax = sub.id === maxSub.id;
                     const goePoint = calcGOEPoint(sub, maxSub);
