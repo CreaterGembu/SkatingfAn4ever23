@@ -1087,7 +1087,7 @@ useEffect(() => {
     <input
       type="checkbox"
       checked={line.subs.every((s) => s.secondHalf)}
-      onChange={(e) => {{
+      onChange={(e) => {
         const checked = e.target.checked;
 
         setLines((prev) =>
@@ -1103,7 +1103,7 @@ useEffect(() => {
             };
           })
         );
-      }}
+      }
     />
   ) : null}
 </td>
