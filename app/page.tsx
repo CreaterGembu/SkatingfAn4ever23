@@ -242,40 +242,51 @@ const PCS_MULTIPLIERS: Record<string, number> = {
 /* ---------- BV / GOE ヘルパー ---------- */
 
 /** downgrade map for '<<' (one rotation less) */
-function getLowerRotationJump(name: string): SkateElement | null
+function getLowerRotationJump(
+  name: string
+): SkateElement | null {
   const map: Record<string, string> = {
     '4A': '3A',
     '3A': '2A',
     '2A': '1A',
     '1A': 'A',
+
     '5Lz': '4Lz',
     '4Lz': '3Lz',
     '3Lz': '2Lz',
     '2Lz': '1Lz',
     '1Lz': 'Lz',
+
     '5F': '4F',
     '4F': '3F',
     '3F': '2F',
     '2F': '1F',
     '1F': 'F',
+
     '5Lo': '4Lo',
     '4Lo': '3Lo',
     '3Lo': '2Lo',
     '2Lo': '1Lo',
     '1Lo': 'Lo',
+
     '5S': '4S',
     '4S': '3S',
     '3S': '2S',
     '2S': '1S',
     '1S': 'S',
+
     '5T': '4T',
     '4T': '3T',
     '3T': '2T',
     '2T': '1T',
     '1T': 'T',
   };
+
   const lower = map[name];
-  return lower ? ALL_ELEMENTS.find((e) => e.name === lower) || null : null;
+
+  return lower
+    ? ALL_ELEMENTS.find((e) => e.name === lower) || null
+    : null;
 }
 
 /**
@@ -503,7 +514,8 @@ const [selectedJumpType, setSelectedJumpType] = useState('');
 const [selectedSpinType, setSelectedSpinType] = useState('');
 const [selectedSpinMode, setSelectedSpinMode] = useState('');
 
-const [recentElements, setRecentElements] = useState<Element[]>([]);
+const [recentElements, setRecentElements] =
+  useState<SkateElement[]>([]);
 const [isComboMode, setIsComboMode] = useState(false);
 useEffect(() => {
     localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
@@ -858,7 +870,6 @@ useEffect(() => {
                 }}
               >
                 <strong>
-                 <strong>
                  Executed Element #{lineIndex + 1} 合計: {calcLineTotal(line).toFixed(2)}
                  </strong>
                 </strong>
