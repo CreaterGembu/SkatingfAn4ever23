@@ -676,16 +676,17 @@ useEffect(() => {
 
   const saveAndShowProtocol = () => {
     const html = renderProtocolHtml({
-      playerName,
-      country,
-      competition,
-      category,
-      lines,
-      pcsRaw,
-      pcsApplied,
-      totalTES,
-      grandTotal,
-    });
+  playerName,
+  country,
+  competition,
+  category,
+  lines,
+  pcsRaw,
+  pcsApplied,
+  totalTES,
+  grandTotal,
+  totalDeduction,
+});
     const item: HistoryItem = {
       id: uid(),
       playerName,
@@ -1988,6 +1989,7 @@ function renderProtocolHtml(params: {
   pcsApplied: number;
   totalTES: number;
   grandTotal: number;
+  totalDeduction: number;
 }) {
   const {
     playerName,
@@ -1999,43 +2001,61 @@ function renderProtocolHtml(params: {
     pcsApplied,
     totalTES,
     grandTotal,
+    totalDeduction,
   } = params;
 
   const rowsHtml = lines
-    .map((line, idx) => {
-     const maxSub =
-  line.subs.length > 0
-    ? line.subs.reduce(
-        (a, b) =>
-          getBVWithMods(a) > getBVWithMods(b) ? a : b,
-        line.subs[0]
-      )
-    : null;
-      const subsHtml = line.subs
-        .map((sub) => {
-          const bvDisp = getBVWithMods(sub).toFixed(2);
-          const bvForGoe = getBVForGOE(sub).toFixed(2);
-          const goe = calcGOEPoint(sub, maxSub).toFixed(2);
-          const total = calcSubTotal(sub, maxSub).toFixed(2);
-          const marks = sub.marks.join(',') || '';
-          const second = sub.secondHalf ? 'X' : '';
-          return `<div style="display:flex;gap:8px;padding:2px 0;font-size:13px">
-        <div style="width:110px">${sub.element.name}</div>
-        <div style="width:70px;text-align:right">BV:${bvDisp}</div>
-        <div style="width:110px;text-align:right">BV_forGOE:${bvForGoe}</div>
-        <div style="width:70px;text-align:right">GOE:${goe}</div>
-        <div style="width:70px;text-align:right">Total:${total}</div>
-        <div style="width:40px;text-align:center">${second}</div>
-        <div style="flex:1">${marks}</div>
-      </div>`;
-        })
-        .join('');
-      const lineTotal = calcLineTotal(line).toFixed(2);
-      return `<div style="margin-bottom:8px"><div style="font-weight:700">Row ${
-        idx + 1
-      } — ${lineTotal} pt</div>${subsHtml}</div>`;
-    })
-    .join('');
+  .map((line, idx) => {
+    const maxSub =
+      line.subs.length > 0
+        ? line.subs.reduce((a, b) =>
+            getBVWithMods(a) > getBVWithMods(b) ? a : b
+          )
+        : null;
+
+    const elementText = line.subs
+      .map((sub) => {
+        let text = sub.element.name;
+
+        if (sub.underRotation) text += sub.underRotation;
+        if (sub.edge) text += sub.edge;
+
+        if (sub.marks.includes('REP')) text += 'REP';
+        if (sub.marks.includes('*')) text += '*';
+        if (sub.marks.includes('SEQ')) text += 'SEQ';
+
+        if (sub.secondHalf) text += 'x';
+
+        return text;
+      })
+      .join('+');
+
+    const bv = line.subs
+      .reduce((s, sub) => s + getBVWithMods(sub), 0)
+      .toFixed(2);
+
+    const goe = line.subs
+      .reduce((s, sub) => s + calcGOEPoint(sub, maxSub), 0)
+      .toFixed(2);
+
+    const total = calcLineTotal(line).toFixed(2);
+
+    const goeMark =
+      maxSub?.goe !== undefined
+        ? (maxSub.goe > 0 ? '+' : '') + maxSub.goe
+        : '0';
+
+    return `
+      <tr>
+        <td>${idx + 1}.</td>
+        <td>${elementText}</td>
+        <td>${bv}</td>
+        <td>${goeMark}</td>
+        <td>${total}</td>
+      </tr>
+    `;
+  })
+  .join('');
 
   const header = `<div style="padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px">
     <div style="font-size:18px;font-weight:700">${escapeHtml(competition)}</div>
@@ -2053,9 +2073,117 @@ function renderProtocolHtml(params: {
       2
     )}</div>
   </div>`;
+return `
+<div style="
+  font-family: Arial, sans-serif;
+  padding: 24px;
+  background: white;
+  color: black;
+">
 
-  return `<div style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto;padding:12px">${header}${rowsHtml}${summary}</div>`;
-}
+<h1 style="
+  text-align:center;
+  font-size:32px;
+  margin-bottom:30px;
+">
+Figure Skating Score Sheet
+</h1>
+
+<div style="
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:24px;
+  font-size:18px;
+">
+  <div>
+    <b>Skater:</b> ${escapeHtml(playerName)}
+  </div>
+
+  <div>
+    <b>Segment:</b> ${escapeHtml(category)}
+  </div>
+
+  <div>
+    <b>Ded:</b> ${totalDeduction.toFixed(2)}
+  </div>
+
+  <div style="
+    font-size:28px;
+    font-weight:bold;
+  ">
+    ${grandTotal.toFixed(2)}
+  </div>
+</div>
+
+<table style="
+  width:100%;
+  border-collapse:collapse;
+  font-size:18px;
+">
+  <thead>
+    <tr style="background:#eee;">
+      <th style="border:1px solid #999;padding:8px;">#</th>
+      <th style="border:1px solid #999;padding:8px;">Element</th>
+      <th style="border:1px solid #999;padding:8px;">BV</th>
+      <th style="border:1px solid #999;padding:8px;">GOE</th>
+      <th style="border:1px solid #999;padding:8px;">Score</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    ${rowsHtml}
+  </tbody>
+</table>
+
+<div style="
+  margin-top:30px;
+  border-top:2px solid #000;
+  padding-top:20px;
+  font-size:20px;
+">
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+  ">
+    <span>Total Technical Element Score</span>
+    <b>${totalTES.toFixed(2)}</b>
+  </div>
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+  ">
+    <span>Total Program Component Score</span>
+    <b>${pcsApplied.toFixed(2)}</b>
+  </div>
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:12px;
+  ">
+    <span>Deduction</span>
+    <b>${totalDeduction.toFixed(2)}</b>
+  </div>
+
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    font-size:30px;
+    font-weight:bold;
+    margin-top:20px;
+  ">
+    <span>Total Segment Score</span>
+    <span>${grandTotal.toFixed(2)}</span>
+  </div>
+
+</div>
+</div>
+`;
+  
 function mangleSpin(
   type: string,
   mode: string,
