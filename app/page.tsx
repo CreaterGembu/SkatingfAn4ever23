@@ -20,7 +20,7 @@ import React, { useEffect, useState } from 'react';
  */
 
 /* ---------- 型定義 ---------- */
-type Element = {
+type SkateElement = {
   name: string;
   baseValue: number;
   type: 'jump' | 'spin' | 'step' | 'choreo';
@@ -28,7 +28,7 @@ type Element = {
 
 type LineSubElement = {
   id: number;
-  element: Element;
+  element: SkateElement;
   underRotation?: '' | 'q' | '<' | '<<';
   edge?: '' | '!' | 'e';
   goe: number; // integer -5..5
@@ -64,7 +64,7 @@ type HistoryItem = {
 const uid = () => Math.floor(Math.random() * 1e9);
 
 /* ---------- 要素テーブル ---------- */
-const JUMPS: Element[] = [
+const JUMPS: SkateElement[] = [
   { name: 'A', baseValue: 0.0, type: 'jump' },
   { name: '1A', baseValue: 1.1, type: 'jump' },
   { name: '2A', baseValue: 3.3, type: 'jump' },
@@ -108,7 +108,7 @@ const JUMPS: Element[] = [
   { name: '5T', baseValue: 14.0, type: 'jump' },
 ];
 
-const SPINS: Element[] = [
+const SPINS: SkateElement[] = [
   { name: 'USp4', baseValue: 2.9, type: 'spin' },
   { name: 'USp3', baseValue: 2.3, type: 'spin' },
   { name: 'USp2', baseValue: 1.8, type: 'spin' },
@@ -211,7 +211,7 @@ const SPINS: Element[] = [
   { name: 'FCCoSpB', baseValue: 2.0, type: 'spin' },
 ];
 
-const STEPS: Element[] = [
+const STEPS: SkateElement[] = [
   { name: 'StSqBV', baseValue: 1.6, type: 'step' },
   { name: 'StSq1', baseValue: 1.9, type: 'step' },
   { name: 'StSq2', baseValue: 2.7, type: 'step' },
@@ -219,12 +219,12 @@ const STEPS: Element[] = [
   { name: 'StSq4', baseValue: 4.1, type: 'step' },
 ];
 
-const CHOREO: Element[] = [
+const CHOREO: SkateElement[] = [
   { name: 'ChSq1', baseValue: 3.5, type: 'choreo' },
   { name: 'ChSp1', baseValue: 3.5, type: 'choreo' },
 ];
 
-const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
+const ALL_ELEMENTS: SkateElement[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
 
 const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T', 'Eu'];
 const ROTATIONS = ['1', '2', '3', '4', '5'];
@@ -242,7 +242,7 @@ const PCS_MULTIPLIERS: Record<string, number> = {
 /* ---------- BV / GOE ヘルパー ---------- */
 
 /** downgrade map for '<<' (one rotation less) */
-function getLowerRotationJump(name: string): Element | null {
+function getLowerRotationJump(name: string): SkateElement | null
   const map: Record<string, string> = {
     '4A': '3A',
     '3A': '2A',
@@ -448,10 +448,14 @@ function calcSubTotal(
 /** 行合計 */
 function calcLineTotal(line: Line): number {
   if (line.subs.length === 0) return 0;
-  const maxSub = line.subs.reduce(
-    (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
-    line.subs[0]
-  );
+ const maxSub =
+  line.subs.length > 0
+    ? line.subs.reduce(
+        (a, b) =>
+          getBVWithMods(a) > getBVWithMods(b) ? a : b,
+        line.subs[0]
+      )
+    : null;
   return line.subs.reduce((sum, s) => sum + calcSubTotal(s, maxSub), 0);
 }
 
@@ -459,7 +463,7 @@ function calcLineTotal(line: Line): number {
 
 export default function Page() {
   const [lines, setLines] = useState<Line[]>([]);
-  const [tempLine, setTempLine] = useState<Element[]>([]);
+  const [tempLine, setTempLine] = useState<SkateElement[]>([]);
 
   const [playerName, setPlayerName] = useState('');
   const [country, setCountry] = useState('');
@@ -506,7 +510,7 @@ useEffect(() => {
   }, [history]);
 
   /* UI 操作 */
- const addToTemp = (el: Element) => {
+ const addToTemp = (el: SkateElement) => {
   // コンボモードでない場合
   if (!isComboMode) {
     setTempLine([el]);
@@ -2000,7 +2004,7 @@ function renderProtocolHtml(params: {
         .map((sub) => {
           const bvDisp = getBVWithMods(sub).toFixed(2);
           const bvForGoe = getBVForGOE(sub).toFixed(2);
-          const goe = calcGOEPoint(sub, maxSub).toFixed(2);
+         const goe = calcGOEPoint(sub, maxSub ?? null).toFixed(2);
           const total = calcSubTotal(sub, maxSub).toFixed(2);
           const marks = sub.marks.join(',') || '';
           const second = sub.secondHalf ? 'X' : '';
