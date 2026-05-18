@@ -1076,13 +1076,18 @@ useEffect(() => {
                           />
                         </td>
 
-                      <td style={tdStyle}>
-  {/* コンボの1個目だけ表示 */}
+                      <td
+  style={{
+    ...tdStyle,
+    textAlign: 'center',
+    paddingLeft: 18,
+  }}
+>
   {line.subs[0].id === sub.id ? (
     <input
       type="checkbox"
       checked={line.subs.every((s) => s.secondHalf)}
-      onChange={(e) => {
+      onChange={(e) => {{
         const checked = e.target.checked;
 
         setLines((prev) =>
