@@ -475,6 +475,7 @@ export default function Page() {
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
   const [isDeductionOpen, setIsDeductionOpen] = useState(false);
   const [isPCSOpen, setIsPCSOpen] = useState(false);
+  const [isElementSelectorOpen, setIsElementSelectorOpen] = useState(true);
   /* ---------- compact selector states ---------- */
 const [selectedCategory, setSelectedCategory] = useState<
   'JUMP' | 'SPIN' | 'STEP' | 'CHOREO' | ''
@@ -1088,17 +1089,58 @@ useEffect(() => {
           );
         })}
       </div>    
-   {/* compact selector */}
+ {/* Element Selector Toggle */}
 <div
+  onClick={() =>
+    setIsElementSelectorOpen(!isElementSelectorOpen)
+  }
   style={{
     marginBottom: 12,
     padding: 12,
     border: '1px solid #eee',
     borderRadius: 10,
     background: '#fafafa',
+
+    fontWeight: 700,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    cursor: 'pointer',
   }}
 >
+  <span>Element Selector</span>
 
+  <button
+    style={{
+      width: 32,
+      height: 32,
+      borderRadius: 999,
+      border: '1px solid #ccc',
+      background: '#fff',
+      fontSize: 20,
+      cursor: 'pointer',
+    }}
+  >
+    {isElementSelectorOpen ? '−' : '+'}
+  </button>
+</div>
+
+<div
+  style={{
+    maxHeight: isElementSelectorOpen ? 3000 : 0,
+    overflow: 'hidden',
+    transition: '0.25s ease',
+  }}
+>
+  <div
+    style={{
+      marginBottom: 12,
+      padding: 12,
+      border: '1px solid #eee',
+      borderRadius: 10,
+      background: '#fafafa',
+    }}
+  >
   {/* Recent Used */}
   {recentElements.length > 0 && (
     <div style={{ marginBottom: 12 }}>
@@ -1378,8 +1420,10 @@ useEffect(() => {
       </div>
     </div>
   )}
+    </div>
 </div>
-    {/* PCS Toggle */}
+
+{/* PCS Toggle */}
 <div
   onClick={() => setIsPCSOpen(!isPCSOpen)}
   style={{
