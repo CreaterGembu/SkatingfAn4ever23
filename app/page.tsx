@@ -317,9 +317,7 @@ if (
 ) {
   bv *= 0.8;
 }
-  if (sub.marks.includes('REP')) bv *= 0.8
-    
-    ;
+  if (sub.marks.includes('REP')) bv *= 0.8;
   if (sub.marks.includes('V') && sub.element.type === 'spin') {
     bv *= 0.75;
     bv = Math.round(bv * 100) / 100; // *少数第2位へ丸め
@@ -429,7 +427,6 @@ function calcGOEPoint(
     sub.element.type === 'step' ||
     sub.element.type === 'choreo'
   ) {
-    if (sub.marks.includes('*')) return 0;
     const originalBV = getOriginalBV(sub);
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));
   }
@@ -514,11 +511,10 @@ const [selectedJumpType, setSelectedJumpType] = useState('');
 const [selectedSpinType, setSelectedSpinType] = useState('');
 const [selectedSpinMode, setSelectedSpinMode] = useState('');
 
-const [recentElements, setRecentElements] =
-  useState<SkateElement[]>([]);
+const [recentElements, setRecentElements] = useState<SkateElement[]>([]);
 const [isComboMode, setIsComboMode] = useState(false);
-useEffect(() => {
-    localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
+  useEffect(() => {
+  localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
   }, [history]);
 
   /* UI 操作 */
