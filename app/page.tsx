@@ -737,15 +737,25 @@ ${showProtocol.protocolHtml}
 
   URL.revokeObjectURL(url);
 };
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `skating-history-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  const exportHistory = () => {
+  const blob = new Blob(
+    [JSON.stringify(history, null, 2)],
+    { type: 'application/json' }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download =
+    `skating-history-${new Date().toISOString().split('T')[0]}.json`;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+};
   /* Protocol view */
   if (showProtocol) {
     return (
