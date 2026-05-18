@@ -705,10 +705,38 @@ useEffect(() => {
   };
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
-  const exportHistory = () => {
-    const blob = new Blob([JSON.stringify(history, null, 2)], {
-      type: 'application/json',
-    });
+    const downloadProtocol = () => {
+  if (!showProtocol?.protocolHtml) return;
+
+  const fullHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Protocol</title>
+</head>
+<body>
+${showProtocol.protocolHtml}
+</body>
+</html>
+`;
+
+  const blob = new Blob([fullHtml], {
+    type: 'text/html',
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${showProtocol.playerName || 'protocol'}.html`;
+
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+};
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -718,22 +746,6 @@ useEffect(() => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-  const importHistory = (file: File | null) => {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(String(reader.result || '[]'));
-        if (!Array.isArray(parsed)) throw new Error('invalid');
-        setHistory(parsed);
-        alert('履歴をインポートしました');
-      } catch (e) {
-        alert('読み込み失敗: ' + e);
-      }
-    };
-    reader.readAsText(file);
-  };
-
   /* Protocol view */
   if (showProtocol) {
     return (
@@ -1813,20 +1825,12 @@ useEffect(() => {
         >
           Clear
         </button>
-        <button
-          onClick={exportHistory}
-          style={{ padding: '10px 12px', borderRadius: 8 }}
-        >
-          Download file
-        </button>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          Import file
-          <input
-            type="file"
-            accept="application/json"
-            onChange={(e) => importHistory(e.target.files?.[0] || null)}
-          />
-        </label>
+       <button
+  onClick={downloadProtocol}
+  style={{ padding: '10px 12px', borderRadius: 8 }}
+>
+  Download file
+</button>
       </div>
 
       {/* totals */}
