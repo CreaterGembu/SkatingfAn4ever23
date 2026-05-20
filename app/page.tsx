@@ -675,12 +675,13 @@ useEffect(() => {
   };
 
   const saveAndShowProtocol = () => {
-    const html = renderProtocolHtml({
+   const html = renderProtocolHtml({
   playerName,
   country,
   competition,
   category,
   lines,
+  pcs, 
   pcsRaw,
   pcsApplied,
   totalTES,
@@ -1985,24 +1986,26 @@ function renderProtocolHtml(params: {
   competition: string;
   category: string;
   lines: Line[];
+  pcs: PCS; // ←追加
   pcsRaw: number;
   pcsApplied: number;
   totalTES: number;
   grandTotal: number;
   totalDeduction: number;
 }) {
-  const {
-    playerName,
-    country,
-    competition,
-    category,
-    lines,
-    pcsRaw,
-    pcsApplied,
-    totalTES,
-    grandTotal,
-    totalDeduction,
-  } = params;
+ const {
+  playerName,
+  country,
+  competition,
+  category,
+  lines,
+  pcs, // ←追加
+  pcsRaw,
+  pcsApplied,
+  totalTES,
+  grandTotal,
+  totalDeduction,
+} = params;
 
   const rowsHtml = lines
   .map((line, idx) => {
@@ -2134,7 +2137,67 @@ Figure Skating Score Sheet
     ${rowsHtml}
   </tbody>
 </table>
+<div style="
+  margin-top:24px;
+  font-size:18px;
+">
+  <div style="
+    font-weight:bold;
+    margin-bottom:10px;
+  ">
+    Program Component Scores
+  </div>
 
+  <table style="
+    width:100%;
+    border-collapse:collapse;
+    font-size:18px;
+  ">
+    <thead>
+      <tr style="background:#eee;">
+        <th style="border:1px solid #999;padding:8px;">
+          Component
+        </th>
+
+        <th style="border:1px solid #999;padding:8px;">
+          Score
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td style="border:1px solid #999;padding:8px;">
+          Composition
+        </td>
+
+        <td style="border:1px solid #999;padding:8px;text-align:right;">
+          ${pcs.comp.toFixed(2)}
+        </td>
+      </tr>
+
+      <tr>
+        <td style="border:1px solid #999;padding:8px;">
+          Presentation
+        </td>
+
+        <td style="border:1px solid #999;padding:8px;text-align:right;">
+          ${pcs.pres.toFixed(2)}
+        </td>
+      </tr>
+
+      <tr>
+        <td style="border:1px solid #999;padding:8px;">
+          Skating Skills
+        </td>
+
+        <td style="border:1px solid #999;padding:8px;text-align:right;">
+          ${pcs.skills.toFixed(2)}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <div style="
   margin-top:30px;
   border-top:2px solid #000;
