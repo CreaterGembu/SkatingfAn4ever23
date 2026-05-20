@@ -1207,21 +1207,31 @@ ${showProtocol.protocolHtml}
       )
     )
   ) : (
-    <label
-      style={{
-        marginRight: 6,
-        display: 'block',
-      }}
-    >
-      <input
-        type="checkbox"
-        checked={sub.marks.includes('F')}
-        onChange={() =>
-          toggleMark(line.id, sub.id, 'F')
-        }
-      />
-      F
-    </label>
+  <>
+    {["F", "*"].map((mark) => (
+      <label
+        key={mark}
+        style={{
+          marginRight: 6,
+          display: 'block',
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={sub.marks.includes(mark)}
+          onChange={() =>
+            toggleMark(
+              line.id,
+              sub.id,
+              mark
+            )
+          }
+        />
+        {mark}
+      </label>
+    ))}
+  </>
+)}
   )}
 </td>
 
