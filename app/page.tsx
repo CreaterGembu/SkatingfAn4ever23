@@ -2056,35 +2056,37 @@ function renderProtocolHtml(params: {
             text += sub.edge;
 
           if (sub.marks.includes('REP'))
-            text += 'REP';
+            text += '+REP';
 
           if (sub.marks.includes('*'))
             text += '*';
 
           if (sub.marks.includes('SEQ'))
-            text += 'SEQ';
-
-          if (sub.secondHalf)
-            text += 'x';
-
+            text += '+SEQ';
+          
+          if (sub.marks.includes('COMBO'))
+            text += '+COMBO';
           return text;
         })
         .join('+');
 
-      const bv = line.subs
-        .reduce(
-          (s, sub) => s + getBVWithMods(sub),
-          0
-        )
-        .toFixed(2);
+      const hasSecondHalf = line.subs.some(
+  (s) => s.secondHalf
+);
+
+const bv = line.subs
+  .reduce(
+    (s, sub) => s + getBVWithMods(sub),
+    0
+  )
+  .toFixed(2);
 
       const total = calcLineTotal(line).toFixed(2);
 
-      const goeMark =
-        maxSub?.goe !== undefined
-          ? (maxSub.goe > 0 ? '+' : '') +
-            maxSub.goe
-          : '0';
+     const goeMark =
+  maxSub?.goe !== undefined
+    ? `${maxSub.goe > 0 ? '+' : ''}${maxSub.goe.toFixed(0)}`
+    : '0';
 
       return `
 <tr>
@@ -2096,10 +2098,15 @@ function renderProtocolHtml(params: {
     ${elementText}
   </td>
 
-  <td style="border:1px solid #999;padding:8px;text-align:right;">
-    ${bv}
-  </td>
-
+ <td style="
+  border:1px solid #999;
+  padding:8px;
+  text-align:right;
+  font-weight:600;
+">
+  ${bv}
+  ${hasSecondHalf ? '<span style="font-size:12px;"> x</span>' : ''}
+</td>
   <td style="border:1px solid #999;padding:8px;text-align:right;">
     ${goeMark}
   </td>
@@ -2112,12 +2119,13 @@ function renderProtocolHtml(params: {
     })
     .join('');
 
-  return `
+ return `
 <div style="
-  font-family:Arial,sans-serif;
+  border:2px solid #000;
   padding:24px;
   background:white;
   color:black;
+  font-family:Arial,sans-serif;
 ">
 
 <h1 style="
@@ -2166,18 +2174,37 @@ Figure Skating Score Sheet
 
 <table style="
   width:100%;
-  min-width:640px;
   border-collapse:collapse;
-  font-size:16px;
+  font-size:15px;
+  table-layout:fixed;
 ">
 
 <thead>
-<tr style="background:#eee;">
-  <th style="border:1px solid #999;padding:8px;">#</th>
-  <th style="border:1px solid #999;padding:8px;">Element</th>
-  <th style="border:1px solid #999;padding:8px;">BV</th>
-  <th style="border:1px solid #999;padding:8px;">GOE</th>
-  <th style="border:1px solid #999;padding:8px;">Score</th>
+<thead>
+<tr style="
+  background:#f3f3f3;
+  border-top:2px solid #000;
+  border-bottom:2px solid #000;
+">
+  <th style="width:40px; border:1px solid #999;padding:8px;">
+    #
+  </th>
+
+  <th style="width:320px; border:1px solid #999;padding:8px;">
+    Executed Elements
+  </th>
+
+  <th style="width:90px; border:1px solid #999;padding:8px;">
+    Base Value
+  </th>
+
+  <th style="width:80px; border:1px solid #999;padding:8px;">
+    GOE
+  </th>
+
+  <th style="width:120px; border:1px solid #999;padding:8px;">
+    Scores of Panel
+  </th>
 </tr>
 </thead>
 
@@ -2213,9 +2240,13 @@ Program Component Scores
 ">
 
 <thead>
-<tr style="background:#eee;">
+<tr style="
+  background:#f3f3f3;
+  border-top:2px solid #000;
+  border-bottom:2px solid #000;
+">
   <th style="border:1px solid #999;padding:8px;">
-    Component
+    Program Components
   </th>
 
   <th style="border:1px solid #999;padding:8px;">
@@ -2223,7 +2254,6 @@ Program Component Scores
   </th>
 </tr>
 </thead>
-
 <tbody>
 
 <tr>
