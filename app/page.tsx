@@ -298,7 +298,8 @@ function getBVWithMods(sub: LineSubElement): number {
     if (lower) bv = lower.baseValue;
   }
 
-  const jumpType = sub.element.name.replace(/[0-9]/g, '');
+  const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
+  
 
 if (
   (jumpType === 'F' || jumpType === 'Lz') &&
@@ -334,8 +335,7 @@ function getBVForGOE(sub: LineSubElement): number {
     if (lower) bv = lower.baseValue;
   }
 
-  const jumpType = sub.element.name.replace(/[0-9]/g, '');
-
+  const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
 if (
   (jumpType === 'F' || jumpType === 'Lz') &&
   sub.edge === 'e'
@@ -1098,7 +1098,7 @@ ${showProtocol.protocolHtml}
                      <td style={tdStyle}>
   {(() => {
     // ジャンプ名から種類を取得
-    const jumpType = sub.element.name.replace(/[0-9]/g, '');
+    const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
 
     // F と Lz のみ edge 判定を表示
     const canHaveEdgeCall =
@@ -2045,30 +2045,53 @@ function renderProtocolHtml(params: {
             )
           : null;
 
-      const elementText = line.subs
-        .map((sub) => {
-          let text = sub.element.name;
+    const elementText = line.subs
+  .map((sub) => {
+    let text = sub.element.name;
 
-          if (sub.underRotation)
-            text += sub.underRotation;
+    // edge を先に
+    // 例: 3F!q / 3Lze<
+    if (sub.edge) {
+      text += sub.edge;
+    }
 
-          if (sub.edge)
-            text += sub.edge;
+    // rotation は後
+    if (sub.underRotation) {
+      text += sub.underRotation;
+    }
 
-          if (sub.marks.includes('REP'))
-            text += '+REP';
+    // V mark
+    // 例: CoSp3V
+    if (
+      sub.marks.includes('V') &&
+      sub.element.type === 'spin'
+    ) {
+      text += 'V';
+    }
 
-          if (sub.marks.includes('*'))
-            text += '*';
+    // REP
+    if (sub.marks.includes('REP')) {
+      text += '+REP';
+    }
 
-          if (sub.marks.includes('SEQ'))
-            text += '+SEQ';
-          
-          if (sub.marks.includes('COMBO'))
-            text += '+COMBO';
-          return text;
-        })
-        .join('+');
+    // *
+    if (sub.marks.includes('*')) {
+      text += '*';
+    }
+
+    // SEQ
+    if (sub.marks.includes('SEQ')) {
+      text += '+SEQ';
+    }
+
+    // COMBO
+    if (sub.marks.includes('COMBO')) {
+      text += '+COMBO';
+    }
+
+    return text;
+  })
+  .join('+');
 
       const hasSecondHalf = line.subs.some(
   (s) => s.secondHalf
