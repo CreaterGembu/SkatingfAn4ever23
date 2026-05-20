@@ -342,7 +342,12 @@ if (
 ) {
   bv *= 0.8;
 }
-  if (sub.marks.includes('REP')) bv *= 0.8;
+  if (
+  sub.element.type === 'jump' &&
+  sub.marks.includes('REP')
+) {
+  bv *= 0.8;
+}
   if (sub.marks.includes('V') && sub.element.type === 'spin') bv *= 0.75;
 
   // NOTE: intentionally NOT applying secondHalf multiplier here
@@ -1080,20 +1085,29 @@ ${showProtocol.protocolHtml}
 </td>
 
                         <td style={tdStyle}>
-                          <select
-                            value={sub.underRotation || ''}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                                underRotation: e.target.value as '' | 'q' | '<' | '<<',
-                              })
-                            }
-                          >
-                            <option value="">正常</option>
-                            <option value="q">q</option>
-                            <option value="<">&lt;</option>
-                            <option value="<<">&lt;&lt;</option>
-                          </select>
-                        </td>
+  {sub.element.type === 'jump' ? (
+    <select
+      value={sub.underRotation || ''}
+      onChange={(e) =>
+        updateSub(line.id, sub.id, {
+          underRotation:
+            e.target.value as
+              | ''
+              | 'q'
+              | '<'
+              | '<<',
+        })
+      }
+    >
+      <option value="">正常</option>
+      <option value="q">q</option>
+      <option value="<">&lt;</option>
+      <option value="<<">&lt;&lt;</option>
+    </select>
+  ) : (
+    <div style={{ color: '#999' }}>—</div>
+  )}
+</td>
 
                      <td style={tdStyle}>
   {(() => {
@@ -1101,8 +1115,9 @@ ${showProtocol.protocolHtml}
     const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
 
     // F と Lz のみ edge 判定を表示
-    const canHaveEdgeCall =
-      jumpType === 'F' || jumpType === 'Lz';
+   const canHaveEdgeCall =
+  sub.element.type === 'jump' &&
+  (jumpType === 'F' || jumpType === 'Lz');
 
     if (!canHaveEdgeCall) {
       return <div style={{ color: '#999' }}>—</div>;
@@ -1126,16 +1141,21 @@ ${showProtocol.protocolHtml}
 </td>
 
                         <td style={tdStyle}>
-                          <input
-                            type="checkbox"
-                            checked={sub.marks.includes('V')}
-                            onChange={() => toggleMark(line.id, sub.id, 'V')}
-                          />
-                        </td>
-
-                      <td style={tdStyle}>
-  {/* コンボの1個目だけ表示 */}
-  {line.subs[0].id === sub.id ? (
+  {sub.element.name.includes('CoSp') ? (
+    <input
+      type="checkbox"
+      checked={sub.marks.includes('V')}
+      onChange={() =>
+        toggleMark(line.id, sub.id, 'V')
+      }
+    />
+  ) : (
+    <div style={{ color: '#999' }}>—</div>
+  )}
+</td>
+    <td style={tdStyle}>
+  {sub.element.type === 'jump' &&
+  line.subs[0].id === sub.id ? (
     <input
       type="checkbox"
       checked={line.subs.every((s) => s.secondHalf)}
@@ -1160,18 +1180,50 @@ ${showProtocol.protocolHtml}
   ) : null}
 </td>
 
-                        <td style={tdStyle}>
-                          {["F", "REP", "*", "SEQ", "COMBO"].map(mark => (
-                            <label key={mark} style={{ marginRight: 6, display: 'block' }}>
-                              <input
-                                type="checkbox"
-                                checked={sub.marks.includes(mark)}
-                                onChange={() => toggleMark(line.id, sub.id, mark)}
-                              />
-                              {mark}
-                            </label>
-                          ))}
-                        </td>
+                       <td style={tdStyle}>
+  {sub.element.type === 'jump' ? (
+    ["F", "REP", "*", "SEQ", "COMBO"].map(
+      (mark) => (
+        <label
+          key={mark}
+          style={{
+            marginRight: 6,
+            display: 'block',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={sub.marks.includes(mark)}
+            onChange={() =>
+              toggleMark(
+                line.id,
+                sub.id,
+                mark
+              )
+            }
+          />
+          {mark}
+        </label>
+      )
+    )
+  ) : (
+    <label
+      style={{
+        marginRight: 6,
+        display: 'block',
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={sub.marks.includes('F')}
+        onChange={() =>
+          toggleMark(line.id, sub.id, 'F')
+        }
+      />
+      F
+    </label>
+  )}
+</td>
 
                         <td style={tdStyle}>
                           <button
