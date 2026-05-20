@@ -721,8 +721,12 @@ useEffect(() => {
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1"
+/>
 <title>Protocol</title>
-</head>
+</head>>
 <body>
 ${showProtocol.protocolHtml}
 </body>
@@ -786,13 +790,17 @@ ${showProtocol.protocolHtml}
         >
           ← Back
         </button>
-        <div
-          dangerouslySetInnerHTML={{
-            __html:
-              showProtocol.protocolHtml ||
-              'No data',
-          }}
-        />
+       <div
+  style={{
+    overflowX: 'auto',
+    WebkitOverflowScrolling: 'touch',
+  }}
+  dangerouslySetInnerHTML={{
+    __html:
+      showProtocol.protocolHtml ||
+      'No data',
+  }}
+/>
       </div>
     );
   }
@@ -908,7 +916,7 @@ ${showProtocol.protocolHtml}
                 style={{
                   width: '100%',
                   borderCollapse: 'collapse',
-                  minWidth: 980,
+                  minWidth: 720,
                 }}
               >
                 <thead>
@@ -2121,7 +2129,7 @@ Figure Skating Score Sheet
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:18px;
+  font-size:16px;
 ">
   <thead>
     <tr style="background:#eee;">
@@ -2139,7 +2147,7 @@ Figure Skating Score Sheet
 </table>
 <div style="
   margin-top:24px;
-  font-size:18px;
+  font-size:16px;
 ">
   <div style="
     font-weight:bold;
@@ -2148,11 +2156,15 @@ Figure Skating Score Sheet
     Program Component Scores
   </div>
 
-  <table style="
-    width:100%;
-    border-collapse:collapse;
-    font-size:18px;
-  ">
+ <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+<table style="
+  width:100%;
+  min-width:700px;
+  border-collapse:collapse;
+  font-size:18px;
+">
+</table>
+</div>
     <thead>
       <tr style="background:#eee;">
         <th style="border:1px solid #999;padding:8px;">
