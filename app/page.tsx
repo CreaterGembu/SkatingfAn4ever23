@@ -464,6 +464,20 @@ function calcLineTotal(line: Line): number {
 /* ---------- React コンポーネント ---------- */
 
 export default function Page() {
+  const [isMobileView, setIsMobileView] = useState(false);
+
+useEffect(() => {
+  const checkMobile = () => {
+    setIsMobileView(window.innerWidth <= 1024);
+  };
+
+  checkMobile();
+
+  window.addEventListener('resize', checkMobile);
+
+  return () =>
+    window.removeEventListener('resize', checkMobile);
+}, []);
   const [lines, setLines] = useState<Line[]>([]);
   const [tempLine, setTempLine] = useState<Element[]>([]);
 
@@ -719,17 +733,22 @@ useEffect(() => {
   const fullHtml = `
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8" />
+
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1, maximum-scale=1"
+  content="width=device-width, initial-scale=1"
 />
+
 <title>Protocol</title>
-</head>>
+</head>
+
 <body>
 ${showProtocol.protocolHtml}
 </body>
+
 </html>
 `;
 
@@ -776,7 +795,7 @@ ${showProtocol.protocolHtml}
         style={{
           padding: 18,
           fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
-          maxWidth: 980,
+          maxWidth: isMobileView ? '100%' : 980,
           margin: '0 auto',
 
            backgroundColor: '#ffffff',
@@ -811,7 +830,7 @@ ${showProtocol.protocolHtml}
       style={{
         padding: 14,
         fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
-        maxWidth: 980,
+        maxWidth: isMobileView ? '100%' : 980,
         margin: '0 auto',
 
        backgroundColor: '#ffffff',
@@ -916,7 +935,7 @@ ${showProtocol.protocolHtml}
                 style={{
                   width: '100%',
                   borderCollapse: 'collapse',
-                  minWidth: 720,
+                  minWidth: isMobileView ? 640 : 980,
                 }}
               >
                 <thead>
@@ -2126,11 +2145,19 @@ Figure Skating Score Sheet
   </div>
 </div>
 
+<div style="
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+">
+
 <table style="
   width:100%;
+  min-width:640px;
   border-collapse:collapse;
   font-size:16px;
 ">
+ </table>
+</div>
   <thead>
     <tr style="background:#eee;">
       <th style="border:1px solid #999;padding:8px;">#</th>
