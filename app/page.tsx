@@ -893,10 +893,16 @@ ${showProtocol.protocolHtml}
        {/* lines (responsive table with horizontal scroll) */}
       <div style={{ overflowX: 'auto' }}>
          {lines.map((line, lineIndex) => {
-          const maxSub = line.subs.reduce(
-            (a, b) => (getBVWithMods(a) > getBVWithMods(b) ? a : b),
-            line.subs[0]
-          );
+          const maxSub =
+  line.subs.length > 0
+    ? line.subs.reduce(
+        (a, b) =>
+          getBVWithMods(a) > getBVWithMods(b)
+            ? a
+            : b,
+        line.subs[0]
+      )
+    : null;
           return (
             <div
               key={line.id}
@@ -1207,31 +1213,30 @@ ${showProtocol.protocolHtml}
       )
     )
   ) : (
-  <>
-    {["F", "*"].map((mark) => (
-      <label
-        key={mark}
-        style={{
-          marginRight: 6,
-          display: 'block',
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={sub.marks.includes(mark)}
-          onChange={() =>
-            toggleMark(
-              line.id,
-              sub.id,
-              mark
-            )
-          }
-        />
-        {mark}
-      </label>
-    ))}
-  </>
-)}
+    <>
+      {["F", "*"].map((mark) => (
+        <label
+          key={mark}
+          style={{
+            marginRight: 6,
+            display: 'block',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={sub.marks.includes(mark)}
+            onChange={() =>
+              toggleMark(
+                line.id,
+                sub.id,
+                mark
+              )
+            }
+          />
+          {mark}
+        </label>
+      ))}
+    </>
   )}
 </td>
 
@@ -2263,8 +2268,6 @@ Figure Skating Score Sheet
   font-size:15px;
   table-layout:fixed;
 ">
-
-<thead>
 <thead>
 <tr style="
   background:#f3f3f3;
