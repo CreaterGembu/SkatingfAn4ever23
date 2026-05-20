@@ -2013,102 +2013,111 @@ function renderProtocolHtml(params: {
   competition: string;
   category: string;
   lines: Line[];
-  pcs: PCS; // ←追加
+  pcs: PCS;
   pcsRaw: number;
   pcsApplied: number;
   totalTES: number;
   grandTotal: number;
   totalDeduction: number;
 }) {
- const {
-  playerName,
-  country,
-  competition,
-  category,
-  lines,
-  pcs, // ←追加
-  pcsRaw,
-  pcsApplied,
-  totalTES,
-  grandTotal,
-  totalDeduction,
-} = params;
+  const {
+    playerName,
+    country,
+    competition,
+    category,
+    lines,
+    pcs,
+    pcsRaw,
+    pcsApplied,
+    totalTES,
+    grandTotal,
+    totalDeduction,
+  } = params;
 
   const rowsHtml = lines
-  .map((line, idx) => {
-    const maxSub =
-      line.subs.length > 0
-        ? line.subs.reduce((a, b) =>
-            getBVWithMods(a) > getBVWithMods(b) ? a : b
-          )
-        : null;
+    .map((line, idx) => {
+      const maxSub =
+        line.subs.length > 0
+          ? line.subs.reduce((a, b) =>
+              getBVWithMods(a) > getBVWithMods(b)
+                ? a
+                : b
+            )
+          : null;
 
-    const elementText = line.subs
-      .map((sub) => {
-        let text = sub.element.name;
+      const elementText = line.subs
+        .map((sub) => {
+          let text = sub.element.name;
 
-        if (sub.underRotation) text += sub.underRotation;
-        if (sub.edge) text += sub.edge;
+          if (sub.underRotation)
+            text += sub.underRotation;
 
-        if (sub.marks.includes('REP')) text += 'REP';
-        if (sub.marks.includes('*')) text += '*';
-        if (sub.marks.includes('SEQ')) text += 'SEQ';
+          if (sub.edge)
+            text += sub.edge;
 
-        if (sub.secondHalf) text += 'x';
+          if (sub.marks.includes('REP'))
+            text += 'REP';
 
-        return text;
-      })
-      .join('+');
+          if (sub.marks.includes('*'))
+            text += '*';
 
-    const bv = line.subs
-      .reduce((s, sub) => s + getBVWithMods(sub), 0)
-      .toFixed(2);
+          if (sub.marks.includes('SEQ'))
+            text += 'SEQ';
 
-    const goe = line.subs
-      .reduce((s, sub) => s + calcGOEPoint(sub, maxSub), 0)
-      .toFixed(2);
+          if (sub.secondHalf)
+            text += 'x';
 
-    const total = calcLineTotal(line).toFixed(2);
+          return text;
+        })
+        .join('+');
 
-    const goeMark =
-      maxSub?.goe !== undefined
-        ? (maxSub.goe > 0 ? '+' : '') + maxSub.goe
-        : '0';
+      const bv = line.subs
+        .reduce(
+          (s, sub) => s + getBVWithMods(sub),
+          0
+        )
+        .toFixed(2);
 
-    return `
-      <tr>
-        <td>${idx + 1}.</td>
-        <td>${elementText}</td>
-        <td>${bv}</td>
-        <td>${goeMark}</td>
-        <td>${total}</td>
-      </tr>
-    `;
-  })
-  .join('');
+      const total = calcLineTotal(line).toFixed(2);
 
-  const header = `<div style="padding:12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px">
-    <div style="font-size:18px;font-weight:700">${escapeHtml(competition)}</div>
-    <div>${escapeHtml(playerName)} (${escapeHtml(country)}) — ${escapeHtml(
-    category
-  )}</div>
-  </div>`;
+      const goeMark =
+        maxSub?.goe !== undefined
+          ? (maxSub.goe > 0 ? '+' : '') +
+            maxSub.goe
+          : '0';
 
-  const summary = `<div style="padding:12px;border:1px solid #ddd;border-radius:8px;margin-top:12px">
-    <div>TES: ${totalTES.toFixed(2)}</div>
-    <div>PCS raw: ${pcsRaw.toFixed(2)} ・ PCS applied: ${pcsApplied.toFixed(
-    2
-  )}</div>
-    <div style="font-weight:800;margin-top:6px">Total: ${grandTotal.toFixed(
-      2
-    )}</div>
-  </div>`;
-return `
+      return `
+<tr>
+  <td style="border:1px solid #999;padding:8px;">
+    ${idx + 1}
+  </td>
+
+  <td style="border:1px solid #999;padding:8px;">
+    ${elementText}
+  </td>
+
+  <td style="border:1px solid #999;padding:8px;text-align:right;">
+    ${bv}
+  </td>
+
+  <td style="border:1px solid #999;padding:8px;text-align:right;">
+    ${goeMark}
+  </td>
+
+  <td style="border:1px solid #999;padding:8px;text-align:right;">
+    ${total}
+  </td>
+</tr>
+`;
+    })
+    .join('');
+
+  return `
 <div style="
-  font-family: Arial, sans-serif;
-  padding: 24px;
-  background: white;
-  color: black;
+  font-family:Arial,sans-serif;
+  padding:24px;
+  background:white;
+  color:black;
 ">
 
 <h1 style="
@@ -2124,17 +2133,22 @@ Figure Skating Score Sheet
   justify-content:space-between;
   margin-bottom:24px;
   font-size:18px;
+  flex-wrap:wrap;
+  gap:12px;
 ">
   <div>
-    <b>Skater:</b> ${escapeHtml(playerName)}
+    <b>Skater:</b>
+    ${escapeHtml(playerName)}
   </div>
 
   <div>
-    <b>Segment:</b> ${escapeHtml(category)}
+    <b>Segment:</b>
+    ${escapeHtml(category)}
   </div>
 
   <div>
-    <b>Ded:</b> ${totalDeduction.toFixed(2)}
+    <b>Ded:</b>
+    ${totalDeduction.toFixed(2)}
   </div>
 
   <div style="
@@ -2156,87 +2170,96 @@ Figure Skating Score Sheet
   border-collapse:collapse;
   font-size:16px;
 ">
- </table>
-</div>
-  <thead>
-    <tr style="background:#eee;">
-      <th style="border:1px solid #999;padding:8px;">#</th>
-      <th style="border:1px solid #999;padding:8px;">Element</th>
-      <th style="border:1px solid #999;padding:8px;">BV</th>
-      <th style="border:1px solid #999;padding:8px;">GOE</th>
-      <th style="border:1px solid #999;padding:8px;">Score</th>
-    </tr>
-  </thead>
 
-  <tbody>
-    ${rowsHtml}
-  </tbody>
+<thead>
+<tr style="background:#eee;">
+  <th style="border:1px solid #999;padding:8px;">#</th>
+  <th style="border:1px solid #999;padding:8px;">Element</th>
+  <th style="border:1px solid #999;padding:8px;">BV</th>
+  <th style="border:1px solid #999;padding:8px;">GOE</th>
+  <th style="border:1px solid #999;padding:8px;">Score</th>
+</tr>
+</thead>
+
+<tbody>
+${rowsHtml}
+</tbody>
+
 </table>
+</div>
+
 <div style="
   margin-top:24px;
   font-size:16px;
 ">
-  <div style="
-    font-weight:bold;
-    margin-bottom:10px;
-  ">
-    Program Component Scores
-  </div>
 
- <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+<div style="
+  font-weight:bold;
+  margin-bottom:10px;
+">
+Program Component Scores
+</div>
+
+<div style="
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+">
+
 <table style="
   width:100%;
-  min-width:700px;
+  min-width:500px;
   border-collapse:collapse;
   font-size:18px;
 ">
+
+<thead>
+<tr style="background:#eee;">
+  <th style="border:1px solid #999;padding:8px;">
+    Component
+  </th>
+
+  <th style="border:1px solid #999;padding:8px;">
+    Score
+  </th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+  <td style="border:1px solid #999;padding:8px;">
+    Composition
+  </td>
+
+  <td style="border:1px solid #999;padding:8px;text-align:right;">
+    ${pcs.comp.toFixed(2)}
+  </td>
+</tr>
+
+<tr>
+  <td style="border:1px solid #999;padding:8px;">
+    Presentation
+  </td>
+
+  <td style="border:1px solid #999;padding:8px;text-align:right;">
+    ${pcs.pres.toFixed(2)}
+  </td>
+</tr>
+
+<tr>
+  <td style="border:1px solid #999;padding:8px;">
+    Skating Skills
+  </td>
+
+  <td style="border:1px solid #999;padding:8px;text-align:right;">
+    ${pcs.skills.toFixed(2)}
+  </td>
+</tr>
+
+</tbody>
 </table>
 </div>
-    <thead>
-      <tr style="background:#eee;">
-        <th style="border:1px solid #999;padding:8px;">
-          Component
-        </th>
 
-        <th style="border:1px solid #999;padding:8px;">
-          Score
-        </th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr>
-        <td style="border:1px solid #999;padding:8px;">
-          Composition
-        </td>
-
-        <td style="border:1px solid #999;padding:8px;text-align:right;">
-          ${pcs.comp.toFixed(2)}
-        </td>
-      </tr>
-
-      <tr>
-        <td style="border:1px solid #999;padding:8px;">
-          Presentation
-        </td>
-
-        <td style="border:1px solid #999;padding:8px;text-align:right;">
-          ${pcs.pres.toFixed(2)}
-        </td>
-      </tr>
-
-      <tr>
-        <td style="border:1px solid #999;padding:8px;">
-          Skating Skills
-        </td>
-
-        <td style="border:1px solid #999;padding:8px;text-align:right;">
-          ${pcs.skills.toFixed(2)}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
 <div style="
   margin-top:30px;
   border-top:2px solid #000;
@@ -2244,43 +2267,43 @@ Figure Skating Score Sheet
   font-size:20px;
 ">
 
-  <div style="
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:12px;
-  ">
-    <span>Total Technical Element Score</span>
-    <b>${totalTES.toFixed(2)}</b>
-  </div>
+<div style="
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:12px;
+">
+  <span>Total Technical Element Score</span>
+  <b>${totalTES.toFixed(2)}</b>
+</div>
 
-  <div style="
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:12px;
-  ">
-    <span>Total Program Component Score</span>
-    <b>${pcsApplied.toFixed(2)}</b>
-  </div>
+<div style="
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:12px;
+">
+  <span>Total Program Component Score</span>
+  <b>${pcsApplied.toFixed(2)}</b>
+</div>
 
-  <div style="
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:12px;
-  ">
-    <span>Deduction</span>
-    <b>${totalDeduction.toFixed(2)}</b>
-  </div>
+<div style="
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:12px;
+">
+  <span>Deduction</span>
+  <b>${totalDeduction.toFixed(2)}</b>
+</div>
 
-  <div style="
-    display:flex;
-    justify-content:space-between;
-    font-size:30px;
-    font-weight:bold;
-    margin-top:20px;
-  ">
-    <span>Total Segment Score</span>
-    <span>${grandTotal.toFixed(2)}</span>
-  </div>
+<div style="
+  display:flex;
+  justify-content:space-between;
+  font-size:30px;
+  font-weight:bold;
+  margin-top:20px;
+">
+  <span>Total Segment Score</span>
+  <span>${grandTotal.toFixed(2)}</span>
+</div>
 
 </div>
 </div>
