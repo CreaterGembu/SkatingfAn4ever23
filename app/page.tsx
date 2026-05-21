@@ -114,101 +114,121 @@ const SPINS: Element[] = [
   { name: 'USp2', baseValue: 1.8, type: 'spin' },
   { name: 'USp1', baseValue: 1.4, type: 'spin' },
   { name: 'USpB', baseValue: 1.2, type: 'spin' },
+  { name: 'USp', baseValue: 0.0, type: 'spin' },
   { name: 'LSp4', baseValue: 3.2, type: 'spin' },
   { name: 'LSp3', baseValue: 2.9, type: 'spin' },
   { name: 'LSp2', baseValue: 2.3, type: 'spin' },
   { name: 'LSp1', baseValue: 1.8, type: 'spin' },
   { name: 'LSpB', baseValue: 1.4, type: 'spin' },
+  { name: 'LSp', baseValue: 0.0, type: 'spin' },
   { name: 'CSp4', baseValue: 3.1, type: 'spin' },
   { name: 'CSp3', baseValue: 2.8, type: 'spin' },
   { name: 'CSp2', baseValue: 2.2, type: 'spin' },
   { name: 'CSp1', baseValue: 1.7, type: 'spin' },
   { name: 'CSpB', baseValue: 1.3, type: 'spin' },
+  { name: 'CSp', baseValue: 0.0, type: 'spin' },
   { name: 'SSp4', baseValue: 3.0, type: 'spin' },
   { name: 'SSp3', baseValue: 2.5, type: 'spin' },
   { name: 'SSp2', baseValue: 1.9, type: 'spin' },
   { name: 'SSp1', baseValue: 1.6, type: 'spin' },
   { name: 'SSpB', baseValue: 1.3, type: 'spin' },
+  { name: 'SSp', baseValue: 0.0, type: 'spin' },
   { name: 'FUSp4', baseValue: 3.5, type: 'spin' },
   { name: 'FUSp3', baseValue: 2.9, type: 'spin' },
   { name: 'FUSp2', baseValue: 2.4, type: 'spin' },
   { name: 'FUSp1', baseValue: 2.0, type: 'spin' },
   { name: 'FUSpB', baseValue: 1.8, type: 'spin' },
+  { name: 'FUSp', baseValue: 0.0, type: 'spin' },
   { name: 'FLSp4', baseValue: 3.8, type: 'spin' },
   { name: 'FLSp3', baseValue: 3.5, type: 'spin' },
   { name: 'FLSp2', baseValue: 2.9, type: 'spin' },
   { name: 'FLSp1', baseValue: 2.4, type: 'spin' },
   { name: 'FLSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'FLSp', baseValue: 0.0, type: 'spin' },
   { name: 'FCSp4', baseValue: 3.8, type: 'spin' },
   { name: 'FCSp3', baseValue: 3.4, type: 'spin' },
   { name: 'FCSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'FCSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'FCSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'FCSp1', baseValue: 2.3, type: 'spin' },
+  { name: 'FCSpB', baseValue: 1.9, type: 'spin' },
+  { name: 'FCSp', baseValue: 0.0, type: 'spin' },
   { name: 'FSSp4', baseValue: 3.6, type: 'spin' },
   { name: 'FSSp3', baseValue: 3.1, type: 'spin' },
   { name: 'FSSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'FSSp1', baseValue: 2.3, type: 'spin' },
-  { name: 'FSSpB', baseValue: 1.9, type: 'spin' },
+  { name: 'FSSp1', baseValue: 2.4, type: 'spin' },
+  { name: 'FSSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'FSSp', baseValue: 0.0, type: 'spin' },
   { name: 'CUSp4', baseValue: 3.5, type: 'spin' },
   { name: 'CUSp3', baseValue: 2.9, type: 'spin' },
   { name: 'CUSp2', baseValue: 2.4, type: 'spin' },
   { name: 'CUSp1', baseValue: 2.0, type: 'spin' },
   { name: 'CUSpB', baseValue: 1.8, type: 'spin' },
+  { name: 'CUSp', baseValue: 0.0, type: 'spin' },
   { name: 'CLSp4', baseValue: 3.8, type: 'spin' },
   { name: 'CLSp3', baseValue: 3.5, type: 'spin' },
   { name: 'CLSp2', baseValue: 2.9, type: 'spin' },
   { name: 'CLSp1', baseValue: 2.4, type: 'spin' },
   { name: 'CLSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'CLSp', baseValue: 0.0, type: 'spin' },
   { name: 'CCSp4', baseValue: 3.8, type: 'spin' },
   { name: 'CCSp3', baseValue: 3.4, type: 'spin' },
   { name: 'CCSp2', baseValue: 2.8, type: 'spin' },
   { name: 'CCSp1', baseValue: 2.4, type: 'spin' },
   { name: 'CCSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'CCSp', baseValue: 0.0, type: 'spin' },
   { name: 'CSSp4', baseValue: 3.6, type: 'spin' },
   { name: 'CSSp3', baseValue: 3.1, type: 'spin' },
   { name: 'CSSp2', baseValue: 2.8, type: 'spin' },
   { name: 'CSSp1', baseValue: 2.3, type: 'spin' },
   { name: 'CSSpB', baseValue: 1.9, type: 'spin' },
+  { name: 'CSSp', baseValue: 0.0, type: 'spin' },
   { name: 'FCUSp4', baseValue: 3.5, type: 'spin' },
   { name: 'FCUSp3', baseValue: 2.9, type: 'spin' },
   { name: 'FCUSp2', baseValue: 2.4, type: 'spin' },
   { name: 'FCUSp1', baseValue: 2.0, type: 'spin' },
   { name: 'FCUSpB', baseValue: 1.8, type: 'spin' },
+  { name: 'FCUSp', baseValue: 0.0, type: 'spin' },
   { name: 'FCLSp4', baseValue: 3.8, type: 'spin' },
   { name: 'FCLSp3', baseValue: 3.5, type: 'spin' },
   { name: 'FCLSp2', baseValue: 2.9, type: 'spin' },
   { name: 'FCLSp1', baseValue: 2.4, type: 'spin' },
   { name: 'FCLSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'FCLSp', baseValue: 0.0, type: 'spin' },
   { name: 'FCCSp4', baseValue: 3.8, type: 'spin' },
   { name: 'FCCSp3', baseValue: 3.4, type: 'spin' },
   { name: 'FCCSp2', baseValue: 2.8, type: 'spin' },
   { name: 'FCCSp1', baseValue: 2.4, type: 'spin' },
   { name: 'FCCSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'FCCSp', baseValue: 0.0, type: 'spin' },
   { name: 'FCSSp4', baseValue: 3.6, type: 'spin' },
   { name: 'FCSSp3', baseValue: 3.1, type: 'spin' },
   { name: 'FCSSp2', baseValue: 2.8, type: 'spin' },
   { name: 'FCSSp1', baseValue: 2.3, type: 'spin' },
   { name: 'FCSSpB', baseValue: 1.9, type: 'spin' },
+  { name: 'FCSSp', baseValue: 0.0, type: 'spin' },
   { name: 'CoSp4', baseValue: 3.6, type: 'spin' },
   { name: 'CoSp3', baseValue: 3.0, type: 'spin' },
   { name: 'CoSp2', baseValue: 2.4, type: 'spin' },
   { name: 'CoSp1', baseValue: 2.0, type: 'spin' },
   { name: 'CoSpB', baseValue: 1.8, type: 'spin' },
+  { name: 'CoSp', baseValue: 0.0, type: 'spin' },
   { name: 'FCoSp4', baseValue: 3.6, type: 'spin' },
   { name: 'FCoSp3', baseValue: 3.0, type: 'spin' },
   { name: 'FCoSp2', baseValue: 2.4, type: 'spin' },
   { name: 'FCoSp1', baseValue: 2.0, type: 'spin' },
   { name: 'FCoSpB', baseValue: 1.8, type: 'spin' },
+  { name: 'FCoSp', baseValue: 0.0, type: 'spin' },
   { name: 'CCoSp4', baseValue: 4.2, type: 'spin' },
   { name: 'CCoSp3', baseValue: 3.6, type: 'spin' },
   { name: 'CCoSp2', baseValue: 3.0, type: 'spin' },
   { name: 'CCoSp1', baseValue: 2.4, type: 'spin' },
   { name: 'CCoSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'CCoSp', baseValue: 0.0, type: 'spin' },
   { name: 'FCCoSp4', baseValue: 4.2, type: 'spin' },
   { name: 'FCCoSp3', baseValue: 3.6, type: 'spin' },
   { name: 'FCCoSp2', baseValue: 3.0, type: 'spin' },
   { name: 'FCCoSp1', baseValue: 2.4, type: 'spin' },
   { name: 'FCCoSpB', baseValue: 2.0, type: 'spin' },
+  { name: 'FCCoSp', baseValue: 0.0, type: 'spin' },
 ];
 
 const STEPS: Element[] = [
@@ -1147,7 +1167,7 @@ ${showProtocol.protocolHtml}
 </td>
 
                         <td style={tdStyle}>
-  {sub.element.name.includes('CoSp') ? (
+  {sub.element.type === 'spin' ? (
     <input
       type="checkbox"
       checked={sub.marks.includes('V')}
@@ -1188,7 +1208,11 @@ ${showProtocol.protocolHtml}
 
                        <td style={tdStyle}>
   {sub.element.type === 'jump' ? (
-    ["F", "REP", "*", "SEQ", "COMBO"].map(
+    (
+  line.subs.length > 1
+    ? ["F", "*", "SEQ", "COMBO"]
+    : ["F", "REP", "*", "SEQ", "COMBO"]
+).map(
       (mark) => (
         <label
           key={mark}
@@ -1214,7 +1238,8 @@ ${showProtocol.protocolHtml}
     )
   ) : (
     <>
-      {["F", "*"].map((mark) => (
+     <>
+  {["F"].map((mark) => (
         <label
           key={mark}
           style={{
