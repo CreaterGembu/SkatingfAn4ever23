@@ -1319,7 +1319,7 @@ ${showProtocol.protocolHtml}
             marginTop: 8,
           }}
         >
-          {['B', '1', '2', '3', '4'].map((lv) => {
+         {['', 'B', '1', '2', '3', '4'].map((lv) => {
             let name = '';
             if (selectedSpinType === 'CoSp') {
               name = mangleCoSp(selectedSpinMode, lv);
@@ -1336,7 +1336,7 @@ ${showProtocol.protocolHtml}
             if (!el) return null;
             return (
               <button
-                key={name}
+                {lv === '' ? `${selectedSpinType}` : name}
                 onClick={() => addToTemp(el)}
                 style={smallBtn}
               >
