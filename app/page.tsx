@@ -254,55 +254,86 @@ function getLowerRotationJump(name: string): Element | null {
   const lower = map[name];
   return lower ? ALL_ELEMENTS.find((e) => e.name === lower) || null : null;
 }
-function getBVWithMods(sub: LineSubElement): number {
-  if (sub.marks.includes('*')) return 0;
-  let bv = sub.element.baseValue;
-  if (sub.underRotation === '<') bv *= 0.8;
-  if (sub.underRotation === '<<') {
-    const lower = getLowerRotationJump(sub.element.name);
-    if (lower) bv = lower.baseValue;
-  }
-  const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
-if (
-  (jumpType === 'F' || jumpType === 'Lz') &&
-  sub.edge === 'e'
-) {
-  bv *= 0.8;
-}
-  if (sub.marks.includes('REP')) bv *= 0.8
-    
-    ;
-  if (sub.marks.includes('V') && sub.element.type === 'spin') {
-    bv *= 0.75;
-    bv = Math.round(bv * 100) / 100; // *少数第2位へ丸め
-  }
-  if (sub.secondHalf && sub.element.type === 'jump') bv *= 1.1;
-  return Number(bv);
-}
-function getBVForGOE(sub: LineSubElement): number {
-  if (sub.marks.includes('*')) return 0;
-  let bv = sub.element.baseValue;
-  if (sub.underRotation === '<') bv *= 0.8;
-  if (sub.underRotation === '<<') {
-    const lower = getLowerRotationJump(sub.element.name);
-    if (lower) bv = lower.baseValue;
-  }
-  const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
-if (
-  (jumpType === 'F' || jumpType === 'Lz') &&
-  sub.edge === 'e'
-) {
-  bv *= 0.8;
-}
+type CalcBVOptions = {
+  applySecondHalf?: boolean;
+  applyREP?: boolean;
+  ignoreAsterisk?: boolean;
+};
+
+function calcBV(
+  sub: LineSubElement,
+  options: CalcBVOptions = {}
+): number {
+  const {
+    applySecondHalf = true,
+    applyREP = true,
+    ignoreAsterisk = false,
+  } = options;
+
+  // * は0点
   if (
-  sub.element.type === 'jump' &&
-  sub.marks.includes('REP')
-) {
-  bv *= 0.8;
-}
-  if (sub.marks.includes('V') && sub.element.type === 'spin') bv *= 0.75;
-  // NOTE: intentionally NOT applying secondHalf multiplier here
-  return Number(bv);
+    !ignoreAsterisk &&
+    sub.marks.includes('*')
+  ) {
+    return 0;
+  }
+
+  let bv = sub.element.baseValue;
+
+  // under rotation
+  if (sub.underRotation === '<') {
+    bv *= 0.8;
+  }
+
+  // downgrade
+  if (sub.underRotation === '<<') {
+    const lower = getLowerRotationJump(
+      sub.element.name
+    );
+
+    if (lower) {
+      bv = lower.baseValue;
+    }
+  }
+
+  // edge call
+  const jumpType =
+    sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
+
+  if (
+    (jumpType === 'F' ||
+      jumpType === 'Lz') &&
+    sub.edge === 'e'
+  ) {
+    bv *= 0.8;
+  }
+
+  // REP
+  if (
+    applyREP &&
+    sub.marks.includes('REP')
+  ) {
+    bv *= 0.8;
+  }
+
+  // V mark
+  if (
+    sub.element.type === 'spin' &&
+    sub.marks.includes('V')
+  ) {
+    bv *= 0.75;
+  }
+
+  // second half bonus
+  if (
+    applySecondHalf &&
+    sub.secondHalf &&
+    sub.element.type === 'jump'
+  ) {
+    bv *= 1.1;
+  }
+
+  return Number(bv.toFixed(2));
 }
 function countTotalFalls(allLines: Line[]): number {
   return allLines.reduce(
@@ -335,17 +366,6 @@ function calcTotalFallPenalty(allLines: Line[]): number {
   }
   return penalty;
 }
-function getOriginalBV(sub: LineSubElement): number {
-  let bv = sub.element.baseValue;
-  if (sub.underRotation === '<') bv *= 0.8;
-  if (sub.underRotation === '<<') {
-    const lower = getLowerRotationJump(sub.element.name);
-    if (lower) bv = lower.baseValue;
-  }
-  if (sub.edge === 'e') bv *= 0.8;
-  if (sub.element.type === 'spin' && sub.marks.includes('V')) bv *= 0.75;
-  return bv;
-}
 function calcGOEPoint(
   sub: LineSubElement,
   maxSub: LineSubElement | null
@@ -366,7 +386,9 @@ function calcGOEPoint(
     sub.element.type === 'choreo'
   ) {
     if (sub.marks.includes('*')) return 0;
-    const originalBV = getOriginalBV(sub);
+    const originalBV = calcBV(sub, {
+  applySecondHalf: false,
+});
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));
   }
   // jump: only highest-BV in the combo receives GOE
@@ -374,7 +396,9 @@ function calcGOEPoint(
     if (!maxSub) return 0;
     if (sub.id !== maxSub.id) return 0;
     if (sub.marks.includes('*')) return 0;
-    const originalBV = getOriginalBV(sub);
+    const originalBV = calcBV(sub, {
+  applySecondHalf: false,
+});
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));
   }
   return 0;
@@ -383,7 +407,7 @@ function calcSubTotal(
   sub: LineSubElement,
   maxSub: LineSubElement | null
 ): number {
-  const bv = getBVWithMods(sub);
+  const bv = calcBV(sub);
   const goe = calcGOEPoint(sub, maxSub);
   return Number((bv + goe).toFixed(2));
 }
@@ -393,7 +417,7 @@ function calcLineTotal(line: Line): number {
   line.subs.length > 0
     ? line.subs.reduce(
         (a, b) =>
-          getBVWithMods(a) > getBVWithMods(b)
+          calcBV(a) > calcBV(b)
             ? a
             : b,
         line.subs[0]
@@ -542,7 +566,7 @@ useEffect(() => {
               : [...s.marks, mark];
   
             let newGOE = s.goe;
-            return { ...s, marks: newMarks, goe: newGOE };
+            return { ...s, marks: newMarks };
           })
         };
       })
@@ -779,7 +803,7 @@ ${showProtocol.protocolHtml}
   line.subs.length > 0
     ? line.subs.reduce(
         (a, b) =>
-          getBVWithMods(a) > getBVWithMods(b)
+          calcBV(a) > calcBV(b)
             ? a
             : b,
         line.subs[0]
@@ -848,7 +872,7 @@ ${showProtocol.protocolHtml}
                 </thead>
                 <tbody>
                  {line.subs.map((sub) => {
-                    const bvWithMods = getBVWithMods(sub);
+                    const bvWithMods = calcBV(sub);
                     const isMax = maxSub ? sub.id === maxSub.id : false;
                     const goePoint = calcGOEPoint(sub, maxSub);
                     const subtotal = calcSubTotal(sub, maxSub);
@@ -1911,7 +1935,7 @@ function renderProtocolHtml(params: {
       const maxSub =
         line.subs.length > 0
           ? line.subs.reduce((a, b) =>
-              getBVWithMods(a) > getBVWithMods(b)
+              calcBV(a) > calcBV(b)
                 ? a
                 : b
             )
@@ -1960,7 +1984,7 @@ function renderProtocolHtml(params: {
 );
 const bv = line.subs
   .reduce(
-    (s, sub) => s + getBVWithMods(sub),
+    (s, sub) => s + calcBV(sub),
     0
   )
   .toFixed(2);
