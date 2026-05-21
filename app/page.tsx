@@ -1,31 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-
-/**
- * page.tsx — 完全版
- *
- * 追加／調整点（ユーザ指定どおり）
- * - 「後半 (secondHalf)」チェック時は内部 BV が ×1.1（表示は BV に加えて "X" 表示）。
- * - GOE の計算は secondHalf を反映しない BV を使う（ただし underrotation '<'/'<<', edge 'e', REP の BV 影響は GOE 用 BV に含める）。
- * - '*' (Zayak) は BV=0・GOE=0。
- * - ChSq1 は GOE に 0.5 を掛ける（GOE点 = BV_forGOE × 0.1 × GOE × 0.5）。
- * - SEQチェックを REP/F と同じ欄に追加（SEQ は BV に影響しない）。
- * - 行ごとのハイライト（F: 赤系、GOE>0: 緑系、secondHalf: 黄系）
- * - スマホ/iPad優先でタップしやすい UI（横スクロール、ボタン大きめ）
- * - 「決定して表示」ボタンでページが切り替わり（編集 → プロトコル表示）
- *
- * 注意：
- * - 実運用での細かいルール（例えば GOE の係数やREPの厳密な適用タイミング等）は現行の要望に合わせて実装していますが、
- *   もし ISU の最新版ルールと厳密に照合する必要がある場合は具体ルールを提示してください。
- */
-
-/* ---------- 型定義 ---------- */
 type Element = {
   name: string;
   baseValue: number;
   type: 'jump' | 'spin' | 'step' | 'choreo';
 };
-
 type LineSubElement = {
   id: number;
   element: Element;
@@ -35,18 +14,15 @@ type LineSubElement = {
   marks: string[]; // "F","REP","*","V","SEQ","COMBO"
   secondHalf?: boolean;
 };
-
 type Line = {
   id: number;
   subs: LineSubElement[];
 };
-
 type PCS = {
   comp: number;
   pres: number;
   skills: number;
 };
-
 type HistoryItem = {
   id: number;
   playerName: string;
@@ -60,31 +36,25 @@ type HistoryItem = {
   timestamp: string;
   protocolHtml?: string;
 };
-
 const uid = () => Math.floor(Math.random() * 1e9);
-
-/* ---------- 要素テーブル ---------- */
 const JUMPS: Element[] = [
   { name: 'A', baseValue: 0.0, type: 'jump' },
   { name: '1A', baseValue: 1.1, type: 'jump' },
   { name: '2A', baseValue: 3.3, type: 'jump' },
   { name: '3A', baseValue: 8.0, type: 'jump' },
   { name: '4A', baseValue: 12.5, type: 'jump' },
-
   { name: 'Lz', baseValue: 0.0, type: 'jump' },
   { name: '1Lz', baseValue: 0.6, type: 'jump' },
   { name: '2Lz', baseValue: 2.1, type: 'jump' },
   { name: '3Lz', baseValue: 5.9, type: 'jump' },
   { name: '4Lz', baseValue: 11.5, type: 'jump' },
   { name: '5Lz', baseValue: 14.0, type: 'jump' },
-
   { name: 'F', baseValue: 0.0, type: 'jump' },
   { name: '1F', baseValue: 0.5, type: 'jump' },
   { name: '2F', baseValue: 1.8, type: 'jump' },
   { name: '3F', baseValue: 5.3, type: 'jump' },
   { name: '4F', baseValue: 11.0, type: 'jump' },
   { name: '5F', baseValue: 14.0, type: 'jump' },
-
   { name: '1Eu', baseValue: 0.0, type: 'jump' },
   { name: 'Lo', baseValue: 0.0, type: 'jump' },
   { name: '1Lo', baseValue: 0.5, type: 'jump' },
@@ -92,14 +62,12 @@ const JUMPS: Element[] = [
   { name: '3Lo', baseValue: 4.9, type: 'jump' },
   { name: '4Lo', baseValue: 10.5, type: 'jump' },
   { name: '5Lo', baseValue: 14.0, type: 'jump' },
-
   { name: 'S', baseValue: 0.0, type: 'jump' },
   { name: '1S', baseValue: 0.4, type: 'jump' },
   { name: '2S', baseValue: 1.3, type: 'jump' },
   { name: '3S', baseValue: 4.3, type: 'jump' },
   { name: '4S', baseValue: 9.7, type: 'jump' },
   { name: '5S', baseValue: 14.0, type: 'jump' },
-
   { name: 'T', baseValue: 0.0, type: 'jump' },
   { name: '1T', baseValue: 0.4, type: 'jump' },
   { name: '2T', baseValue: 1.3, type: 'jump' },
@@ -107,7 +75,6 @@ const JUMPS: Element[] = [
   { name: '4T', baseValue: 9.5, type: 'jump' },
   { name: '5T', baseValue: 14.0, type: 'jump' },
 ];
-
 const SPINS: Element[] = [
   { name: 'USp4', baseValue: 2.9, type: 'spin' },
   { name: 'USp3', baseValue: 2.3, type: 'spin' },
@@ -230,7 +197,6 @@ const SPINS: Element[] = [
   { name: 'FCCoSpB', baseValue: 2.0, type: 'spin' },
   { name: 'FCCoSp', baseValue: 0.0, type: 'spin' },
 ];
-
 const STEPS: Element[] = [
   { name: 'StSqBV', baseValue: 1.6, type: 'step' },
   { name: 'StSq1', baseValue: 1.9, type: 'step' },
@@ -238,30 +204,21 @@ const STEPS: Element[] = [
   { name: 'StSq3', baseValue: 3.5, type: 'step' },
   { name: 'StSq4', baseValue: 4.1, type: 'step' },
 ];
-
 const CHOREO: Element[] = [
   { name: 'ChSq1', baseValue: 3.5, type: 'choreo' },
   { name: 'ChSp1', baseValue: 3.5, type: 'choreo' },
 ];
-
 const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
-
 const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T', 'Eu'];
 const ROTATIONS = ['1', '2', '3', '4', '5'];
-
 const SPIN_TYPES = ['USp', 'LSp', 'SSp', 'CSp', 'CoSp'];
 const SPIN_MODES = ['', 'F', 'C', 'FC'];
-
 const PCS_MULTIPLIERS: Record<string, number> = {
   MenSP: 1.67,
   MenFS: 3.33,
   WomenSP: 1.33,
   WomenFS: 2.67,
 };
-
-/* ---------- BV / GOE ヘルパー ---------- */
-
-/** downgrade map for '<<' (one rotation less) */
 function getLowerRotationJump(name: string): Element | null {
   const map: Record<string, string> = {
     '4A': '3A',
@@ -297,30 +254,15 @@ function getLowerRotationJump(name: string): Element | null {
   const lower = map[name];
   return lower ? ALL_ELEMENTS.find((e) => e.name === lower) || null : null;
 }
-
-/**
- * 表示・合計用の BV（secondHalf を含む）
- * - '*' -> 0 優先
- * - underRotation '<' => BV × 0.8
- * - underRotation '<<' => lower rotation baseValue
- * - edge 'e' => BV × 0.8
- * - REP => BV × 0.7
- * - V (spin) => BV × 0.75
- * - secondHalf (jump) => BV × 1.1  ← 表示 / 合計に反映
- */
 function getBVWithMods(sub: LineSubElement): number {
   if (sub.marks.includes('*')) return 0;
   let bv = sub.element.baseValue;
-
   if (sub.underRotation === '<') bv *= 0.8;
   if (sub.underRotation === '<<') {
     const lower = getLowerRotationJump(sub.element.name);
     if (lower) bv = lower.baseValue;
   }
-
   const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
-  
-
 if (
   (jumpType === 'F' || jumpType === 'Lz') &&
   sub.edge === 'e'
@@ -334,27 +276,17 @@ if (
     bv *= 0.75;
     bv = Math.round(bv * 100) / 100; // *少数第2位へ丸め
   }
-
   if (sub.secondHalf && sub.element.type === 'jump') bv *= 1.1;
-
   return Number(bv);
 }
-
-/**
- * GOE 計算用 BV（secondHalf を除く）
- * 要望: GOE の際には secondHalf の ×1.1 を使わないが、
- * underRotation / edge / REP の影響は含める（ただし '*' の場合は GOE = 0）
- */
 function getBVForGOE(sub: LineSubElement): number {
   if (sub.marks.includes('*')) return 0;
   let bv = sub.element.baseValue;
-
   if (sub.underRotation === '<') bv *= 0.8;
   if (sub.underRotation === '<<') {
     const lower = getLowerRotationJump(sub.element.name);
     if (lower) bv = lower.baseValue;
   }
-
   const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
 if (
   (jumpType === 'F' || jumpType === 'Lz') &&
@@ -369,7 +301,6 @@ if (
   bv *= 0.8;
 }
   if (sub.marks.includes('V') && sub.element.type === 'spin') bv *= 0.75;
-
   // NOTE: intentionally NOT applying secondHalf multiplier here
   return Number(bv);
 }
@@ -404,25 +335,17 @@ function calcTotalFallPenalty(allLines: Line[]): number {
   }
   return penalty;
 }
-
-/* ---------- GOE / subtotal ---------- */
-
 function getOriginalBV(sub: LineSubElement): number {
   let bv = sub.element.baseValue;
-
   if (sub.underRotation === '<') bv *= 0.8;
   if (sub.underRotation === '<<') {
     const lower = getLowerRotationJump(sub.element.name);
     if (lower) bv = lower.baseValue;
   }
-
   if (sub.edge === 'e') bv *= 0.8;
-
   if (sub.element.type === 'spin' && sub.marks.includes('V')) bv *= 0.75;
-
   return bv;
 }
-
 function calcGOEPoint(
   sub: LineSubElement,
   maxSub: LineSubElement | null
@@ -435,8 +358,7 @@ function calcGOEPoint(
     sub.element.name === 'ChSp1'
   ) {
     return Number((0.5 * sub.goe).toFixed(2));
-  }
-    
+  } 
   // spin/step/choreo: always GOE allowed (if not '*')
   if (
     sub.element.type === 'spin' ||
@@ -447,7 +369,6 @@ function calcGOEPoint(
     const originalBV = getOriginalBV(sub);
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));
   }
-
   // jump: only highest-BV in the combo receives GOE
   if (sub.element.type === 'jump') {
     if (!maxSub) return 0;
@@ -456,11 +377,8 @@ function calcGOEPoint(
     const originalBV = getOriginalBV(sub);
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));
   }
-
   return 0;
 }
-
-/** 1要素の subtotal = BV(with mods, includes secondHalf) + GOEpoint */
 function calcSubTotal(
   sub: LineSubElement,
   maxSub: LineSubElement | null
@@ -469,8 +387,6 @@ function calcSubTotal(
   const goe = calcGOEPoint(sub, maxSub);
   return Number((bv + goe).toFixed(2));
 }
-
-/** 行合計 */
 function calcLineTotal(line: Line): number {
   if (line.subs.length === 0) return 0;
   const maxSub =
@@ -485,33 +401,24 @@ function calcLineTotal(line: Line): number {
     : null;
   return line.subs.reduce((sum, s) => sum + calcSubTotal(s, maxSub), 0);
 }
-
-/* ---------- React コンポーネント ---------- */
-
 export default function Page() {
   const [isMobileView, setIsMobileView] = useState(false);
-
 useEffect(() => {
   const checkMobile = () => {
     setIsMobileView(window.innerWidth <= 1024);
   };
-
   checkMobile();
-
   window.addEventListener('resize', checkMobile);
-
   return () =>
     window.removeEventListener('resize', checkMobile);
 }, []);
   const [lines, setLines] = useState<Line[]>([]);
   const [tempLine, setTempLine] = useState<Element[]>([]);
-
   const [playerName, setPlayerName] = useState('');
   const [country, setCountry] = useState('');
   const [competition, setCompetition] = useState('');
   const [category, setCategory] =
     useState<keyof typeof PCS_MULTIPLIERS>('MenSP');
-
   const [pcs, setPcs] = useState<PCS>({ comp: 8, pres: 8, skills: 8 });
   const [deductions, setDeductions] = useState({
   programTime: false,
@@ -529,28 +436,22 @@ useEffect(() => {
       if (raw) setHistory(JSON.parse(raw));
     } catch {}
   }, []);
-
   // show ISU-like protocol view after pressing 決定して表示
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
   const [isDeductionOpen, setIsDeductionOpen] = useState(false);
   const [isPCSOpen, setIsPCSOpen] = useState(false);
   const [isElementSelectorOpen, setIsElementSelectorOpen] = useState(false);
-  /* ---------- compact selector states ---------- */
 const [selectedCategory, setSelectedCategory] = useState<
   'JUMP' | 'SPIN' | 'STEP' | 'CHOREO' | ''
 >('');
-
 const [selectedJumpType, setSelectedJumpType] = useState('');
 const [selectedSpinType, setSelectedSpinType] = useState('');
 const [selectedSpinMode, setSelectedSpinMode] = useState('');
-
 const [recentElements, setRecentElements] = useState<Element[]>([]);
 const [isComboMode, setIsComboMode] = useState(false);
 useEffect(() => {
     localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
   }, [history]);
-
-  /* UI 操作 */
  const addToTemp = (el: Element) => {
   // コンボモードでない場合
   if (!isComboMode) {
@@ -559,19 +460,16 @@ useEffect(() => {
     // コンボモードなら追加
     setTempLine((t) => [...t, el]);
   }
-
   // 最近使用
   setRecentElements((prev) => {
     const filtered = prev.filter((p) => p.name !== el.name);
     return [el, ...filtered].slice(0, 10);
   });
 };
-  
   const clearTemp = () => {
   setTempLine([]);
   setIsComboMode(false);
 };
-
   const addLineFromTemp = () => {
     if (tempLine.length === 0) return;
     const newLine: Line = {
@@ -590,7 +488,6 @@ useEffect(() => {
    setTempLine([]);
    setIsComboMode(false);
   };
-
   const addComboToLine = (lineId: number) => {
     setLines((l) =>
       l.map((line) =>
@@ -614,7 +511,6 @@ useEffect(() => {
       )
     );
   };
-
   const updateSub = (
     lineId: number,
     subId: number,
@@ -632,7 +528,6 @@ useEffect(() => {
       })
     );
   };
-
   const toggleMark = (lineId: number, subId: number, mark: string) => {
     setLines(l =>
       l.map(line => {
@@ -647,15 +542,12 @@ useEffect(() => {
               : [...s.marks, mark];
   
             let newGOE = s.goe;
-  
             return { ...s, marks: newMarks, goe: newGOE };
           })
         };
       })
     );
   };
-  
-
   const deleteLine = (lineId: number) =>
     setLines((l) => l.filter((line) => line.id !== lineId));
   const deleteSub = (lineId: number, subId: number) =>
@@ -666,8 +558,6 @@ useEffect(() => {
           : { ...line, subs: line.subs.filter((s) => s.id !== subId) }
       )
     );
-
-  /* totals */
   const totalFalls = countTotalFalls(lines);
   const totalTESbeforeFalls = lines.reduce(
     (sum, line) => sum + calcLineTotal(line),
@@ -694,8 +584,6 @@ useEffect(() => {
   const grandTotal = Number(
   (totalTES + pcsApplied + totalDeduction).toFixed(2)
 );
-
-  /* history 操作 */
   const saveResultToHistory = () => {
     const item: HistoryItem = {
       id: uid(),
@@ -712,7 +600,6 @@ useEffect(() => {
     setHistory((h) => [item, ...h]);
     alert('履歴に保存しました');
   };
-
   const saveAndShowProtocol = () => {
    const html = renderProtocolHtml({
   playerName,
@@ -745,52 +632,40 @@ useEffect(() => {
     // simulate page refresh by scrolling to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
   const clearHistory = () => {
-    if (!confirm('履歴を全て削除しますか？')) return;
+    if (!confirm('Delete All')) return;
     setHistory([]);
   };
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
     const downloadProtocol = () => {
   if (!showProtocol?.protocolHtml) return;
-
   const fullHtml = `
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8" />
-
 <meta
   name="viewport"
   content="width=device-width, initial-scale=1"
 />
-
 <title>Protocol</title>
 </head>
-
 <body>
 ${showProtocol.protocolHtml}
 </body>
-
 </html>
 `;
-
   const blob = new Blob([fullHtml], {
     type: 'text/html',
   });
-
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement('a');
   a.href = url;
   a.download = `${showProtocol.playerName || 'protocol'}.html`;
-
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-
   URL.revokeObjectURL(url);
 };
   const exportHistory = () => {
@@ -798,31 +673,25 @@ ${showProtocol.protocolHtml}
     [JSON.stringify(history, null, 2)],
     { type: 'application/json' }
   );
-
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement('a');
   a.href = url;
   a.download =
     `skating-history-${new Date().toISOString().split('T')[0]}.json`;
-
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-
   URL.revokeObjectURL(url);
 };
   /* Protocol view */
   if (showProtocol) {
     return (
       <div
-    
         style={{
           padding: 18,
           fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
           maxWidth: isMobileView ? '100%' : 980,
           margin: '0 auto',
-
            backgroundColor: '#ffffff',
            color: '#000000',
            minHeight: '100vh',
@@ -848,8 +717,6 @@ ${showProtocol.protocolHtml}
       </div>
     );
   }
-
-  /* ---------- JSX Editor UI ---------- */
   return (
     <div
       style={{
@@ -857,7 +724,6 @@ ${showProtocol.protocolHtml}
         fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
         maxWidth: isMobileView ? '100%' : 980,
         margin: '0 auto',
-
        backgroundColor: '#ffffff',
        color: '#000000',
        minHeight: '100vh',
@@ -866,8 +732,6 @@ ${showProtocol.protocolHtml}
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>
         Figure Skating Judge Simulation(2026/27)
       </h1>
-
-      {/* header */}
       <div
         style={{
           display: 'grid',
@@ -909,8 +773,6 @@ ${showProtocol.protocolHtml}
           </select>
         </label>
       </div>
-      
-       {/* lines (responsive table with horizontal scroll) */}
       <div style={{ overflowX: 'auto' }}>
          {lines.map((line, lineIndex) => {
           const maxSub =
@@ -990,7 +852,6 @@ ${showProtocol.protocolHtml}
                     const isMax = maxSub ? sub.id === maxSub.id : false;
                     const goePoint = calcGOEPoint(sub, maxSub);
                     const subtotal = calcSubTotal(sub, maxSub);
-
                     // highlighting
                     const hasF = sub.marks.includes('F');
                     const positiveGo = sub.goe > 0;
@@ -1002,7 +863,6 @@ ${showProtocol.protocolHtml}
                       rowStyle.background = '#f0fff4'; // light green
                     else if (secondHalfHighlight)
                       rowStyle.background = '#fffaf0'; // light yellow
-
                     return (
                       <tr key={sub.id} style={rowStyle}>
                         <td style={tdStyle}>
@@ -1046,7 +906,6 @@ ${showProtocol.protocolHtml}
                             </optgroup>
                           </select>
                         </td>
-
                         <td style={{ ...tdStyle, textAlign: 'right' }}>
                           {bvWithMods.toFixed(2)}
                           {/* secondHalf UI: show 'X' label when checked */}
@@ -1054,7 +913,6 @@ ${showProtocol.protocolHtml}
                             <div style={{ fontSize: 11, color: '#666' }}>X</div>
                           )}
                         </td>
-
 <td style={tdStyle}>
   {(sub.element.type === 'jump' && isMax) ||
   sub.element.type !== 'jump' ||
@@ -1076,7 +934,6 @@ ${showProtocol.protocolHtml}
       >
         -
       </button>
-
       <div
         style={{
           minWidth: 40,
@@ -1086,7 +943,6 @@ ${showProtocol.protocolHtml}
       >
         {sub.goe > 0 ? `+${sub.goe}` : sub.goe}
       </div>
-
       <button
         onClick={() =>
           updateSub(line.id, sub.id, {
@@ -1101,15 +957,12 @@ ${showProtocol.protocolHtml}
     <div style={{ color: '#999' }}>—</div>
   )}
 </td>
-
 <td style={{ ...tdStyle, textAlign: 'right' }}>
   {goePoint.toFixed(2)}
 </td>
-
 <td style={{ ...tdStyle, textAlign: 'right' }}>
   {subtotal.toFixed(2)}
 </td>
-
                         <td style={tdStyle}>
   {sub.element.type === 'jump' ? (
     <select
@@ -1134,7 +987,6 @@ ${showProtocol.protocolHtml}
     <div style={{ color: '#999' }}>—</div>
   )}
 </td>
-
                      <td style={tdStyle}>
   {(() => {
     // ジャンプ名から種類を取得
@@ -1148,7 +1000,6 @@ ${showProtocol.protocolHtml}
     if (!canHaveEdgeCall) {
       return <div style={{ color: '#999' }}>—</div>;
     }
-
     return (
       <select
         value={sub.edge || ''}
@@ -1165,7 +1016,6 @@ ${showProtocol.protocolHtml}
     );
   })()}
 </td>
-
                         <td style={tdStyle}>
   {sub.element.type === 'spin' ? (
     <input
@@ -1187,11 +1037,9 @@ ${showProtocol.protocolHtml}
       checked={line.subs.every((s) => s.secondHalf)}
       onChange={(e) => {
         const checked = e.target.checked;
-
         setLines((prev) =>
           prev.map((l) => {
             if (l.id !== line.id) return l;
-
             return {
               ...l,
               subs: l.subs.map((s) => ({
@@ -1205,7 +1053,6 @@ ${showProtocol.protocolHtml}
     />
   ) : null}
 </td>
-
                        <td style={tdStyle}>
   {sub.element.type === 'jump' ? (
     (
@@ -1264,7 +1111,6 @@ ${showProtocol.protocolHtml}
     </>
   )}
 </td>
-
                         <td style={tdStyle}>
                           <button
                             onClick={() => deleteSub(line.id, sub.id)}
@@ -1293,7 +1139,6 @@ ${showProtocol.protocolHtml}
     border: '1px solid #eee',
     borderRadius: 10,
     background: '#fafafa',
-
     fontWeight: 700,
     display: 'flex',
     justifyContent: 'space-between',
@@ -1302,7 +1147,6 @@ ${showProtocol.protocolHtml}
   }}
 >
   <span>Elements</span>
-
   <button
     style={{
       width: 32,
@@ -1317,7 +1161,6 @@ ${showProtocol.protocolHtml}
     {isElementSelectorOpen ? '−' : '+'}
   </button>
 </div>
-
 <div
   style={{
     maxHeight: isElementSelectorOpen ? 3000 : 0,
@@ -1334,13 +1177,11 @@ ${showProtocol.protocolHtml}
       background: '#fafafa',
     }}
   >
-  {/* Recent Used */}
   {recentElements.length > 0 && (
     <div style={{ marginBottom: 12 }}>
       <div style={{ fontSize: 13, marginBottom: 6 }}>
         Recently Used
       </div>
-
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
         {recentElements.map((el) => (
           <button
@@ -1354,8 +1195,6 @@ ${showProtocol.protocolHtml}
       </div>
     </div>
   )}
-
-  {/* category */}
   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
     {['JUMP', 'SPIN', 'STEP', 'CHOREO'].map((cat) => (
       <button
@@ -1379,8 +1218,6 @@ ${showProtocol.protocolHtml}
       </button>
     ))}
   </div>
-
-  {/* jump selector */}
   {selectedCategory === 'JUMP' && (
     <div style={{ marginTop: 12 }}>
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -1394,7 +1231,6 @@ ${showProtocol.protocolHtml}
           </button>
         ))}
       </div>
-
    {selectedJumpType && (
   <div
     style={{
@@ -1409,9 +1245,7 @@ ${showProtocol.protocolHtml}
         const el = ALL_ELEMENTS.find(
           (x) => x.name === '1Eu'
         );
-
         if (!el) return null;
-
         return (
           <button
             key="1Eu"
@@ -1425,13 +1259,10 @@ ${showProtocol.protocolHtml}
     ) : (
       ROTATIONS.map((r) => {
         const name = `${r}${selectedJumpType}`;
-
         const el = ALL_ELEMENTS.find(
           (x) => x.name === name
         );
-
         if (!el) return null;
-
         return (
           <button
             key={name}
@@ -1447,8 +1278,6 @@ ${showProtocol.protocolHtml}
 )}
     </div>
   )}
-
-  {/* spin selector */}
   {selectedCategory === 'SPIN' && (
     <div style={{ marginTop: 12 }}>
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -1462,7 +1291,6 @@ ${showProtocol.protocolHtml}
           </button>
         ))}
       </div>
-
       {selectedSpinType && (
         <div
           style={{
@@ -1483,7 +1311,6 @@ ${showProtocol.protocolHtml}
           ))}
         </div>
       )}
-
       {selectedSpinType && (
         <div
           style={{
@@ -1495,7 +1322,6 @@ ${showProtocol.protocolHtml}
         >
           {['B', '1', '2', '3', '4'].map((lv) => {
             let name = '';
-
             if (selectedSpinType === 'CoSp') {
               name = mangleCoSp(selectedSpinMode, lv);
             } else {
@@ -1505,13 +1331,10 @@ ${showProtocol.protocolHtml}
                 lv
               );
             }
-
             const el = ALL_ELEMENTS.find(
               (x) => x.name === name
             );
-
             if (!el) return null;
-
             return (
               <button
                 key={name}
@@ -1526,8 +1349,6 @@ ${showProtocol.protocolHtml}
       )}
     </div>
   )}
-
-  {/* step */}
   {selectedCategory === 'STEP' && (
     <div
       style={{
@@ -1548,8 +1369,6 @@ ${showProtocol.protocolHtml}
       ))}
     </div>
   )}
-
-  {/* choreo */}
   {selectedCategory === 'CHOREO' && (
     <div
       style={{
@@ -1595,7 +1414,6 @@ ${showProtocol.protocolHtml}
           </span>
         ))}
       </div>
-
       <div style={{ marginTop: 8 }}>
     <button
           onClick={addLineFromTemp}
@@ -1603,7 +1421,6 @@ ${showProtocol.protocolHtml}
         >
           行追加
         </button>
-
         <button
           onClick={clearTemp}
           style={smallBtn}
@@ -1615,8 +1432,6 @@ ${showProtocol.protocolHtml}
   )}
     </div>
 </div>
-
-{/* PCS Toggle */}
 <div
   onClick={() => setIsPCSOpen(!isPCSOpen)}
   style={{
@@ -1625,7 +1440,6 @@ ${showProtocol.protocolHtml}
     border: '1px solid #eee',
     borderRadius: 10,
     background: '#f7fbff',
-
     fontWeight: 700,
     display: 'flex',
     justifyContent: 'space-between',
@@ -1634,7 +1448,6 @@ ${showProtocol.protocolHtml}
   }}
 >
   <span>Program Component Score</span>
-
   <button
     style={{
       width: 32,
@@ -1649,7 +1462,6 @@ ${showProtocol.protocolHtml}
     {isPCSOpen ? '−' : '+'}
   </button>
 </div>
-
 <div
   style={{
     maxHeight: isPCSOpen ? 1000 : 0,
@@ -1704,7 +1516,6 @@ ${showProtocol.protocolHtml}
         >
           −
         </button>
-
         <div
           style={{
             minWidth: 70,
@@ -1745,7 +1556,6 @@ ${showProtocol.protocolHtml}
     </div>
   </div>
 </div>
-      {/* Deduction Toggle */}
 <div
   onClick={() => setIsDeductionOpen(!isDeductionOpen)}
   style={{
@@ -1754,7 +1564,6 @@ ${showProtocol.protocolHtml}
     border: '1px solid #eee',
     borderRadius: 10,
     background: '#fff5f5',
-
     fontWeight: 700,
     display: 'flex',
     justifyContent: 'space-between',
@@ -1763,7 +1572,6 @@ ${showProtocol.protocolHtml}
   }}
 >
   <span>Deduction</span>
-
   <button
     style={{
       width: 32,
@@ -1797,16 +1605,13 @@ ${showProtocol.protocolHtml}
     <div style={{ fontWeight: 700 }}>
       Falls
     </div>
-
     <div style={{ marginTop: 6 }}>
       Number of Falls : {totalFalls}
     </div>
-
     <div>
       Fall Deduction : {totalFallPenalty.toFixed(2)}
     </div>
   </div>
-
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
@@ -1820,7 +1625,6 @@ ${showProtocol.protocolHtml}
     />
     Program time (-1)
   </label>
-
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
@@ -1834,7 +1638,6 @@ ${showProtocol.protocolHtml}
     />
     Illegal element (-2)
   </label>
-
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
@@ -1848,7 +1651,6 @@ ${showProtocol.protocolHtml}
     />
     Illegal movement (-2)
   </label>
-
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
@@ -1862,7 +1664,6 @@ ${showProtocol.protocolHtml}
     />
     Costume and prop violation (-1)
   </label>
-
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
@@ -1876,7 +1677,6 @@ ${showProtocol.protocolHtml}
     />
     Part of costume/decoration falls on ice (-1)
   </label>
-
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
@@ -1890,11 +1690,9 @@ ${showProtocol.protocolHtml}
     />
     Late start (-1)
   </label>
-
   <div style={{ marginTop: 10 }}>
     Interruption in performing the program
   </div>
-
   <select
     value={deductions.interruption}
     onChange={(e) =>
@@ -1913,7 +1711,6 @@ ${showProtocol.protocolHtml}
     <option value={-1}>-1</option>
     <option value={-2}>-2</option>
   </select>
-
   <div
     style={{
       marginTop: 14,
@@ -1924,9 +1721,7 @@ ${showProtocol.protocolHtml}
   >
     Total Deduction: {totalDeduction.toFixed(2)}
   </div>
-</div>
-  
-      {/* controls */}
+</div> 
       <div
         style={{
           marginTop: 12,
@@ -1969,8 +1764,6 @@ ${showProtocol.protocolHtml}
   Download file
 </button>
       </div>
-
-      {/* totals */}
       <div
   style={{
     marginTop: 12,
@@ -1984,19 +1777,16 @@ ${showProtocol.protocolHtml}
     {' '}
     {totalTES.toFixed(2)}
   </div>
-
   <div>
     Program Component Score (factored) :
     {' '}
     {pcsApplied.toFixed(2)}
   </div>
-
   <div>
     Deduction :
     {' '}
     {totalDeduction.toFixed(2)}
   </div>
-
   <div
     style={{
       fontWeight: 800,
@@ -2009,8 +1799,6 @@ ${showProtocol.protocolHtml}
     {grandTotal.toFixed(2)}
   </div>
 </div>
-
-      {/* history */}
       <div style={{ marginTop: 12 }}>
         <h3>Memories</h3>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
@@ -2066,12 +1854,10 @@ ${showProtocol.protocolHtml}
           </div>
         ))}
       </div>
-
        <div style={{ height: 48 }} />
     </div>
   );
 }
-/* ---------- スタイル小分け ---------- */
 const inputStyle: React.CSSProperties = {
   padding: 10,
   borderRadius: 8,
@@ -2083,7 +1869,6 @@ const thStyle: React.CSSProperties = {
   padding: '8px 10px',
   whiteSpace: 'nowrap',
 };
-
 const smallBtn: React.CSSProperties = {
   padding: '8px 10px',
   borderRadius: 8,
@@ -2091,14 +1876,11 @@ const smallBtn: React.CSSProperties = {
   background: '#fff',
   fontSize: 14,
 };
-
 const tdStyle: React.CSSProperties = {
 padding: '8px 10px',
   verticalAlign: 'middle',
   whiteSpace: 'nowrap',
 };
-
-/* ---------- ISU 風プロトコル HTML レンダラ（簡易） ---------- */
 function renderProtocolHtml(params: {
   playerName: string;
   country: string;
@@ -2125,7 +1907,6 @@ function renderProtocolHtml(params: {
     grandTotal,
     totalDeduction,
   } = params;
-
   const rowsHtml = lines
     .map((line, idx) => {
       const maxSub =
@@ -2136,22 +1917,18 @@ function renderProtocolHtml(params: {
                 : b
             )
           : null;
-
     const elementText = line.subs
   .map((sub) => {
     let text = sub.element.name;
-
     // edge を先に
     // 例: 3F!q / 3Lze<
     if (sub.edge) {
       text += sub.edge;
     }
-
     // rotation は後
     if (sub.underRotation) {
       text += sub.underRotation;
     }
-
     // V mark
     // 例: CoSp3V
     if (
@@ -2160,59 +1937,47 @@ function renderProtocolHtml(params: {
     ) {
       text += 'V';
     }
-
     // REP
     if (sub.marks.includes('REP')) {
       text += '+REP';
     }
-
     // *
     if (sub.marks.includes('*')) {
       text += '*';
     }
-
     // SEQ
     if (sub.marks.includes('SEQ')) {
       text += '+SEQ';
     }
-
     // COMBO
     if (sub.marks.includes('COMBO')) {
       text += '+COMBO';
     }
-
     return text;
   })
   .join('+');
-
       const hasSecondHalf = line.subs.some(
   (s) => s.secondHalf
 );
-
 const bv = line.subs
   .reduce(
     (s, sub) => s + getBVWithMods(sub),
     0
   )
   .toFixed(2);
-
       const total = calcLineTotal(line).toFixed(2);
-
      const goeMark =
   maxSub?.goe !== undefined
     ? `${maxSub.goe > 0 ? '+' : ''}${maxSub.goe.toFixed(0)}`
     : '0';
-
       return `
 <tr>
   <td style="border:1px solid #999;padding:8px;">
     ${idx + 1}
   </td>
-
   <td style="border:1px solid #999;padding:8px;">
     ${elementText}
   </td>
-
  <td style="
   border:1px solid #999;
   padding:8px;
@@ -2225,7 +1990,6 @@ const bv = line.subs
   <td style="border:1px solid #999;padding:8px;text-align:right;">
     ${goeMark}
   </td>
-
   <td style="border:1px solid #999;padding:8px;text-align:right;">
     ${total}
   </td>
@@ -2233,7 +1997,6 @@ const bv = line.subs
 `;
     })
     .join('');
-
  return `
 <div style="
   border:2px solid #000;
@@ -2242,7 +2005,6 @@ const bv = line.subs
   color:black;
   font-family:Arial,sans-serif;
 ">
-
 <h1 style="
   text-align:center;
   font-size:32px;
@@ -2263,17 +2025,14 @@ Figure Skating Score Sheet
     <b>Skater:</b>
     ${escapeHtml(playerName)}
   </div>
-
   <div>
     <b>Segment:</b>
     ${escapeHtml(category)}
   </div>
-
   <div>
     <b>Ded:</b>
     ${totalDeduction.toFixed(2)}
   </div>
-
   <div style="
     font-size:28px;
     font-weight:bold;
@@ -2281,12 +2040,10 @@ Figure Skating Score Sheet
     ${grandTotal.toFixed(2)}
   </div>
 </div>
-
 <div style="
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
 ">
-
 <table style="
   width:100%;
   border-collapse:collapse;
@@ -2302,56 +2059,45 @@ Figure Skating Score Sheet
   <th style="width:40px; border:1px solid #999;padding:8px;">
     #
   </th>
-
   <th style="width:320px; border:1px solid #999;padding:8px;">
     Executed Elements
   </th>
-
   <th style="width:90px; border:1px solid #999;padding:8px;">
     Base Value
   </th>
-
   <th style="width:80px; border:1px solid #999;padding:8px;">
     GOE
   </th>
-
   <th style="width:120px; border:1px solid #999;padding:8px;">
     Scores of Panel
   </th>
 </tr>
 </thead>
-
 <tbody>
 ${rowsHtml}
 </tbody>
-
 </table>
 </div>
-
 <div style="
   margin-top:24px;
   font-size:16px;
 ">
-
 <div style="
   font-weight:bold;
   margin-bottom:10px;
 ">
 Program Component Scores
 </div>
-
 <div style="
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
 ">
-
 <table style="
   width:100%;
   min-width:500px;
   border-collapse:collapse;
   font-size:18px;
 ">
-
 <thead>
 <tr style="
   background:#f3f3f3;
@@ -2361,34 +2107,28 @@ Program Component Scores
   <th style="border:1px solid #999;padding:8px;">
     Program Components
   </th>
-
   <th style="border:1px solid #999;padding:8px;">
     Score
   </th>
 </tr>
 </thead>
 <tbody>
-
 <tr>
   <td style="border:1px solid #999;padding:8px;">
     Composition
   </td>
-
   <td style="border:1px solid #999;padding:8px;text-align:right;">
     ${pcs.comp.toFixed(2)}
   </td>
 </tr>
-
 <tr>
   <td style="border:1px solid #999;padding:8px;">
     Presentation
   </td>
-
   <td style="border:1px solid #999;padding:8px;text-align:right;">
     ${pcs.pres.toFixed(2)}
   </td>
 </tr>
-
 <tr>
   <td style="border:1px solid #999;padding:8px;">
     Skating Skills
@@ -2398,18 +2138,15 @@ Program Component Scores
     ${pcs.skills.toFixed(2)}
   </td>
 </tr>
-
 </tbody>
 </table>
 </div>
-
 <div style="
   margin-top:30px;
   border-top:2px solid #000;
   padding-top:20px;
   font-size:20px;
 ">
-
 <div style="
   display:flex;
   justify-content:space-between;
@@ -2418,7 +2155,6 @@ Program Component Scores
   <span>Total Technical Element Score</span>
   <b>${totalTES.toFixed(2)}</b>
 </div>
-
 <div style="
   display:flex;
   justify-content:space-between;
@@ -2427,7 +2163,6 @@ Program Component Scores
   <span>Total Program Component Score</span>
   <b>${pcsApplied.toFixed(2)}</b>
 </div>
-
 <div style="
   display:flex;
   justify-content:space-between;
@@ -2436,7 +2171,6 @@ Program Component Scores
   <span>Deduction</span>
   <b>${totalDeduction.toFixed(2)}</b>
 </div>
-
 <div style="
   display:flex;
   justify-content:space-between;
@@ -2447,7 +2181,6 @@ Program Component Scores
   <span>Total Segment Score</span>
   <span>${grandTotal.toFixed(2)}</span>
 </div>
-
 </div>
 </div>
 `;
@@ -2461,25 +2194,20 @@ function mangleSpin(
   if (!mode) {
     return `${type}${level}`;
   }
-
   // F + type
   if (mode === 'F') {
     return `F${type}${level}`;
   }
-
   // C + type
   if (mode === 'C') {
     return `C${type}${level}`;
   }
-
   // FC + type
   if (mode === 'FC') {
     return `FC${type}${level}`;
   }
-
   return `${type}${level}`;
 }
-
 function mangleCoSp(
   mode: string,
   level: string
@@ -2488,19 +2216,15 @@ function mangleCoSp(
   if (!mode) {
     return `CoSp${level}`;
   }
-
   if (mode === 'F') {
     return `FCoSp${level}`;
   }
-
   if (mode === 'C') {
     return `CCoSp${level}`;
   }
-
   if (mode === 'FC') {
     return `FCCoSp${level}`;
   }
-
   return `CoSp${level}`;
 }
 function escapeHtml(s: string) {
