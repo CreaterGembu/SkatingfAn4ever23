@@ -1335,11 +1335,11 @@ ${showProtocol.protocolHtml}
             );
             if (!el) return null;
             return (
-              <button
-                {lv === '' ? `${selectedSpinType}` : name}
-                onClick={() => addToTemp(el)}
-                style={smallBtn}
-              >
+             <button
+  key={lv === '' ? selectedSpinType : name}
+  onClick={() => addToTemp(el)}
+  style={smallBtn}
+>
                 {name}
               </button>
             );
