@@ -1084,7 +1084,6 @@ ${showProtocol.protocolHtml}
       )
     )
   ) : (
-    <>
      <>
   {["F"].map((mark) => (
         <label
