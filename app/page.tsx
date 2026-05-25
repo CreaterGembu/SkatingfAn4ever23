@@ -31,7 +31,7 @@ type HistoryItem = {
   category: string;
   tes: number;
   pcsRaw: number;
-  pcsApplied: number;
+  pcsfactored: number;
   total: number;
   timestamp: string;
   protocolHtml?: string;
@@ -603,10 +603,10 @@ useEffect(() => {
   totalTESbeforeFalls.toFixed(2)
 );
   const pcsRaw = Number((pcs.comp + pcs.pres + pcs.skills).toFixed(2));
-  const pcsApplied = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
+  const pcsfactored = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
 // Total Segment Score で deduction を引く
   const grandTotal = Number(
-  (totalTES + pcsApplied + totalDeduction).toFixed(2)
+  (totalTES + pcsfactored + totalDeduction).toFixed(2)
 );
   const saveResultToHistory = () => {
     const item: HistoryItem = {
@@ -617,7 +617,7 @@ useEffect(() => {
       category,
       tes: totalTES,
       pcsRaw,
-      pcsApplied,
+      pcsfactored,
       total: grandTotal,
       timestamp: new Date().toISOString(),
     };
@@ -633,7 +633,7 @@ useEffect(() => {
   lines,
   pcs, 
   pcsRaw,
-  pcsApplied,
+  pcsfactored,
   totalTES,
   grandTotal,
   totalDeduction,
@@ -646,7 +646,7 @@ useEffect(() => {
       category,
       tes: totalTES,
       pcsRaw,
-      pcsApplied,
+      pcsfactored,
       total: grandTotal,
       timestamp: new Date().toISOString(),
       protocolHtml: html,
@@ -1575,7 +1575,7 @@ ${showProtocol.protocolHtml}
       PCS raw:{' '}
       {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)}
       × multiplier ({PCS_MULTIPLIERS[category]})
-      = {pcsApplied.toFixed(2)}
+      = {pcsfactored.toFixed(2)}
     </div>
   </div>
 </div>
@@ -1803,7 +1803,7 @@ ${showProtocol.protocolHtml}
   <div>
     Program Component Score (factored) :
     {' '}
-    {pcsApplied.toFixed(2)}
+    {pcsfactored.toFixed(2)}
   </div>
   <div>
     Deduction :
@@ -1853,7 +1853,7 @@ ${showProtocol.protocolHtml}
                 </div>
                 <div>
                   TES: {h.tes} ・ PCS raw: {h.pcsRaw} ・ PCS :{' '}
-                  {h.pcsApplied} ・ Total: {h.total}
+                  {h.pcsfactored} ・ Total: {h.total}
                 </div>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -1912,7 +1912,7 @@ function renderProtocolHtml(params: {
   lines: Line[];
   pcs: PCS;
   pcsRaw: number;
-  pcsApplied: number;
+  pcsfactored: number;
   totalTES: number;
   grandTotal: number;
   totalDeduction: number;
@@ -1925,7 +1925,7 @@ function renderProtocolHtml(params: {
     lines,
     pcs,
     pcsRaw,
-    pcsApplied,
+    pcsfactored,
     totalTES,
     grandTotal,
     totalDeduction,
@@ -2184,7 +2184,7 @@ Program Component Scores
   margin-bottom:12px;
 ">
   <span>Total Program Component Score</span>
-  <b>${pcsApplied.toFixed(2)}</b>
+  <b>${pcsfactored.toFixed(2)}</b>
 </div>
 <div style="
   display:flex;
