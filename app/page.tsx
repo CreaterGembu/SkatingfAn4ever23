@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 type Element = {
   name: string;
   baseValue: number;
-  type: 'jump' | 'spin' | 'step' | 'choreo';
-};
+  type: 'jump' | 'spin' | 'step' | 'choreo';};
 type LineSubElement = {
   id: number;
   element: Element;
@@ -12,17 +11,14 @@ type LineSubElement = {
   edge?: '' | '!' | 'e';
   goe: number; // integer -5..5
   marks: string[]; // "F","REP","*","V","SEQ","COMBO"
-  secondHalf?: boolean;
-};
+  secondHalf?: boolean;};
 type Line = {
   id: number;
-  subs: LineSubElement[];
-};
+  subs: LineSubElement[];};
 type PCS = {
   comp: number;
   pres: number;
-  skills: number;
-};
+  skills: number;};
 type HistoryItem = {
   id: number;
   playerName: string;
@@ -34,8 +30,7 @@ type HistoryItem = {
   pcsfactored: number;
   total: number;
   timestamp: string;
-  protocolHtml?: string;
-};
+  protocolHtml?: string;};
 const uid = () => Math.floor(Math.random() * 1e9);
 const JUMPS: Element[] = [
   { name: 'A', baseValue: 0.0, type: 'jump' },
@@ -73,8 +68,7 @@ const JUMPS: Element[] = [
   { name: '2T', baseValue: 1.3, type: 'jump' },
   { name: '3T', baseValue: 4.2, type: 'jump' },
   { name: '4T', baseValue: 9.5, type: 'jump' },
-  { name: '5T', baseValue: 14.0, type: 'jump' },
-];
+  { name: '5T', baseValue: 14.0, type: 'jump' },];
 const SPINS: Element[] = [
   { name: 'USp4', baseValue: 2.9, type: 'spin' },
   { name: 'USp3', baseValue: 2.3, type: 'spin' },
@@ -195,19 +189,16 @@ const SPINS: Element[] = [
   { name: 'FCCoSp2', baseValue: 3.0, type: 'spin' },
   { name: 'FCCoSp1', baseValue: 2.4, type: 'spin' },
   { name: 'FCCoSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'FCCoSp', baseValue: 0.0, type: 'spin' },
-];
+  { name: 'FCCoSp', baseValue: 0.0, type: 'spin' },];
 const STEPS: Element[] = [
   { name: 'StSqBV', baseValue: 1.6, type: 'step' },
   { name: 'StSq1', baseValue: 1.9, type: 'step' },
   { name: 'StSq2', baseValue: 2.7, type: 'step' },
   { name: 'StSq3', baseValue: 3.5, type: 'step' },
-  { name: 'StSq4', baseValue: 4.1, type: 'step' },
-];
+  { name: 'StSq4', baseValue: 4.1, type: 'step' },];
 const CHOREO: Element[] = [
   { name: 'ChSq1', baseValue: 3.5, type: 'choreo' },
-  { name: 'ChSp1', baseValue: 3.5, type: 'choreo' },
-];
+  { name: 'ChSp1', baseValue: 3.5, type: 'choreo' },];
 const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
 const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T', 'Eu'];
 const ROTATIONS = ['1', '2', '3', '4', '5'];
@@ -217,8 +208,7 @@ const PCS_MULTIPLIERS: Record<string, number> = {
   MenSP: 1.67,
   MenFS: 3.33,
   WomenSP: 1.33,
-  WomenFS: 2.67,
-};
+  WomenFS: 2.67,};
 function getLowerRotationJump(name: string): Element | null {
   const map: Record<string, string> = {
     '4A': '3A',
@@ -249,11 +239,9 @@ function getLowerRotationJump(name: string): Element | null {
     '4T': '3T',
     '3T': '2T',
     '2T': '1T',
-    '1T': 'T',
-  };
+    '1T': 'T',};
   const lower = map[name];
-  return lower ? ALL_ELEMENTS.find((e) => e.name === lower) || null : null;
-}
+  return lower ? ALL_ELEMENTS.find((e) => e.name === lower) || null : null;}
 type CalcBVOptions = {
   applySecondHalf?: boolean;
   applyREP?: boolean;
@@ -462,7 +450,7 @@ useEffect(() => {
   }, []);
   // show ISU-like protocol view after pressing 決定して表示
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
-  const [isdeductionsOpen, setIsdeductionsOpen] = useState(false);
+  const [isDeductionsOpen, setIsDeductionsOpen] = useState(false);
   const [isPCSOpen, setIsPCSOpen] = useState(false);
   const [isElementSelectorOpen, setIsElementSelectorOpen] = useState(false);
 const [selectedCategory, setSelectedCategory] = useState<
@@ -1939,6 +1927,7 @@ function renderProtocolHtml(params: {
     totalTES,
     grandTotal,
     totaldeductions,
+    deductions
   } = params;
   const deductionsDetails: string[] = [];
 
@@ -2240,6 +2229,12 @@ ${formatCategory(category)}
 </div>
 </div>
 </div>
+
+<div style="
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
   font-size:18px;
   flex-wrap:wrap;
   gap:12px;
