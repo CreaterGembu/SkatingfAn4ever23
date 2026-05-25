@@ -1561,7 +1561,7 @@ ${showProtocol.protocolHtml}
   </div>
 </div>
 <div
-  onClick={() => setIsdeductionsOpen(!isdeductionsOpen)}
+  onClick={() => setIsDeductionsOpen(!isdeductionsOpen)}
   style={{
     marginTop: 12,
     padding: 12,
@@ -1587,12 +1587,12 @@ ${showProtocol.protocolHtml}
       cursor: 'pointer',
     }}
   >
-    {isdeductionsOpen ? '−' : '+'}
+    {isDeductionsOpen ? '−' : '+'}
   </button>
 </div>
     <div
   style={{
-    maxHeight: isdeductionsOpen ? 1000 : 0,
+    maxHeight: isDeductionsOpen ? 1000 : 0,
     overflow: 'hidden',
     transition: '0.25s ease',
   }}
