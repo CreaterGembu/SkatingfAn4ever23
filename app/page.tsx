@@ -444,7 +444,7 @@ useEffect(() => {
   const [category, setCategory] =
     useState<keyof typeof PCS_MULTIPLIERS>('MenSP');
   const [pcs, setPcs] = useState<PCS>({ comp: 8, pres: 8, skills: 8 });
-  const [deductions, setDeductions] = useState({
+  const [deductions, setdeductions] = useState({
   programTime: false,
   illegalElement: false,
   illegalMovement: false,
@@ -462,7 +462,7 @@ useEffect(() => {
   }, []);
   // show ISU-like protocol view after pressing 決定して表示
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
-  const [isDeductionOpen, setIsDeductionOpen] = useState(false);
+  const [isdeductionsOpen, setIsdeductionsOpen] = useState(false);
   const [isPCSOpen, setIsPCSOpen] = useState(false);
   const [isElementSelectorOpen, setIsElementSelectorOpen] = useState(false);
 const [selectedCategory, setSelectedCategory] = useState<
@@ -586,7 +586,7 @@ useEffect(() => {
     0
   );
   const totalFallPenalty = calcTotalFallPenalty(lines);
-  const additionalDeduction =
+  const additionaldeductions =
   (deductions.programTime ? -1 : 0) +
   (deductions.illegalElement ? -2 : 0) +
   (deductions.illegalMovement ? -2 : 0) +
@@ -594,17 +594,17 @@ useEffect(() => {
   (deductions.costumeFall ? -1 : 0) +
   (deductions.lateStart ? -1 : 0) +
   deductions.interruption;
-  const totalDeduction =
-  totalFallPenalty + additionalDeduction;
+  const totaldeductions =
+  totalFallPenalty + additionaldeductions;
   // TES は純粋に技術点のみ
   const totalTES = Number(
   totalTESbeforeFalls.toFixed(2)
 );
   const pcsRaw = Number((pcs.comp + pcs.pres + pcs.skills).toFixed(2));
   const pcsfactored = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
-// Total Segment Score で deduction を引く
+// Total Segment Score で deductions を引く
   const grandTotal = Number(
-  (totalTES + pcsfactored + totalDeduction).toFixed(2)
+  (totalTES + pcsfactored + totaldeductions).toFixed(2)
 );
   const saveResultToHistory = () => {
     const item: HistoryItem = {
@@ -634,7 +634,8 @@ useEffect(() => {
   pcsfactored,
   totalTES,
   grandTotal,
-  totalDeduction,
+  totaldeductions,
+  deductions,
 });
     const item: HistoryItem = {
       id: uid(),
@@ -1580,7 +1581,7 @@ ${showProtocol.protocolHtml}
   </div>
 </div>
 <div
-  onClick={() => setIsDeductionOpen(!isDeductionOpen)}
+  onClick={() => setIsdeductionsOpen(!isdeductionsOpen)}
   style={{
     marginTop: 12,
     padding: 12,
@@ -1594,7 +1595,7 @@ ${showProtocol.protocolHtml}
     cursor: 'pointer',
   }}
 >
-  <span>Deduction</span>
+  <span>deductions</span>
   <button
     style={{
       width: 32,
@@ -1606,12 +1607,12 @@ ${showProtocol.protocolHtml}
       cursor: 'pointer',
     }}
   >
-    {isDeductionOpen ? '−' : '+'}
+    {isdeductionsOpen ? '−' : '+'}
   </button>
 </div>
     <div
   style={{
-    maxHeight: isDeductionOpen ? 1000 : 0,
+    maxHeight: isdeductionsOpen ? 1000 : 0,
     overflow: 'hidden',
     transition: '0.25s ease',
   }}
@@ -1632,7 +1633,7 @@ ${showProtocol.protocolHtml}
       Number of Falls : {totalFalls}
     </div>
     <div>
-      Fall Deduction : {totalFallPenalty.toFixed(2)}
+      Fall deductions : {totalFallPenalty.toFixed(2)}
     </div>
   </div>
   <label style={{ display: 'block', marginBottom: 6 }}>
@@ -1640,7 +1641,7 @@ ${showProtocol.protocolHtml}
       type="checkbox"
       checked={deductions.programTime}
       onChange={(e) =>
-        setDeductions((d) => ({
+        setdeductions((d) => ({
           ...d,
           programTime: e.target.checked,
         }))
@@ -1653,7 +1654,7 @@ ${showProtocol.protocolHtml}
       type="checkbox"
       checked={deductions.illegalElement}
       onChange={(e) =>
-        setDeductions((d) => ({
+        setdeductions((d) => ({
           ...d,
           illegalElement: e.target.checked,
         }))
@@ -1666,7 +1667,7 @@ ${showProtocol.protocolHtml}
       type="checkbox"
       checked={deductions.illegalMovement}
       onChange={(e) =>
-        setDeductions((d) => ({
+        setdeductions((d) => ({
           ...d,
           illegalMovement: e.target.checked,
         }))
@@ -1679,7 +1680,7 @@ ${showProtocol.protocolHtml}
       type="checkbox"
       checked={deductions.costumeProp}
       onChange={(e) =>
-        setDeductions((d) => ({
+        setdeductions((d) => ({
           ...d,
           costumeProp: e.target.checked,
         }))
@@ -1692,7 +1693,7 @@ ${showProtocol.protocolHtml}
       type="checkbox"
       checked={deductions.costumeFall}
       onChange={(e) =>
-        setDeductions((d) => ({
+        setdeductions((d) => ({
           ...d,
           costumeFall: e.target.checked,
         }))
@@ -1705,7 +1706,7 @@ ${showProtocol.protocolHtml}
       type="checkbox"
       checked={deductions.lateStart}
       onChange={(e) =>
-        setDeductions((d) => ({
+        setdeductions((d) => ({
           ...d,
           lateStart: e.target.checked,
         }))
@@ -1719,7 +1720,7 @@ ${showProtocol.protocolHtml}
   <select
     value={deductions.interruption}
     onChange={(e) =>
-      setDeductions((d) => ({
+      setdeductions((d) => ({
         ...d,
         interruption: Number(e.target.value),
       }))
@@ -1742,7 +1743,7 @@ ${showProtocol.protocolHtml}
       color: '#c62828',
     }}
   >
-    Total Deduction: {totalDeduction.toFixed(2)}
+    Total deductions: {totaldeductions.toFixed(2)}
   </div>
 </div> 
       <div
@@ -1806,9 +1807,9 @@ ${showProtocol.protocolHtml}
     {pcsfactored.toFixed(2)}
   </div>
   <div>
-    Deduction :
+    deductions :
     {' '}
-    {totalDeduction.toFixed(2)}
+    {totaldeductions.toFixed(2)}
   </div>
   <div
     style={{
@@ -1915,7 +1916,16 @@ function renderProtocolHtml(params: {
   pcsfactored: number;
   totalTES: number;
   grandTotal: number;
-  totalDeduction: number;
+  totaldeductions: number;
+  deductions: {
+    programTime: boolean;
+    illegalElement: boolean;
+    illegalMovement: boolean;
+    costumeProp: boolean;
+    costumeFall: boolean;
+    lateStart: boolean;
+    interruption: number;
+  };
 }) {
   const {
     playerName,
@@ -1928,8 +1938,33 @@ function renderProtocolHtml(params: {
     pcsfactored,
     totalTES,
     grandTotal,
-    totalDeduction,
+    totaldeductions,
   } = params;
+  const deductionsDetails: string[] = [];
+
+if (deductions.programTime)
+  deductionsDetails.push('Program time violation (-1)');
+
+if (deductions.illegalElement)
+  deductionsDetails.push('Illegal element (-2)');
+
+if (deductions.illegalMovement)
+  deductionsDetails.push('Illegal movement (-2)');
+
+if (deductions.costumeProp)
+  deductionsDetails.push('Costume/Prop violation (-1)');
+
+if (deductions.costumeFall)
+  deductionsDetails.push('Costume falls on ice (-1)');
+
+if (deductions.lateStart)
+  deductionsDetails.push('Late start (-1)');
+
+if (deductions.interruption === -1)
+  deductionsDetails.push('Interruption (-1)');
+
+if (deductions.interruption === -2)
+  deductionsDetails.push('Interruption (-2)');
   const rowsHtml = lines
     .map((line, idx) => {
    const maxSub =
@@ -2104,9 +2139,107 @@ ${formatCategory(category)}
 </div>
 
 <div style="
-  display:flex;
-  justify-content:space-between;
+  border:2px solid #000;
   margin-bottom:24px;
+">
+
+<div style="
+  display:grid;
+  grid-template-columns: 1fr 260px;
+">
+
+<!-- 左 -->
+<div style="
+  padding:18px;
+  border-right:2px solid #000;
+">
+
+  <div style="margin-bottom:12px;font-size:18px;">
+    <b>Skater:</b>
+    ${escapeHtml(playerName)}
+  </div>
+
+  <div style="margin-bottom:12px;font-size:18px;">
+    <b>Nation:</b>
+    ${escapeHtml(country)}
+  </div>
+
+  <div style="font-size:18px;">
+    <b>Segment:</b>
+    ${formatCategory(category)}
+  </div>
+</div>
+
+<!-- 右 -->
+<div style="
+  display:flex;
+  flex-direction:column;
+">
+
+  <div style="
+    border-bottom:2px solid #000;
+    padding:14px;
+    display:flex;
+    justify-content:space-between;
+    font-size:18px;
+  ">
+    <span>TES</span>
+    <b>${totalTES.toFixed(2)}</b>
+  </div>
+
+  <div style="
+    border-bottom:2px solid #000;
+    padding:14px;
+    display:flex;
+    justify-content:space-between;
+    font-size:18px;
+  ">
+    <span>PCS</span>
+    <b>${pcsfactored.toFixed(2)}</b>
+  </div>
+
+  <div style="
+    border-bottom:2px solid #000;
+    padding:14px;
+    font-size:15px;
+  ">
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      margin-bottom:8px;
+    ">
+      <span>deductions</span>
+      <b>${totaldeductions.toFixed(2)}</b>
+    </div>
+
+    <div style="
+      color:#444;
+      line-height:1.5;
+      font-size:13px;
+    ">
+      ${
+        deductionsDetails.length > 0
+          ? deductionsDetails.join('<br/>')
+          : 'None'
+      }
+    </div>
+  </div>
+
+  <div style="
+    padding:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:28px;
+    font-weight:bold;
+  ">
+    <span>Total</span>
+    <span>${grandTotal.toFixed(2)}</span>
+  </div>
+
+</div>
+</div>
+</div>
   font-size:18px;
   flex-wrap:wrap;
   gap:12px;
@@ -2121,7 +2254,7 @@ ${formatCategory(category)}
 </div>
   <div>
     <b>Ded:</b>
-    ${totalDeduction.toFixed(2)}
+    ${totaldeductions.toFixed(2)}
   </div>
   <div style="
     font-size:28px;
@@ -2238,47 +2371,6 @@ Program Component Scores
 </tr>
 </tbody>
 </table>
-</div>
-<div style="
-  margin-top:30px;
-  border-top:2px solid #000;
-  padding-top:20px;
-  font-size:20px;
-">
-<div style="
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-">
-  <span>Total Technical Element Score</span>
-  <b>${totalTES.toFixed(2)}</b>
-</div>
-<div style="
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-">
-  <span>Total Program Component Score</span>
-  <b>${pcsfactored.toFixed(2)}</b>
-</div>
-<div style="
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-">
-  <span>Deduction</span>
-  <b>${totalDeduction.toFixed(2)}</b>
-</div>
-<div style="
-  display:flex;
-  justify-content:space-between;
-  font-size:30px;
-  font-weight:bold;
-  margin-top:20px;
-">
-  <span>Total Segment Score</span>
-  <span>${grandTotal.toFixed(2)}</span>
-</div>
 </div>
 </div>
 `;
