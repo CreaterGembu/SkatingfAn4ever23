@@ -1561,7 +1561,7 @@ ${showProtocol.protocolHtml}
   </div>
 </div>
 <div
-  onClick={() => setIsDeductionsOpen(!isdeductionsOpen)}
+  onClick={() => setIsDeductionsOpen(!isDeductionsOpen)}
   style={{
     marginTop: 12,
     padding: 12,
