@@ -1940,45 +1940,78 @@ function renderProtocolHtml(params: {
                 : b
             )
           : null;
-    const elementText = line.subs
+   const maxSub =
+  line.subs.length > 0
+    ? line.subs.reduce((a, b) =>
+        calcBV(a) > calcBV(b)
+          ? a
+          : b
+      )
+    : null;
+
+const elementText = line.subs
   .map((sub) => {
     let text = sub.element.name;
+
     // edge を先に
-    // 例: 3F!q / 3Lze<
     if (sub.edge) {
       text += sub.edge;
     }
+
     // rotation は後
     if (sub.underRotation) {
       text += sub.underRotation;
     }
+
     // V mark
-    // 例: CoSp3V
     if (
       sub.marks.includes('V') &&
       sub.element.type === 'spin'
     ) {
       text += 'V';
     }
+
     // REP
     if (sub.marks.includes('REP')) {
       text += '+REP';
     }
+
     // *
     if (sub.marks.includes('*')) {
       text += '*';
     }
+
     // SEQ
     if (sub.marks.includes('SEQ')) {
       text += '+SEQ';
     }
+
     // COMBO
     if (sub.marks.includes('COMBO')) {
       text += '+COMBO';
     }
+
     return text;
   })
   .join('+');
+
+const infoText = line.subs
+  .map((sub) => {
+    const infos: string[] = [];
+
+    if (sub.marks.includes('F')) infos.push('F');
+    if (sub.marks.includes('*')) infos.push('*');
+
+    if (sub.edge === '!') infos.push('!');
+    if (sub.edge === 'e') infos.push('e');
+
+    if (sub.underRotation === '<') infos.push('<');
+    if (sub.underRotation === '<<') infos.push('<<');
+
+    return infos.join(' ');
+  })
+  .filter(Boolean)
+  .join(' + ');
       const hasSecondHalf = line.subs.some(
   (s) => s.secondHalf
 );
@@ -1993,14 +2026,28 @@ const bv = line.subs
   maxSub?.goe !== undefined
     ? `${maxSub.goe > 0 ? '+' : ''}${maxSub.goe.toFixed(0)}`
     : '0';
+      const goeValue = line.subs.reduce(
+  (sum, sub) => sum + calcGOEPoint(sub, maxSub),
+  0
+).toFixed(2);
       return `
 <tr>
   <td style="border:1px solid #999;padding:8px;">
     ${idx + 1}
   </td>
   <td style="border:1px solid #999;padding:8px;">
-    ${elementText}
-  </td>
+  ${elementText}
+</td>
+<td style="
+  border:1px solid #999;
+  padding:8px;
+  text-align:center;
+  color:#c62828;
+  font-weight:bold;
+">
+  ${infoText || '—'}
+</td>
+<td style="
  <td style="
   border:1px solid #999;
   padding:8px;
@@ -2011,11 +2058,16 @@ const bv = line.subs
   ${hasSecondHalf ? '<span style="font-size:12px;"> x</span>' : ''}
 </td>
   <td style="border:1px solid #999;padding:8px;text-align:right;">
-    ${goeMark}
-  </td>
-  <td style="border:1px solid #999;padding:8px;text-align:right;">
-    ${total}
-  </td>
+  ${goeMark}
+</td>
+
+<td style="border:1px solid #999;padding:8px;text-align:right;">
+  ${goeValue}
+</td>
+
+<td style="border:1px solid #999;padding:8px;text-align:right;">
+  ${total}
+</td>
 </tr>
 `;
     })
@@ -2031,10 +2083,18 @@ const bv = line.subs
 <h1 style="
   text-align:center;
   font-size:32px;
+  margin-bottom:6px;
+">
+${escapeHtml(competition)}
+</h1>
+<div style="
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
   margin-bottom:30px;
 ">
-Figure Skating Score Sheet
-</h1>
+${formatCategory(category)}
+</div>
 
 <div style="
   display:flex;
@@ -2049,9 +2109,9 @@ Figure Skating Score Sheet
     ${escapeHtml(playerName)}
   </div>
   <div>
-    <b>Segment:</b>
-    ${escapeHtml(category)}
-  </div>
+  <b>Nation:</b>
+  ${escapeHtml(country)}
+</div>
   <div>
     <b>Ded:</b>
     ${totalDeduction.toFixed(2)}
@@ -2083,17 +2143,25 @@ Figure Skating Score Sheet
     #
   </th>
   <th style="width:320px; border:1px solid #999;padding:8px;">
-    Executed Elements
-  </th>
-  <th style="width:90px; border:1px solid #999;padding:8px;">
-    Base Value
-  </th>
-  <th style="width:80px; border:1px solid #999;padding:8px;">
-    GOE
-  </th>
-  <th style="width:120px; border:1px solid #999;padding:8px;">
-    Scores of Panel
-  </th>
+  Executed Elements
+</th>
+<th style="width:100px; border:1px solid #999;padding:8px;">
+  Info
+</th>
+<th style="width:90px; border:1px solid #999;padding:8px;">
+  Base Value
+</th>
+ <th style="width:90px; border:1px solid #999;padding:8px;">
+  GOE Mark
+</th>
+
+<th style="width:90px; border:1px solid #999;padding:8px;">
+  GOE
+</th>
+
+<th style="width:120px; border:1px solid #999;padding:8px;">
+  Scores of Panel
+</th>
 </tr>
 </thead>
 <tbody>
@@ -2250,6 +2318,21 @@ function mangleCoSp(
   }
   return `CoSp${level}`;
 }
+
+function formatCategory(category: string) {
+  const map: Record<string, string> = {
+    MenSP: 'MEN SHORT PROGRAM',
+    MenFS: 'MEN FREE SKATING',
+    WomenSP: 'WOMEN SHORT PROGRAM',
+    WomenFS: 'WOMEN FREE SKATING',
+  };
+
+  return map[category] || category;
+}
+
 function escapeHtml(s: string) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
