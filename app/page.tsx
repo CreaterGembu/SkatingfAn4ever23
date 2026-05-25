@@ -260,14 +260,11 @@ function calcBV(
     !ignoreAsterisk &&
     sub.marks.includes('*')
   ) {
-    return 0;
-  }
+    return 0;}
   let bv = sub.element.baseValue;
-
   // under rotation
   if (sub.underRotation === '<') {
-    bv *= 0.8;
-  }
+    bv *= 0.8;}
   // downgrade
   if (sub.underRotation === '<<') {
     const lower = getLowerRotationJump(
@@ -301,20 +298,15 @@ function calcBV(
     sub.element.type === 'spin' &&
     sub.marks.includes('V')
   ) {
-    bv *= 0.75;
-  }
-
+    bv *= 0.75;}
   // second half bonus
   if (
     applySecondHalf &&
     sub.secondHalf &&
     sub.element.type === 'jump'
   ) {
-    bv *= 1.1;
-  }
-
-  return Number(bv.toFixed(2));
-}
+    bv *= 1.1;}
+  return Number(bv.toFixed(2));}
 function countTotalFalls(allLines: Line[]): number {
   return allLines.reduce(
     (sum, line) =>
@@ -342,23 +334,19 @@ function calcTotalFallPenalty(allLines: Line[]): number {
   for (let i = 1; i <= totalF; i++) {
     if (i === 1 || i === 2) penalty -= 1;
     else if (i === 3 || i === 4) penalty -= 2;
-    else penalty -= 3;
-  }
-  return penalty;
-}
+    else penalty -= 3;}
+  return penalty;}
 function calcGOEPoint(
   sub: LineSubElement,
   maxSub: LineSubElement | null
 ): number {
   if (sub.marks.includes('*')) return 0;
-
   // ChSq1 ChSp1 special: GOE is halved
   if (
     sub.element.name === 'ChSq1' ||
     sub.element.name === 'ChSp1'
   ) {
-    return Number((0.5 * sub.goe).toFixed(2));
-  } 
+    return Number((0.5 * sub.goe).toFixed(2));} 
   // spin/step/choreo: always GOE allowed (if not '*')
   if (
     sub.element.type === 'spin' ||
@@ -369,8 +357,7 @@ function calcGOEPoint(
     const originalBV = calcBV(sub, {
   applySecondHalf: false,
 });
-    return Number((originalBV * 0.1 * sub.goe).toFixed(2));
-  }
+    return Number((originalBV * 0.1 * sub.goe).toFixed(2));}
   // jump: only highest-BV in the combo receives GOE
   if (sub.element.type === 'jump') {
     if (!maxSub) return 0;
@@ -379,18 +366,15 @@ function calcGOEPoint(
     const originalBV = calcBV(sub, {
   applySecondHalf: false,
 });
-    return Number((originalBV * 0.1 * sub.goe).toFixed(2));
-  }
-  return 0;
-}
+    return Number((originalBV * 0.1 * sub.goe).toFixed(2));}
+  return 0;}
 function calcSubTotal(
   sub: LineSubElement,
   maxSub: LineSubElement | null
 ): number {
   const bv = calcBV(sub);
   const goe = calcGOEPoint(sub, maxSub);
-  return Number((bv + goe).toFixed(2));
-}
+  return Number((bv + goe).toFixed(2));}
 function calcLineTotal(line: Line): number {
   if (line.subs.length === 0) return 0;
   const maxSub =
@@ -400,17 +384,14 @@ function calcLineTotal(line: Line): number {
           calcBV(a) > calcBV(b)
             ? a
             : b,
-        line.subs[0]
-      )
+        line.subs[0])
     : null;
-  return line.subs.reduce((sum, s) => sum + calcSubTotal(s, maxSub), 0);
-}
+  return line.subs.reduce((sum, s) => sum + calcSubTotal(s, maxSub), 0);}
 export default function Page() {
   const [isMobileView, setIsMobileView] = useState(false);
 useEffect(() => {
   const checkMobile = () => {
-    setIsMobileView(window.innerWidth <= 1024);
-  };
+    setIsMobileView(window.innerWidth <= 1024);};
   checkMobile();
   window.addEventListener('resize', checkMobile);
   return () =>
@@ -462,18 +443,15 @@ useEffect(() => {
     setTempLine([el]);
   } else {
     // コンボモードなら追加
-    setTempLine((t) => [...t, el]);
-  }
+    setTempLine((t) => [...t, el]);}
   // 最近使用
   setRecentElements((prev) => {
     const filtered = prev.filter((p) => p.name !== el.name);
     return [el, ...filtered].slice(0, 10);
-  });
-};
+  });};
   const clearTemp = () => {
   setTempLine([]);
-  setIsComboMode(false);
-};
+  setIsComboMode(false);};
   const addLineFromTemp = () => {
     if (tempLine.length === 0) return;
     const newLine: Line = {
@@ -486,12 +464,10 @@ useEffect(() => {
         goe: 0,
         marks: [] as string[],
         secondHalf: false,
-      })),
-    };
+      })),};
     setLines((l) => [...l,newLine]);
    setTempLine([]);
-   setIsComboMode(false);
-  };
+   setIsComboMode(false);};
   const addComboToLine = (lineId: number) => {
     setLines((l) =>
       l.map((line) =>
@@ -501,20 +477,13 @@ useEffect(() => {
               ...line,
               subs: [
                 ...line.subs,
-                {
-                  id: uid(),
+                {id: uid(),
                   element: JUMPS[0],
                   underRotation: '',
                   edge: '',
                   goe: 0,
                   marks: [] as string[],
-                  secondHalf: false,
-                },
-              ],
-            }
-      )
-    );
-  };
+                  secondHalf: false,},],}));};
   const updateSub = (
     lineId: number,
     subId: number,
@@ -2178,12 +2147,6 @@ ${formatCategory(category)}
     <span>PCS</span>
     <b>${pcsfactored.toFixed(2)}</b>
   </div>
-
-  <div style="
-    border-bottom:2px solid #000;
-    padding:14px;
-    font-size:15px;
-  ">
     <div style="
       display:flex;
       justify-content:space-between;
@@ -2221,7 +2184,6 @@ ${formatCategory(category)}
 </div>
 </div>
 </div>
-
 <div style="
   display:flex;
   justify-content:space-between;
@@ -2229,8 +2191,7 @@ ${formatCategory(category)}
   margin-bottom:18px;
   font-size:18px;
   flex-wrap:wrap;
-  gap:12px;
-">
+  gap:12px;">
   <div>
     <b>Skater:</b>
     ${escapeHtml(playerName)}
@@ -2245,27 +2206,26 @@ ${formatCategory(category)}
   </div>
   <div style="
     font-size:28px;
-    font-weight:bold;
-  ">
+    font-weight:bold;">
     ${grandTotal.toFixed(2)}
   </div>
 </div>
+<div class="protocol-box">
+   elements table
+   pcs table
 <div style="
   overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-">
+  -webkit-overflow-scrolling:touch;">
 <table style="
   width:100%;
   border-collapse:collapse;
   font-size:15px;
-  table-layout:fixed;
-">
+  table-layout:fixed;">
 <thead>
 <tr style="
   background:#f3f3f3;
   border-top:2px solid #000;
-  border-bottom:2px solid #000;
-">
+  border-bottom:2px solid #000;">
   <th style="width:40px; border:1px solid #999;padding:8px;">
     #
   </th>
@@ -2308,14 +2268,17 @@ Program Component Scores
 </div>
 <div style="
   overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-">
+  -webkit-overflow-scrolling:touch;">
 <table style="
   width:100%;
   min-width:500px;
   border-collapse:collapse;
-  font-size:18px;
-">
+  font-size:18px;">
+ <div style="
+    border-bottom:2px solid #000;
+    padding:14px;
+    font-size:15px;
+  ">
 <thead>
 <tr style="
   background:#f3f3f3;
@@ -2358,8 +2321,7 @@ Program Component Scores
 </tr>
 </tbody>
 </table>
-</div>
-</div>
+</div></div></div>
 `;
 }
 function mangleSpin(
