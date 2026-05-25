@@ -2034,12 +2034,12 @@ const bv = line.subs
   border:1px solid #999;
   padding:8px;
   text-align:center;
-  color:#c62828;
   font-weight:bold;
 ">
   ${infoText || '—'}
 </td>
- <td style="
+
+<td style="
   border:1px solid #999;
   padding:8px;
   text-align:right;
@@ -2048,14 +2048,14 @@ const bv = line.subs
   ${bv}
   ${hasSecondHalf ? '<span style="font-size:12px;"> x</span>' : ''}
 </td>
-  <td style="border:1px solid #999;padding:8px;text-align:right;">
-  ${goeMark}
-</td>
 
 <td style="border:1px solid #999;padding:8px;text-align:right;">
   ${goeValue}
 </td>
 
+<td style="border:1px solid #999;padding:8px;text-align:right;">
+  ${goeMark}
+</td>
 <td style="border:1px solid #999;padding:8px;text-align:right;">
   ${total}
 </td>
@@ -2140,9 +2140,9 @@ ${formatCategory(category)}
   Info
 </th>
 <th style="width:90px; border:1px solid #999;padding:8px;">
-  Base Value
+  GOE
 </th>
- <th style="width:90px; border:1px solid #999;padding:8px;">
+<th style="width:90px; border:1px solid #999;padding:8px;">
   GOE Mark
 </th>
 
