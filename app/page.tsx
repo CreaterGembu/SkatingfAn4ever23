@@ -564,8 +564,6 @@ useEffect(() => {
             const newMarks = has
               ? s.marks.filter(m => m !== mark)
               : [...s.marks, mark];
-  
-            let newGOE = s.goe;
             return { ...s, marks: newMarks };
           })
         };
@@ -827,10 +825,8 @@ ${showProtocol.protocolHtml}
                   marginBottom: 8,
                 }}
               >
-                <strong>
                  <strong>
                  Executed Element #{lineIndex + 1} 合計: {calcLineTotal(line).toFixed(2)}
-                 </strong>
                 </strong>
                 <div>
                   <button
@@ -894,9 +890,15 @@ ${showProtocol.protocolHtml}
                             value={sub.element.name}
                             onChange={(e) =>
                               updateSub(line.id, sub.id, {
-                                element: ALL_ELEMENTS.find(
-                                  (x) => x.name === e.target.value
-                                )!,
+                                const found = ALL_ELEMENTS.find(
+  (x) => x.name === e.target.value
+);
+
+if (!found) return;
+
+updateSub(line.id, sub.id, {
+  element: found,
+});,
                               })
                             }
                           >
@@ -1430,7 +1432,7 @@ ${showProtocol.protocolHtml}
       <div>
         追加予定：
         {tempLine.map((t, i) => (
-          <span key={i}>
+          <span key={`${t.name}-${i}`}>
             {' '}
             {t.name}
             {i < tempLine.length - 1 ? ' + ' : ''}
@@ -1932,14 +1934,6 @@ function renderProtocolHtml(params: {
   } = params;
   const rowsHtml = lines
     .map((line, idx) => {
-      const maxSub =
-        line.subs.length > 0
-          ? line.subs.reduce((a, b) =>
-              calcBV(a) > calcBV(b)
-                ? a
-                : b
-            )
-          : null;
    const maxSub =
   line.subs.length > 0
     ? line.subs.reduce((a, b) =>
@@ -2047,7 +2041,6 @@ const bv = line.subs
 ">
   ${infoText || '—'}
 </td>
-<td style="
  <td style="
   border:1px solid #999;
   padding:8px;
