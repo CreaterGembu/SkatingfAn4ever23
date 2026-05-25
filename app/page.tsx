@@ -2156,7 +2156,7 @@ ${formatCategory(category)}
   Info
 </th>
 <th style="width:90px; border:1px solid #999;padding:8px;">
-  GOE
+  Base Value
 </th>
 <th style="width:90px; border:1px solid #999;padding:8px;">
   GOE Mark
