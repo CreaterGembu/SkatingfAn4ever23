@@ -2030,15 +2030,7 @@ const bv = line.subs
   <td style="border:1px solid #999;padding:8px;">
   ${elementText}
 </td>
-<td style="
-  border:1px solid #999;
-  padding:8px;
-  text-align:center;
-  font-weight:bold;
-">
-  ${infoText || '—'}
-</td>
-
+${infoText || '—'}
 <td style="
   border:1px solid #999;
   padding:8px;
@@ -2048,7 +2040,6 @@ const bv = line.subs
   ${bv}
   ${hasSecondHalf ? '<span style="font-size:12px;"> x</span>' : ''}
 </td>
-
 <td style="border:1px solid #999;padding:8px;text-align:right;">
   ${goeValue}
 </td>
