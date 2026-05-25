@@ -888,19 +888,17 @@ ${showProtocol.protocolHtml}
                         <td style={tdStyle}>
                           <select
                             value={sub.element.name}
-                            onChange={(e) =>
-                              updateSub(line.id, sub.id, {
-                                const found = ALL_ELEMENTS.find(
-  (x) => x.name === e.target.value
-);
+                           onChange={(e) => {
+  const found = ALL_ELEMENTS.find(
+    (x) => x.name === e.target.value
+  );
 
-if (!found) return;
+  if (!found) return;
 
-updateSub(line.id, sub.id, {
-  element: found,
-});,
-                              })
-                            }
+  updateSub(line.id, sub.id, {
+    element: found,
+  });
+}}
                           >
                             <optgroup label="Jump">
                               {JUMPS.map((j) => (
