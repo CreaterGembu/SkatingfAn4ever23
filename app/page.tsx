@@ -2027,29 +2027,54 @@ const bv = line.subs
   <td style="border:1px solid #999;padding:8px;">
     ${idx + 1}
   </td>
-  <td style="border:1px solid #999;padding:8px;">
-  ${elementText}
-</td>
-${infoText || '—'}
-<td style="
-  border:1px solid #999;
-  padding:8px;
-  text-align:right;
-  font-weight:600;
-">
-  ${bv}
-  ${hasSecondHalf ? '<span style="font-size:12px;"> x</span>' : ''}
-</td>
-<td style="border:1px solid #999;padding:8px;text-align:right;">
-  ${goeValue}
-</td>
 
-<td style="border:1px solid #999;padding:8px;text-align:right;">
-  ${goeMark}
-</td>
-<td style="border:1px solid #999;padding:8px;text-align:right;">
-  ${total}
-</td>
+  <td style="border:1px solid #999;padding:8px;">
+    ${elementText}
+  </td>
+
+  <td style="
+    border:1px solid #999;
+    padding:8px;
+    text-align:center;
+    font-weight:bold;
+    color:#000;
+  ">
+    ${infoText || '—'}
+  </td>
+
+  <td style="
+    border:1px solid #999;
+    padding:8px;
+    text-align:right;
+    font-weight:600;
+  ">
+    ${bv}
+    ${hasSecondHalf ? '<span style="font-size:12px;"> x</span>' : ''}
+  </td>
+
+  <td style="
+    border:1px solid #999;
+    padding:8px;
+    text-align:right;
+  ">
+    ${goeValue}
+  </td>
+
+  <td style="
+    border:1px solid #999;
+    padding:8px;
+    text-align:right;
+  ">
+    ${goeMark}
+  </td>
+
+  <td style="
+    border:1px solid #999;
+    padding:8px;
+    text-align:right;
+  ">
+    ${total}
+  </td>
 </tr>
 `;
     })
