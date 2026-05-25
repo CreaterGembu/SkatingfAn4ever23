@@ -245,9 +245,7 @@ function getLowerRotationJump(name: string): Element | null {
 type CalcBVOptions = {
   applySecondHalf?: boolean;
   applyREP?: boolean;
-  ignoreAsterisk?: boolean;
-};
-
+  ignoreAsterisk?: boolean;};
 function calcBV(
   sub: LineSubElement,
   options: CalcBVOptions = {}
@@ -257,7 +255,6 @@ function calcBV(
     applyREP = true,
     ignoreAsterisk = false,
   } = options;
-
   // * は0点
   if (
     !ignoreAsterisk &&
@@ -265,25 +262,20 @@ function calcBV(
   ) {
     return 0;
   }
-
   let bv = sub.element.baseValue;
 
   // under rotation
   if (sub.underRotation === '<') {
     bv *= 0.8;
   }
-
   // downgrade
   if (sub.underRotation === '<<') {
     const lower = getLowerRotationJump(
-      sub.element.name
-    );
-
+      sub.element.name);
     if (lower) {
       bv = lower.baseValue;
     }
   }
-
   // edge call
   const jumpType =
     sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
