@@ -1520,7 +1520,6 @@ ${showProtocol.protocolHtml}
         </button>
       </div>
     ))}
-
     <div style={{ marginTop: 8 }}>
       PCS raw:{' '}
       {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)}
@@ -2008,12 +2007,11 @@ const bv = line.subs
   0
 ).toFixed(2);
       return `
-<tr>
-  <td style="border:1px solid #999;padding:8px;">
+<tr style="border-bottom:1px solid #ddd;">
+  <td style="padding;8px;">
     ${idx + 1}
   </td>
-
-  <td style="border:1px solid #999;padding:8px;">
+  <td style="padding;8px;">
     ${elementText}
   </td>
 
@@ -2148,15 +2146,6 @@ ${formatCategory(category)}
     <b>${pcsfactored.toFixed(2)}</b>
   </div>
     <div style="
-      display:flex;
-      justify-content:space-between;
-      margin-bottom:8px;
-    ">
-      <span>deductions</span>
-      <b>${totaldeductions.toFixed(2)}</b>
-    </div>
-
-    <div style="
       color:#444;
       line-height:1.5;
       font-size:13px;
@@ -2184,32 +2173,87 @@ ${formatCategory(category)}
 </div>
 </div>
 </div>
-<div style="
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+```html id="1gkqzi"
+<table style="
+  width:100%;
+  border-collapse:collapse;
   margin-bottom:18px;
-  font-size:18px;
-  flex-wrap:wrap;
-  gap:12px;">
-  <div>
-    <b>Skater:</b>
+  border:2px solid #000;
+">
+
+<thead>
+<tr style="
+  border-bottom:1px solid #999;
+">
+  <th style="padding:8px;text-align:left;font-size:12px;">
+    Name
+  </th>
+
+  <th style="padding:8px;text-align:left;font-size:12px;">
+    Nation
+  </th>
+
+  <th style="padding:8px;text-align:right;font-size:12px;">
+    Total
+  </th>
+
+  <th style="padding:8px;text-align:right;font-size:12px;">
+    TES
+  </th>
+
+  <th style="padding:8px;text-align:right;font-size:12px;">
+    PCS
+  </th>
+
+  <th style="padding:8px;text-align:right;font-size:12px;">
+    Ded
+  </th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+  <td style="
+    padding:10px 8px;
+    font-weight:700;
+  ">
     ${escapeHtml(playerName)}
-  </div>
-  <div>
-  <b>Nation:</b>
-  ${escapeHtml(country)}
-</div>
-  <div>
-    <b>Ded:</b>
-    ${totaldeductions.toFixed(2)}
-  </div>
-  <div style="
-    font-size:28px;
-    font-weight:bold;">
+  </td>
+
+  <td style="padding:10px 8px;">
+    ${escapeHtml(country)}
+  </td>
+
+  <td style="
+    padding:10px 8px;
+    text-align:right;
+    font-weight:700;
+    font-size:22px;
+  ">
     ${grandTotal.toFixed(2)}
-  </div>
-</div>
+  </td>
+
+  <td style="
+    padding:10px 8px;
+    text-align:right;
+  ">
+    ${totalTES.toFixed(2)}
+  </td>
+  <td style="
+    padding:10px 8px;
+    text-align:right;">
+    ${pcsfactored.toFixed(2)}
+  </td>
+  <td style="
+    padding:10px 8px;
+    text-align:right;">
+    ${totaldeductions.toFixed(2)}
+  </td>
+</tr>
+</tbody>
+</table>
+```
 <div class="protocol-box">
    elements table
    pcs table
@@ -2220,33 +2264,33 @@ ${formatCategory(category)}
   width:100%;
   border-collapse:collapse;
   font-size:15px;
-  table-layout:fixed;">
+  table-layout:fixed;
+  border:2px solid #000;
+  ">
 <thead>
 <tr style="
-  background:#f3f3f3;
-  border-top:2px solid #000;
   border-bottom:2px solid #000;">
-  <th style="width:40px; border:1px solid #999;padding:8px;">
+  <th style="width:40px; padding;8px;">
     #
   </th>
-  <th style="width:320px; border:1px solid #999;padding:8px;">
+  <th style="width:320px; padding;8px;">
   Executed Elements
 </th>
-<th style="width:100px; border:1px solid #999;padding:8px;">
+<th style="width:100px; padding;8px;">
   Info
 </th>
-<th style="width:90px; border:1px solid #999;padding:8px;">
+<th style="width:90px; padding;8px;">
   Base Value
 </th>
-<th style="width:90px; border:1px solid #999;padding:8px;">
+<th style="width:90px; padding;8px;">
   GOE Mark
 </th>
 
-<th style="width:90px; border:1px solid #999;padding:8px;">
+<th style="width:90px; padding;8px;">
   GOE
 </th>
 
-<th style="width:120px; border:1px solid #999;padding:8px;">
+<th style="width:120px; padding;8px;">
   Scores of Panel
 </th>
 </tr>
@@ -2274,54 +2318,58 @@ Program Component Scores
   min-width:500px;
   border-collapse:collapse;
   font-size:18px;">
- <div style="
-    border-bottom:2px solid #000;
-    padding:14px;
-    font-size:15px;
-  ">
 <thead>
 <tr style="
-  background:#f3f3f3;
-  border-top:2px solid #000;
   border-bottom:2px solid #000;
 ">
-  <th style="border:1px solid #999;padding:8px;">
-    Program Components
+  <th style="padding:8px;">
+    Program Components 
   </th>
-  <th style="border:1px solid #999;padding:8px;">
+  <th style="padding;8px;">
     Score
   </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td style="border:1px solid #999;padding:8px;">
+  <td style="padding;8px;">
     Composition
   </td>
-  <td style="border:1px solid #999;padding:8px;text-align:right;">
+  <td style="padding;8px;text-align:right;">
     ${pcs.comp.toFixed(2)}
   </td>
 </tr>
 <tr>
-  <td style="border:1px solid #999;padding:8px;">
+  <td style="padding;8px;">
     Presentation
   </td>
-  <td style="border:1px solid #999;padding:8px;text-align:right;">
+  <td style="padding;8px;text-align:right;">
     ${pcs.pres.toFixed(2)}
   </td>
 </tr>
 <tr>
-  <td style="border:1px solid #999;padding:8px;">
+  <td style="padding;8px;">
     Skating Skills
   </td>
 
-  <td style="border:1px solid #999;padding:8px;text-align:right;">
+  <td style="padding;8px;text-align:right;">
     ${pcs.skills.toFixed(2)}
   </td>
 </tr>
 </tbody>
 </table>
-</div></div></div>
+</div></div>
+<div style="
+  border-bottom:2px solid #000;
+  padding:14px;
+  display:flex;
+  justify-content:space-between;
+  font-size:18px;
+">
+  <span>deductions</span>
+  <b>${totaldeductions.toFixed(2)}</b>
+</div>
+</div>
 `;
 }
 function mangleSpin(
