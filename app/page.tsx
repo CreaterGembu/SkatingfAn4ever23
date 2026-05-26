@@ -583,7 +583,7 @@ useEffect(() => {
 <style>
 body {
   margin: 0;
-  padding: 24px;
+  padding:12px;
   background: #ffffff;
   color: #000000;
   font-family: Arial, sans-serif;
@@ -2039,16 +2039,17 @@ const bv = line.subs
     .join('');
  return `
 <div style="
-  border:2px solid #000;
-  padding:24px;
+  border:1px solid #000;
+  padding:10px 16px;
   background:white;
   color:black;
   font-family:Arial,sans-serif;
 ">
 <h1 style="
   text-align:center;
-  font-size:32px;
-  margin-bottom:6px;
+  font-size:18px;
+  margin:0;
+  font-weight:700;
 ">
 ${escapeHtml(competition)}
 </h1>
@@ -2141,21 +2142,19 @@ ${formatCategory(category)}
 </tbody>
 </table>
 <div class="protocol-box">
-   elements table
-   pcs table
 <div style="
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;">
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:15px;
+  font-size:14px;
   table-layout:fixed;
-  border:2px solid #000;
-  ">
+  border:1px solid #000;
+">
 <thead>
 <tr style="
-  border-bottom:2px solid #000;">
+  border-bottom:1px solid #000;">
   <th style="width:40px; padding:8px;">
     #
   </th>
@@ -2185,26 +2184,19 @@ ${rowsHtml}
 </table>
 </div>
 <div style="
-  margin-top:24px;
-  font-size:16px;
+  margin-top:18px;
+  font-size:14px;
 ">
-<div style="
-  font-weight:bold;
-  margin-bottom:10px;
-">
-Program Component Scores
-</div>
 <div style="
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;">
 <table style="
   width:100%;
-  min-width:500px;
   border-collapse:collapse;
-  font-size:18px;">
+  font-size:14px;">
 <thead>
 <tr style="
-  border-bottom:2px solid #000;
+  border-bottom:1px solid #000;
 ">
   <th style="
     padding:8px;
@@ -2296,7 +2288,7 @@ Program Component Scores
 </table>
 </div></div>
 <div style="
-  border-bottom:2px solid #000;
+  border-bottom:1px solid #000;
   padding:14px;
   display:flex;
   justify-content:space-between;
