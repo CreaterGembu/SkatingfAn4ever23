@@ -311,6 +311,7 @@ function calcGOEPoint(
     if (sub.marks.includes('*')) return 0;
     const originalBV = calcBV(sub, {
   applySecondHalf: false,
+  applyREP: false,
 });
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));}
   // jump: only highest-BV in the combo receives GOE
@@ -320,6 +321,7 @@ function calcGOEPoint(
     if (sub.marks.includes('*')) return 0;
     const originalBV = calcBV(sub, {
   applySecondHalf: false,
+  applyREP: false,
 });
     return Number((originalBV * 0.1 * sub.goe).toFixed(2));}
   return 0;}
