@@ -2206,37 +2206,89 @@ Program Component Scores
 <tr style="
   border-bottom:2px solid #000;
 ">
-  <th style="padding:8px;">
-    Program Components 
+  <th style="
+    padding:8px;
+    text-align:left;
+  ">
+    Program Components
   </th>
-  <th style="padding:8px;">
-    Score
+  <th style="
+    padding:8px;
+    text-align:right;">
+    Factor
+  </th>
+  <th style="
+    padding:8px;
+    text-align:right;">
   </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td style="padding:8px;">
+  <td style="
+    padding:8px;
+    text-align:left;
+  ">
     Composition
   </td>
-  <td style="padding:8px;text-align:right;">
+
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
+    ${PCS_MULTIPLIERS[category].toFixed(2)}
+  </td>
+
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
     ${pcs.comp.toFixed(2)}
   </td>
 </tr>
+
 <tr>
-  <td style="padding:8px;">
+  <td style="
+    padding:8px;
+    text-align:left;
+  ">
     Presentation
   </td>
-  <td style="padding:8px;text-align:right;">
+
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
+    ${PCS_MULTIPLIERS[category].toFixed(2)}
+  </td>
+
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
     ${pcs.pres.toFixed(2)}
   </td>
 </tr>
+
 <tr>
-  <td style="padding:8px;">
+  <td style="
+    padding:8px;
+    text-align:left;
+  ">
     Skating Skills
   </td>
 
-  <td style="padding:8px;text-align:right;">
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
+    ${PCS_MULTIPLIERS[category].toFixed(2)}
+  </td>
+
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
     ${pcs.skills.toFixed(2)}
   </td>
 </tr>
