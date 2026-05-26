@@ -1,9 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-type Element = {
-  name: string;
-  baseValue: number;
-  type: 'jump' | 'spin' | 'step' | 'choreo';};
 type LineSubElement = {
   id: number;
   element: Element;
@@ -32,173 +28,132 @@ type HistoryItem = {
   timestamp: string;
   protocolHtml?: string;};
 const uid = () => Math.floor(Math.random() * 1e9);
+type ElementType = 'jump' | 'spin' | 'step' | 'choreo';
+
+interface Element {
+  name: string;
+  baseValue: number;
+  type: ElementType;
+}
+
+const createElements = (
+  type: ElementType,
+  data: Record<string, number>
+): Element[] =>
+  Object.entries(data).map(([name, baseValue]) => ({
+    name,
+    baseValue,
+    type,
+  }));
+
+// ====================
+// JUMPS
+// ====================
+
+const jumpLevels: Record<string, number[]> = {
+  A: [1.1, 3.3, 8.0, 12.5],
+  Lz: [0.6, 2.1, 5.9, 11.5, 14.0],
+  F: [0.5, 1.8, 5.3, 11.0, 14.0],
+  Lo: [0.5, 1.7, 4.9, 10.5, 14.0],
+  S: [0.4, 1.3, 4.3, 9.7, 14.0],
+  T: [0.4, 1.3, 4.2, 9.5, 14.0],
+};
+
 const JUMPS: Element[] = [
-  { name: 'A', baseValue: 0.0, type: 'jump' },
-  { name: '1A', baseValue: 1.1, type: 'jump' },
-  { name: '2A', baseValue: 3.3, type: 'jump' },
-  { name: '3A', baseValue: 8.0, type: 'jump' },
-  { name: '4A', baseValue: 12.5, type: 'jump' },
-  { name: 'Lz', baseValue: 0.0, type: 'jump' },
-  { name: '1Lz', baseValue: 0.6, type: 'jump' },
-  { name: '2Lz', baseValue: 2.1, type: 'jump' },
-  { name: '3Lz', baseValue: 5.9, type: 'jump' },
-  { name: '4Lz', baseValue: 11.5, type: 'jump' },
-  { name: '5Lz', baseValue: 14.0, type: 'jump' },
-  { name: 'F', baseValue: 0.0, type: 'jump' },
-  { name: '1F', baseValue: 0.5, type: 'jump' },
-  { name: '2F', baseValue: 1.8, type: 'jump' },
-  { name: '3F', baseValue: 5.3, type: 'jump' },
-  { name: '4F', baseValue: 11.0, type: 'jump' },
-  { name: '5F', baseValue: 14.0, type: 'jump' },
-  { name: '1Eu', baseValue: 0.0, type: 'jump' },
-  { name: 'Lo', baseValue: 0.0, type: 'jump' },
-  { name: '1Lo', baseValue: 0.5, type: 'jump' },
-  { name: '2Lo', baseValue: 1.7, type: 'jump' },
-  { name: '3Lo', baseValue: 4.9, type: 'jump' },
-  { name: '4Lo', baseValue: 10.5, type: 'jump' },
-  { name: '5Lo', baseValue: 14.0, type: 'jump' },
-  { name: 'S', baseValue: 0.0, type: 'jump' },
-  { name: '1S', baseValue: 0.4, type: 'jump' },
-  { name: '2S', baseValue: 1.3, type: 'jump' },
-  { name: '3S', baseValue: 4.3, type: 'jump' },
-  { name: '4S', baseValue: 9.7, type: 'jump' },
-  { name: '5S', baseValue: 14.0, type: 'jump' },
-  { name: 'T', baseValue: 0.0, type: 'jump' },
-  { name: '1T', baseValue: 0.4, type: 'jump' },
-  { name: '2T', baseValue: 1.3, type: 'jump' },
-  { name: '3T', baseValue: 4.2, type: 'jump' },
-  { name: '4T', baseValue: 9.5, type: 'jump' },
-  { name: '5T', baseValue: 14.0, type: 'jump' },];
-const SPINS: Element[] = [
-  { name: 'USp4', baseValue: 2.9, type: 'spin' },
-  { name: 'USp3', baseValue: 2.3, type: 'spin' },
-  { name: 'USp2', baseValue: 1.8, type: 'spin' },
-  { name: 'USp1', baseValue: 1.4, type: 'spin' },
-  { name: 'USpB', baseValue: 1.2, type: 'spin' },
-  { name: 'USp', baseValue: 0.0, type: 'spin' },
-  { name: 'LSp4', baseValue: 3.2, type: 'spin' },
-  { name: 'LSp3', baseValue: 2.9, type: 'spin' },
-  { name: 'LSp2', baseValue: 2.3, type: 'spin' },
-  { name: 'LSp1', baseValue: 1.8, type: 'spin' },
-  { name: 'LSpB', baseValue: 1.4, type: 'spin' },
-  { name: 'LSp', baseValue: 0.0, type: 'spin' },
-  { name: 'CSp4', baseValue: 3.1, type: 'spin' },
-  { name: 'CSp3', baseValue: 2.8, type: 'spin' },
-  { name: 'CSp2', baseValue: 2.2, type: 'spin' },
-  { name: 'CSp1', baseValue: 1.7, type: 'spin' },
-  { name: 'CSpB', baseValue: 1.3, type: 'spin' },
-  { name: 'CSp', baseValue: 0.0, type: 'spin' },
-  { name: 'SSp4', baseValue: 3.0, type: 'spin' },
-  { name: 'SSp3', baseValue: 2.5, type: 'spin' },
-  { name: 'SSp2', baseValue: 1.9, type: 'spin' },
-  { name: 'SSp1', baseValue: 1.6, type: 'spin' },
-  { name: 'SSpB', baseValue: 1.3, type: 'spin' },
-  { name: 'SSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FUSp4', baseValue: 3.5, type: 'spin' },
-  { name: 'FUSp3', baseValue: 2.9, type: 'spin' },
-  { name: 'FUSp2', baseValue: 2.4, type: 'spin' },
-  { name: 'FUSp1', baseValue: 2.0, type: 'spin' },
-  { name: 'FUSpB', baseValue: 1.8, type: 'spin' },
-  { name: 'FUSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FLSp4', baseValue: 3.8, type: 'spin' },
-  { name: 'FLSp3', baseValue: 3.5, type: 'spin' },
-  { name: 'FLSp2', baseValue: 2.9, type: 'spin' },
-  { name: 'FLSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'FLSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'FLSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FCSp4', baseValue: 3.8, type: 'spin' },
-  { name: 'FCSp3', baseValue: 3.4, type: 'spin' },
-  { name: 'FCSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'FCSp1', baseValue: 2.3, type: 'spin' },
-  { name: 'FCSpB', baseValue: 1.9, type: 'spin' },
-  { name: 'FCSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FSSp4', baseValue: 3.6, type: 'spin' },
-  { name: 'FSSp3', baseValue: 3.1, type: 'spin' },
-  { name: 'FSSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'FSSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'FSSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'FSSp', baseValue: 0.0, type: 'spin' },
-  { name: 'CUSp4', baseValue: 3.5, type: 'spin' },
-  { name: 'CUSp3', baseValue: 2.9, type: 'spin' },
-  { name: 'CUSp2', baseValue: 2.4, type: 'spin' },
-  { name: 'CUSp1', baseValue: 2.0, type: 'spin' },
-  { name: 'CUSpB', baseValue: 1.8, type: 'spin' },
-  { name: 'CUSp', baseValue: 0.0, type: 'spin' },
-  { name: 'CLSp4', baseValue: 3.8, type: 'spin' },
-  { name: 'CLSp3', baseValue: 3.5, type: 'spin' },
-  { name: 'CLSp2', baseValue: 2.9, type: 'spin' },
-  { name: 'CLSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'CLSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'CLSp', baseValue: 0.0, type: 'spin' },
-  { name: 'CCSp4', baseValue: 3.8, type: 'spin' },
-  { name: 'CCSp3', baseValue: 3.4, type: 'spin' },
-  { name: 'CCSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'CCSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'CCSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'CCSp', baseValue: 0.0, type: 'spin' },
-  { name: 'CSSp4', baseValue: 3.6, type: 'spin' },
-  { name: 'CSSp3', baseValue: 3.1, type: 'spin' },
-  { name: 'CSSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'CSSp1', baseValue: 2.3, type: 'spin' },
-  { name: 'CSSpB', baseValue: 1.9, type: 'spin' },
-  { name: 'CSSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FCUSp4', baseValue: 3.5, type: 'spin' },
-  { name: 'FCUSp3', baseValue: 2.9, type: 'spin' },
-  { name: 'FCUSp2', baseValue: 2.4, type: 'spin' },
-  { name: 'FCUSp1', baseValue: 2.0, type: 'spin' },
-  { name: 'FCUSpB', baseValue: 1.8, type: 'spin' },
-  { name: 'FCUSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FCLSp4', baseValue: 3.8, type: 'spin' },
-  { name: 'FCLSp3', baseValue: 3.5, type: 'spin' },
-  { name: 'FCLSp2', baseValue: 2.9, type: 'spin' },
-  { name: 'FCLSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'FCLSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'FCLSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FCCSp4', baseValue: 3.8, type: 'spin' },
-  { name: 'FCCSp3', baseValue: 3.4, type: 'spin' },
-  { name: 'FCCSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'FCCSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'FCCSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'FCCSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FCSSp4', baseValue: 3.6, type: 'spin' },
-  { name: 'FCSSp3', baseValue: 3.1, type: 'spin' },
-  { name: 'FCSSp2', baseValue: 2.8, type: 'spin' },
-  { name: 'FCSSp1', baseValue: 2.3, type: 'spin' },
-  { name: 'FCSSpB', baseValue: 1.9, type: 'spin' },
-  { name: 'FCSSp', baseValue: 0.0, type: 'spin' },
-  { name: 'CoSp4', baseValue: 3.6, type: 'spin' },
-  { name: 'CoSp3', baseValue: 3.0, type: 'spin' },
-  { name: 'CoSp2', baseValue: 2.4, type: 'spin' },
-  { name: 'CoSp1', baseValue: 2.0, type: 'spin' },
-  { name: 'CoSpB', baseValue: 1.8, type: 'spin' },
-  { name: 'CoSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FCoSp4', baseValue: 3.6, type: 'spin' },
-  { name: 'FCoSp3', baseValue: 3.0, type: 'spin' },
-  { name: 'FCoSp2', baseValue: 2.4, type: 'spin' },
-  { name: 'FCoSp1', baseValue: 2.0, type: 'spin' },
-  { name: 'FCoSpB', baseValue: 1.8, type: 'spin' },
-  { name: 'FCoSp', baseValue: 0.0, type: 'spin' },
-  { name: 'CCoSp4', baseValue: 4.2, type: 'spin' },
-  { name: 'CCoSp3', baseValue: 3.6, type: 'spin' },
-  { name: 'CCoSp2', baseValue: 3.0, type: 'spin' },
-  { name: 'CCoSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'CCoSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'CCoSp', baseValue: 0.0, type: 'spin' },
-  { name: 'FCCoSp4', baseValue: 4.2, type: 'spin' },
-  { name: 'FCCoSp3', baseValue: 3.6, type: 'spin' },
-  { name: 'FCCoSp2', baseValue: 3.0, type: 'spin' },
-  { name: 'FCCoSp1', baseValue: 2.4, type: 'spin' },
-  { name: 'FCCoSpB', baseValue: 2.0, type: 'spin' },
-  { name: 'FCCoSp', baseValue: 0.0, type: 'spin' },];
-const STEPS: Element[] = [
-  { name: 'StSqBV', baseValue: 1.6, type: 'step' },
-  { name: 'StSq1', baseValue: 1.9, type: 'step' },
-  { name: 'StSq2', baseValue: 2.7, type: 'step' },
-  { name: 'StSq3', baseValue: 3.5, type: 'step' },
-  { name: 'StSq4', baseValue: 4.1, type: 'step' },];
-const CHOREO: Element[] = [
-  { name: 'ChSq1', baseValue: 3.5, type: 'choreo' },
-  { name: 'ChSp1', baseValue: 3.5, type: 'choreo' },];
+  ...Object.entries(jumpLevels).flatMap(([prefix, vals]) => [
+    {
+      name: prefix,
+      baseValue: 0,
+      type: 'jump' as const,
+    },
+    ...vals.map((v, i) => ({
+      name: `${i + 1}${prefix}`,
+      baseValue: v,
+      type: 'jump' as const,
+    })),
+  ]),
+
+  {
+    name: '1Eu',
+    baseValue: 0,
+    type: 'jump',
+  },
+];
+
+// ====================
+// SPINS
+// ====================
+
+const spinLevels: Record<string, number[]> = {
+  USp: [2.9, 2.3, 1.8, 1.4, 1.2],
+  LSp: [3.2, 2.9, 2.3, 1.8, 1.4],
+  CSp: [3.1, 2.8, 2.2, 1.7, 1.3],
+  SSp: [3.0, 2.5, 1.9, 1.6, 1.3],
+
+  FUSp: [3.5, 2.9, 2.4, 2.0, 1.8],
+  FLSp: [3.8, 3.5, 2.9, 2.4, 2.0],
+  FCSp: [3.8, 3.4, 2.8, 2.3, 1.9],
+  FSSp: [3.6, 3.1, 2.8, 2.4, 2.0],
+
+  CUSp: [3.5, 2.9, 2.4, 2.0, 1.8],
+  CLSp: [3.8, 3.5, 2.9, 2.4, 2.0],
+  CCSp: [3.8, 3.4, 2.8, 2.4, 2.0],
+  CSSp: [3.6, 3.1, 2.8, 2.3, 1.9],
+
+  FCUSp: [3.5, 2.9, 2.4, 2.0, 1.8],
+  FCLSp: [3.8, 3.5, 2.9, 2.4, 2.0],
+  FCCSp: [3.8, 3.4, 2.8, 2.4, 2.0],
+  FCSSp: [3.6, 3.1, 2.8, 2.3, 1.9],
+
+  CoSp: [3.6, 3.0, 2.4, 2.0, 1.8],
+  FCoSp: [3.6, 3.0, 2.4, 2.0, 1.8],
+
+  CCoSp: [4.2, 3.6, 3.0, 2.4, 2.0],
+  FCCoSp: [4.2, 3.6, 3.0, 2.4, 2.0],
+};
+
+const SPINS: Element[] = Object.entries(spinLevels).flatMap(
+  ([prefix, vals]) => [
+    ...vals.slice(0, 4).map((v, i) => ({
+      name: `${prefix}${4 - i}`,
+      baseValue: v,
+      type: 'spin' as const,
+    })),
+
+    {
+      name: `${prefix}B`,
+      baseValue: vals[4],
+      type: 'spin' as const,
+    },
+
+    {
+      name: prefix,
+      baseValue: 0,
+      type: 'spin' as const,
+    },
+  ]
+);
+
+// ====================
+// STEPS
+// ====================
+
+const STEPS = createElements('step', {
+  StSqBV: 1.6,
+  StSq1: 1.9,
+  StSq2: 2.7,
+  StSq3: 3.5,
+  StSq4: 4.1,
+});
+
+// ====================
+// CHOREO
+// ====================
+
+const CHOREO = createElements('choreo', {
+  ChSq1: 3.5,
+  ChSp1: 3.5,
+});
 const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
 const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T', 'Eu'];
 const ROTATIONS = ['1', '2', '3', '4', '5'];
@@ -2008,10 +1963,10 @@ const bv = line.subs
 ).toFixed(2);
       return `
 <tr style="border-bottom:1px solid #ddd;">
-  <td style="padding;8px;">
+  <td style="padding:8px;">
     ${idx + 1}
   </td>
-  <td style="padding;8px;">
+  <td style="padding:8px;">
     ${elementText}
   </td>
 
@@ -2173,7 +2128,6 @@ ${formatCategory(category)}
 </div>
 </div>
 </div>
-```html id="1gkqzi"
 <table style="
   width:100%;
   border-collapse:collapse;
@@ -2332,7 +2286,7 @@ Program Component Scores
 </thead>
 <tbody>
 <tr>
-  <td style="padding;8px;">
+  <td style="padding:8px;">
     Composition
   </td>
   <td style="padding;8px;text-align:right;">
@@ -2340,7 +2294,7 @@ Program Component Scores
   </td>
 </tr>
 <tr>
-  <td style="padding;8px;">
+  <td style="padding:8px;">
     Presentation
   </td>
   <td style="padding;8px;text-align:right;">
@@ -2348,7 +2302,7 @@ Program Component Scores
   </td>
 </tr>
 <tr>
-  <td style="padding;8px;">
+  <td style="padding:8px;">
     Skating Skills
   </td>
 
