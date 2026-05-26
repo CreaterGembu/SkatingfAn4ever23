@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 type LineSubElement = {
   id: number;
-  element: Element;
+  element: SkateElement;
   underRotation?: '' | 'q' | '<' | '<<';
   edge?: '' | '!' | 'e';
   goe: number; // integer -5..5
@@ -164,7 +164,7 @@ const PCS_MULTIPLIERS: Record<string, number> = {
   MenFS: 3.33,
   WomenSP: 1.33,
   WomenFS: 2.67,};
-function getLowerRotationJump(name: string): Element | null {
+function getLowerRotationJump(name: string): SkateElement | null {
   const map: Record<string, string> = {
     '4A': '3A',
     '3A': '2A',
@@ -353,7 +353,7 @@ useEffect(() => {
     window.removeEventListener('resize', checkMobile);
 }, []);
   const [lines, setLines] = useState<Line[]>([]);
-  const [tempLine, setTempLine] = useState<Element[]>([]);
+  const [tempLine, setTempLine] = useState<SkateElement[]>([]);
   const [playerName, setPlayerName] = useState('');
   const [country, setCountry] = useState('');
   const [competition, setCompetition] = useState('');
@@ -387,12 +387,12 @@ const [selectedCategory, setSelectedCategory] = useState<
 const [selectedJumpType, setSelectedJumpType] = useState('');
 const [selectedSpinType, setSelectedSpinType] = useState('');
 const [selectedSpinMode, setSelectedSpinMode] = useState('');
-const [recentElements, setRecentElements] = useState<Element[]>([]);
+const [recentElements, setRecentElements] = useState<SkateElement[]>([]);
 const [isComboMode, setIsComboMode] = useState(false);
 useEffect(() => {
     localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
   }, [history]);
- const addToTemp = (el: Element) => {
+ const addToTemp = (el: SkateElement) => {
   // コンボモードでない場合
   if (!isComboMode) {
     setTempLine([el]);
@@ -2243,25 +2243,25 @@ ${formatCategory(category)}
 <thead>
 <tr style="
   border-bottom:2px solid #000;">
-  <th style="width:40px; padding;8px;">
+  <th style="width:40px; padding:8px;">
     #
   </th>
-  <th style="width:320px; padding;8px;">
+  <th style="width:320px; padding:8px;">
   Executed Elements
 </th>
-<th style="width:100px; padding;8px;">
+<th style="width:100px; padding:8px;">
   Info
 </th>
-<th style="width:90px; padding;8px;">
+<th style="width:90px; padding:8px;">
   Base Value
 </th>
-<th style="width:90px; padding;8px;">
+<th style="width:90px; padding:8px;">
   GOE
 </th>
-<th style="width:90px; padding;8px;">
+<th style="width:90px; padding:8px;">
   GOE Mark
 </th>
-<th style="width:120px; padding;8px;">
+<th style="width:120px; padding:8px;">
   Scores of Panel
 </th>
 </tr>
@@ -2306,7 +2306,7 @@ Program Component Scores
   <td style="padding:8px;">
     Composition
   </td>
-  <td style="padding;8px;text-align:right;">
+  <td style="padding:8px;text-align:right;">
     ${pcs.comp.toFixed(2)}
   </td>
 </tr>
@@ -2314,7 +2314,7 @@ Program Component Scores
   <td style="padding:8px;">
     Presentation
   </td>
-  <td style="padding;8px;text-align:right;">
+  <td style="padding:8px;text-align:right;">
     ${pcs.pres.toFixed(2)}
   </td>
 </tr>
@@ -2323,7 +2323,7 @@ Program Component Scores
     Skating Skills
   </td>
 
-  <td style="padding;8px;text-align:right;">
+  <td style="padding:8px;text-align:right;">
     ${pcs.skills.toFixed(2)}
   </td>
 </tr>
