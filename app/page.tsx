@@ -2338,6 +2338,20 @@ ${rowsHtml}
   ">
     Skating Skills
   </td>
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
+    ${PCS_MULTIPLIERS[category].toFixed(2)}
+  </td>
+
+  <td style="
+    padding:8px;
+    text-align:right;
+  ">
+    ${pcs.skills.toFixed(2)}
+  </td>
+</tr>
 <tr
   style="
     border-top:2px solid #000;
@@ -2362,7 +2376,6 @@ ${rowsHtml}
   >
     —
   </td>
-
   <td
     style="
       padding:8px;
@@ -2371,20 +2384,6 @@ ${rowsHtml}
     "
   >
     ${pcsfactored.toFixed(2)}
-  </td>
-</tr>
-  <td style="
-    padding:8px;
-    text-align:right;
-  ">
-    ${PCS_MULTIPLIERS[category].toFixed(2)}
-  </td>
-
-  <td style="
-    padding:8px;
-    text-align:right;
-  ">
-    ${pcs.skills.toFixed(2)}
   </td>
 </tr>
 </tbody>
