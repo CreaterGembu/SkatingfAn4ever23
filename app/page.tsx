@@ -360,7 +360,7 @@ useEffect(() => {
   const [category, setCategory] =
     useState<keyof typeof PCS_MULTIPLIERS>('MenSP');
   const [pcs, setPcs] = useState<PCS>({ comp: 8, pres: 8, skills: 8 });
-  const [deductions, setdeductions] = useState({
+  const [Deductions, setDeductions] = useState({
   programTime: false,
   illegalElement: false,
   illegalMovement: false,
@@ -490,25 +490,25 @@ useEffect(() => {
     0
   );
   const totalFallPenalty = calcTotalFallPenalty(lines);
-  const additionaldeductions =
-  (deductions.programTime ? -1 : 0) +
-  (deductions.illegalElement ? -2 : 0) +
-  (deductions.illegalMovement ? -2 : 0) +
-  (deductions.costumeProp ? -1 : 0) +
-  (deductions.costumeFall ? -1 : 0) +
-  (deductions.lateStart ? -1 : 0) +
-  deductions.interruption;
-  const totaldeductions =
-  totalFallPenalty + additionaldeductions;
+  const additionalDeductions =
+  (Deductions.programTime ? -1 : 0) +
+  (Deductions.illegalElement ? -2 : 0) +
+  (Deductions.illegalMovement ? -2 : 0) +
+  (Deductions.costumeProp ? -1 : 0) +
+  (Deductions.costumeFall ? -1 : 0) +
+  (Deductions.lateStart ? -1 : 0) +
+  Deductions.interruption;
+  const totalDeductions =
+  totalFallPenalty + additionalDeductions;
   // TES は純粋に技術点のみ
   const totalTES = Number(
   totalTESbeforeFalls.toFixed(2)
 );
   const pcsRaw = Number((pcs.comp + pcs.pres + pcs.skills).toFixed(2));
   const pcsfactored = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
-// Total Segment Score で deductions を引く
+// Total Segment Score で Deductions を引く
   const grandTotal = Number(
-  (totalTES + pcsfactored + totaldeductions).toFixed(2)
+  (totalTES + pcsfactored + totalDeductions).toFixed(2)
 );
   const saveResultToHistory = () => {
     const item: HistoryItem = {
@@ -538,8 +538,8 @@ useEffect(() => {
   pcsfactored,
   totalTES,
   grandTotal,
-  totaldeductions,
-  deductions,
+  totalDeductions,
+  Deductions,
 });
     const item: HistoryItem = {
       id: uid(),
@@ -1556,15 +1556,15 @@ ${showProtocol.protocolHtml}
       Number of Falls : {totalFalls}
     </div>
     <div>
-      Fall deductions : {totalFallPenalty.toFixed(2)}
+      Fall Deductions : {totalFallPenalty.toFixed(2)}
     </div>
   </div>
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
-      checked={deductions.programTime}
+      checked={Deductions.programTime}
       onChange={(e) =>
-        setdeductions((d) => ({
+        setDeductions((d) => ({
           ...d,
           programTime: e.target.checked,
         }))
@@ -1575,9 +1575,9 @@ ${showProtocol.protocolHtml}
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
-      checked={deductions.illegalElement}
+      checked={Deductions.illegalElement}
       onChange={(e) =>
-        setdeductions((d) => ({
+        setDeductions((d) => ({
           ...d,
           illegalElement: e.target.checked,
         }))
@@ -1588,9 +1588,9 @@ ${showProtocol.protocolHtml}
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
-      checked={deductions.illegalMovement}
+      checked={Deductions.illegalMovement}
       onChange={(e) =>
-        setdeductions((d) => ({
+        setDeductions((d) => ({
           ...d,
           illegalMovement: e.target.checked,
         }))
@@ -1601,9 +1601,9 @@ ${showProtocol.protocolHtml}
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
-      checked={deductions.costumeProp}
+      checked={Deductions.costumeProp}
       onChange={(e) =>
-        setdeductions((d) => ({
+        setDeductions((d) => ({
           ...d,
           costumeProp: e.target.checked,
         }))
@@ -1614,9 +1614,9 @@ ${showProtocol.protocolHtml}
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
-      checked={deductions.costumeFall}
+      checked={Deductions.costumeFall}
       onChange={(e) =>
-        setdeductions((d) => ({
+        setDeductions((d) => ({
           ...d,
           costumeFall: e.target.checked,
         }))
@@ -1627,9 +1627,9 @@ ${showProtocol.protocolHtml}
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
-      checked={deductions.lateStart}
+      checked={Deductions.lateStart}
       onChange={(e) =>
-        setdeductions((d) => ({
+        setDeductions((d) => ({
           ...d,
           lateStart: e.target.checked,
         }))
@@ -1641,9 +1641,9 @@ ${showProtocol.protocolHtml}
     Interruption in performing the program
   </div>
   <select
-    value={deductions.interruption}
+    value={Deductions.interruption}
     onChange={(e) =>
-      setdeductions((d) => ({
+      setDeductions((d) => ({
         ...d,
         interruption: Number(e.target.value),
       }))
@@ -1666,7 +1666,7 @@ ${showProtocol.protocolHtml}
       color: '#c62828',
     }}
   >
-    Total deductions: {totaldeductions.toFixed(2)}
+    Total Deductions: {totalDeductions.toFixed(2)}
   </div>
 </div> 
       <div
@@ -1730,9 +1730,9 @@ ${showProtocol.protocolHtml}
     {pcsfactored.toFixed(2)}
   </div>
   <div>
-    deductions :
+    Deductions :
     {' '}
-    {totaldeductions.toFixed(2)}
+    {totalDeductions.toFixed(2)}
   </div>
   <div
     style={{
@@ -1839,8 +1839,8 @@ function renderProtocolHtml(params: {
   pcsfactored: number;
   totalTES: number;
   grandTotal: number;
-  totaldeductions: number;
-  deductions: {
+  totalDeductions: number;
+  Deductions: {
     programTime: boolean;
     illegalElement: boolean;
     illegalMovement: boolean;
@@ -1861,34 +1861,34 @@ function renderProtocolHtml(params: {
     pcsfactored,
     totalTES,
     grandTotal,
-    totaldeductions,
-    deductions
+    totalDeductions,
+    Deductions
   } = params;
-  const deductionsDetails: string[] = [];
+  const DeductionsDetails: string[] = [];
 
-if (deductions.programTime)
-  deductionsDetails.push('Program time violation (-1)');
+if (Deductions.programTime)
+  DeductionsDetails.push('Program time violation (-1)');
 
-if (deductions.illegalElement)
-  deductionsDetails.push('Illegal element (-2)');
+if (Deductions.illegalElement)
+  DeductionsDetails.push('Illegal element (-2)');
 
-if (deductions.illegalMovement)
-  deductionsDetails.push('Illegal movement (-2)');
+if (Deductions.illegalMovement)
+  DeductionsDetails.push('Illegal movement (-2)');
 
-if (deductions.costumeProp)
-  deductionsDetails.push('Costume/Prop violation (-1)');
+if (Deductions.costumeProp)
+  DeductionsDetails.push('Costume/Prop violation (-1)');
 
-if (deductions.costumeFall)
-  deductionsDetails.push('Costume falls on ice (-1)');
+if (Deductions.costumeFall)
+  DeductionsDetails.push('Costume falls on ice (-1)');
 
-if (deductions.lateStart)
-  deductionsDetails.push('Late start (-1)');
+if (Deductions.lateStart)
+  DeductionsDetails.push('Late start (-1)');
 
-if (deductions.interruption === -1)
-  deductionsDetails.push('Interruption (-1)');
+if (Deductions.interruption === -1)
+  DeductionsDetails.push('Interruption (-1)');
 
-if (deductions.interruption === -2)
-  deductionsDetails.push('Interruption (-2)');
+if (Deductions.interruption === -2)
+  DeductionsDetails.push('Interruption (-2)');
   const rowsHtml = lines
     .map((line, idx) => {
    const maxSub =
@@ -2135,7 +2135,7 @@ ${formatCategory(category)}
   <td style="
     padding:10px 8px;
     text-align:right;">
-    ${totaldeductions.toFixed(2)}
+    ${totalDeductions.toFixed(2)}
   </td>
 </tr>
 </tbody>
@@ -2302,8 +2302,8 @@ Program Component Scores
   justify-content:space-between;
   font-size:18px;
 ">
-  <span>deductions</span>
-  <b>${totaldeductions.toFixed(2)}</b>
+  <span>Deductions</span>
+  <b>${totalDeductions.toFixed(2)}</b>
 </div>
 </div>
 `;
