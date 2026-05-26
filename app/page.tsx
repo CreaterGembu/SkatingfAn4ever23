@@ -1518,7 +1518,7 @@ ${showProtocol.protocolHtml}
     cursor: 'pointer',
   }}
 >
-  <span>deductions</span>
+  <span>Deductions</span>
   <button
     style={{
       width: 32,
