@@ -30,7 +30,7 @@ type HistoryItem = {
 const uid = () => Math.floor(Math.random() * 1e9);
 type ElementType = 'jump' | 'spin' | 'step' | 'choreo';
 
-interface Element {
+interface SkateElement {
   name: string;
   baseValue: number;
   type: ElementType;
@@ -39,7 +39,7 @@ interface Element {
 const createElements = (
   type: ElementType,
   data: Record<string, number>
-): Element[] =>
+): SkateElement[] =>
   Object.entries(data).map(([name, baseValue]) => ({
     name,
     baseValue,
@@ -59,7 +59,7 @@ const jumpLevels: Record<string, number[]> = {
   T: [0.4, 1.3, 4.2, 9.5, 14.0],
 };
 
-const JUMPS: Element[] = [
+const JUMPS: SkateElement[] = [
   ...Object.entries(jumpLevels).flatMap(([prefix, vals]) => [
     {
       name: prefix,
@@ -112,7 +112,7 @@ const spinLevels: Record<string, number[]> = {
   FCCoSp: [4.2, 3.6, 3.0, 2.4, 2.0],
 };
 
-const SPINS: Element[] = Object.entries(spinLevels).flatMap(
+const SPINS: SkateElement[] = Object.entries(spinLevels).flatMap(
   ([prefix, vals]) => [
     ...vals.slice(0, 4).map((v, i) => ({
       name: `${prefix}${4 - i}`,
@@ -154,7 +154,7 @@ const CHOREO = createElements('choreo', {
   ChSq1: 3.5,
   ChSp1: 3.5,
 });
-const ALL_ELEMENTS: Element[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
+const ALL_ELEMENTS: SkateElement[] = [...JUMPS, ...SPINS, ...STEPS, ...CHOREO];
 const JUMP_TYPES = ['A', 'Lz', 'F', 'Lo', 'S', 'T', 'Eu'];
 const ROTATIONS = ['1', '2', '3', '4', '5'];
 const SPIN_TYPES = ['USp', 'LSp', 'SSp', 'CSp', 'CoSp'];
@@ -566,7 +566,10 @@ useEffect(() => {
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
     const downloadProtocol = () => {
-  if (!showProtocol?.protocolHtml) return;
+  if (!showProtocol?.protocolHtml) {
+    alert('No protocol data');
+    return;
+  }
   const fullHtml = `
 <!DOCTYPE html>
 <html lang="en">
@@ -577,19 +580,36 @@ useEffect(() => {
   content="width=device-width, initial-scale=1"
 />
 <title>Protocol</title>
+<style>
+body {
+  margin: 0;
+  padding: 24px;
+  background: #ffffff;
+  color: #000000;
+  font-family: Arial, sans-serif;
+}
+table {
+  border-collapse: collapse;
+}
+button {
+  display: none;
+}
+</style>
 </head>
 <body>
 ${showProtocol.protocolHtml}
 </body>
 </html>
 `;
-  const blob = new Blob([fullHtml], {
-    type: 'text/html',
-  });
+  const blob = new Blob(
+    [fullHtml],
+    { type: 'text/html;charset=utf-8' }
+  );
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${showProtocol.playerName || 'protocol'}.html`;
+  a.download =
+    `${showProtocol.playerName || 'protocol'}.html`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -2207,7 +2227,6 @@ ${formatCategory(category)}
 </tr>
 </tbody>
 </table>
-```
 <div class="protocol-box">
    elements table
    pcs table
@@ -2237,13 +2256,11 @@ ${formatCategory(category)}
   Base Value
 </th>
 <th style="width:90px; padding;8px;">
-  GOE Mark
-</th>
-
-<th style="width:90px; padding;8px;">
   GOE
 </th>
-
+<th style="width:90px; padding;8px;">
+  GOE Mark
+</th>
 <th style="width:120px; padding;8px;">
   Scores of Panel
 </th>
@@ -2279,7 +2296,7 @@ Program Component Scores
   <th style="padding:8px;">
     Program Components 
   </th>
-  <th style="padding;8px;">
+  <th style="padding:8px;">
     Score
   </th>
 </tr>
