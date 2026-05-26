@@ -1641,7 +1641,7 @@ ${showProtocol.protocolHtml}
     Interruption in performing the program
   </div>
   <select
-    value={Deductions.interruption}
+ value={Deductions.interruption}
     onChange={(e) =>
       setDeductions((d) => ({
         ...d,
@@ -1889,6 +1889,20 @@ if (Deductions.interruption === -1)
 
 if (Deductions.interruption === -2)
   DeductionsDetails.push('Interruption (-2)');
+  const totalBaseValue = lines
+  .reduce(
+    (sum, line) =>
+      sum +
+      line.subs.reduce(
+        (s, sub) => s + calcBV(sub),
+        0),
+    0)
+  .toFixed(2);
+const totalPanelScore = lines
+  .reduce(
+    (sum, line) => sum + calcLineTotal(line),
+    0)
+  .toFixed(2);
   const rowsHtml = lines
     .map((line, idx) => {
    const maxSub =
@@ -2181,6 +2195,61 @@ ${formatCategory(category)}
 <tbody>
 ${rowsHtml}
 </tbody>
+
+<tfoot>
+<tr
+  style="
+    border-top:2px solid #000;
+    font-weight:bold;
+    background:#f5f5f5;
+  "
+>
+  <td colspan="3" style="padding:8px;text-align:right;">
+    Totals
+  </td>
+
+  <td
+    style="
+      padding:8px;
+      text-align:right;
+      border:1px solid #999;
+    "
+  >
+    ${totalBaseValue}
+  </td>
+
+  <td
+    style="
+      padding:8px;
+      text-align:right;
+      border:1px solid #999;
+    "
+  >
+    —
+  </td>
+
+  <td
+    style="
+      padding:8px;
+      text-align:right;
+      border:1px solid #999;
+    "
+  >
+    —
+  </td>
+
+  <td
+    style="
+      padding:8px;
+      text-align:right;
+      border:1px solid #999;
+      font-size:16px;
+    "
+  >
+    ${totalPanelScore}
+  </td>
+</tr>
+</tfoot>
 </table>
 </div>
 <div style="
@@ -2269,7 +2338,41 @@ ${rowsHtml}
   ">
     Skating Skills
   </td>
+<tr
+  style="
+    border-top:2px solid #000;
+    font-weight:bold;
+    background:#f5f5f5;
+  "
+>
+  <td
+    style="
+      padding:8px;
+      text-align:left;
+    "
+  >
+    Judge Total Program Component Score (factored)
+  </td>
 
+  <td
+    style="
+      padding:8px;
+      text-align:right;
+    "
+  >
+    —
+  </td>
+
+  <td
+    style="
+      padding:8px;
+      text-align:right;
+      font-size:16px;
+    "
+  >
+    ${pcsfactored.toFixed(2)}
+  </td>
+</tr>
   <td style="
     padding:8px;
     text-align:right;
