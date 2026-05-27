@@ -799,17 +799,24 @@ ${showProtocol.protocolHtml}
                     const isMax = maxSub ? sub.id === maxSub.id : false;
                     const goePoint = calcGOEPoint(sub, maxSub);
                     const subtotal = calcSubTotal(sub, maxSub);
-                    // highlighting
-                    const hasF = sub.marks.includes('F');
-                    const positiveGo = sub.goe > 0;
-                    const secondHalfHighlight =
-                      sub.secondHalf && sub.element.type === 'jump';
-                    const rowStyle: React.CSSProperties = {};
-                    if (hasF) rowStyle.background = '#fff0f0'; // light red
-                    else if (positiveGo)
-                      rowStyle.background = '#f0fff4'; // light green
-                    else if (secondHalfHighlight)
-                      rowStyle.background = '#fffaf0'; // light yellow
+                   // highlighting
+const hasRotationIssue =
+  sub.underRotation === '<' ||
+  sub.underRotation === '<<';
+const hasEdgeIssue =
+  sub.edge === '!' ||
+  sub.edge === 'e';
+const positiveGo = sub.goe > 0;
+const negativeGo = sub.goe < 0;
+const rowStyle: React.CSSProperties = {};
+// 回転不足 or edge error を最優先
+if (hasRotationIssue || hasEdgeIssue) {
+  rowStyle.background = '#fff8dc'; // light yellow
+} else if (positiveGo) {
+  rowStyle.background = '#f0fff4'; // light green
+} else if (negativeGo) {
+  rowStyle.background = '#fff0f0'; // light red
+}
                     return (
                       <tr key={sub.id} style={rowStyle}>
                         <td style={tdStyle}>
@@ -1900,11 +1907,16 @@ if (Deductions.interruption === -2)
         0),
     0)
   .toFixed(2);
-const totalPanelScore = lines
-  .reduce(
-    (sum, line) => sum + calcLineTotal(line),
-    0)
-  .toFixed(2);
+<td
+  style="
+    padding:8px;
+    text-align:right;
+    border:1px solid #999;
+    font-size:16px;
+  "
+>
+  ${totalGOE}
+</td>
   const rowsHtml = lines
     .map((line, idx) => {
    const maxSub =
@@ -1915,7 +1927,27 @@ const totalPanelScore = lines
           : b
       )
     : null;
+const totalGOE = lines
+  .reduce((sum, line) => {
+    const maxSub =
+      line.subs.length > 0
+        ? line.subs.reduce((a, b) =>
+            calcBV(a) > calcBV(b)
+              ? a
+              : b
+          )
+        : null;
 
+    return (
+      sum +
+      line.subs.reduce(
+        (s, sub) =>
+          s + calcGOEPoint(sub, maxSub),
+        0
+      )
+    );
+  }, 0)
+  .toFixed(2);
 const elementText = line.subs
   .map((sub) => {
     let text = sub.element.name;
@@ -2203,7 +2235,7 @@ ${rowsHtml}
   style="
     border-top:2px solid #000;
     font-weight:bold;
-    background:#f5f5f5;
+    background:#ffffff;
   "
 >
   <td colspan="3" style="padding:8px;text-align:right;">
@@ -2358,7 +2390,7 @@ ${rowsHtml}
   style="
     border-top:2px solid #000;
     font-weight:bold;
-    background:#f5f5f5;
+    background:#ffffff;
   "
 >
   <td
