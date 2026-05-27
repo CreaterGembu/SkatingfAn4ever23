@@ -804,7 +804,7 @@ ${showProtocol.protocolHtml}
                     const positiveGo = sub.goe > 0;
                     const secondHalfHighlight =
                       sub.secondHalf && sub.element.type === 'jump';
-                   const hasRotationIssue =
+const hasRotationIssue =
   sub.underRotation === '<' ||
   sub.underRotation === '<<';
 
@@ -812,9 +812,24 @@ const hasEdgeIssue =
   sub.edge === '!' ||
   sub.edge === 'e';
 
+// Vマーク
+const hasVIssue =
+  sub.marks.includes('V');
+// スピンでLv4未満
+const hasSpinLevelIssue =
+  sub.element.type === 'spin' &&
+  !sub.element.name.endsWith('4');
+// ステップでLv4未満
+const hasStepLevelIssue =
+  sub.element.type === 'step' &&
+  sub.element.name !== 'StSq4';
+// 黄色判定
 const hasJudgeIssue =
-  hasRotationIssue || hasEdgeIssue;
-
+  hasRotationIssue ||
+  hasEdgeIssue ||
+  hasVIssue ||
+  hasSpinLevelIssue ||
+  hasStepLevelIssue;
 const rowStyle: React.CSSProperties = {};
 if (hasJudgeIssue) {
   // 回転不足・エッジエラー
