@@ -1888,7 +1888,11 @@ function renderProtocolHtml(params: {
   const DeductionsDetails: string[] = [];
 const totalFalls = countTotalFalls(lines);
 const totalFallPenalty = calcTotalFallPenalty(lines);
-
+if (totalFalls > 0) {
+  DeductionsDetails.push(
+    `Falls (${totalFalls}) ${totalFallPenalty.toFixed(2)}`
+  );
+}
 const deductionRows: string[] = [];
 
 // Falls
@@ -2594,8 +2598,6 @@ ${rowsHtml}
     ${totalDeductions.toFixed(2)}
   </td>
 </tr>
-${deductionRows.join('')}
-
 </tbody>
 </table>
 </div></div>
