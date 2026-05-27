@@ -1633,13 +1633,13 @@ if (hasJudgeIssue) {
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
-      checked={Deductions.illegalMovement}
-      onChange={(e) =>
-        setDeductions((d) => ({
-          ...d,
-          illegalMovement: e.target.checked,
-        }))
-      }
+     checked={Deductions.illegalMovement}
+onChange={(e) =>
+  setDeductions((d) => ({
+    ...d,
+    illegalMovement: e.target.checked,
+  }))
+}
     />
     Costume and prop violation (-1)
   </label>
@@ -1862,7 +1862,8 @@ function renderProtocolHtml(params: {
   grandTotal: number;
   totalDeductions: number;
   Deductions: {
-    programTime: boolean;
+    if (Deductions.programTime)
+  DeductionsDetails.push('Time violation (-1)');
     illegalElement: boolean;
     illegalMovement: boolean;
     costumeProp: boolean;
@@ -2025,8 +2026,13 @@ if (Deductions.interruption !== 0) {
 if (Deductions.TimeViolation)
   DeductionsDetails.push('Time violation (-1)');
 
-if (Deductions.illegalElement/movement)
-  DeductionsDetails.push('Illegal element/movement (-2)');
+if (
+  Deductions.illegalElement ||
+  Deductions.illegalMovement
+)
+  DeductionsDetails.push(
+    'Illegal element/movement (-2)'
+  );
 if (Deductions.costumeProp)
   DeductionsDetails.push('Costume/Prop violation (-1)');
 
