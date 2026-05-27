@@ -2067,7 +2067,7 @@ const bv = line.subs
   </td>
 
   <td style="
-    border:1px solid #999;
+   border:1px solid #999;
     padding:8px;
     text-align:right;
   ">
@@ -2406,7 +2406,6 @@ ${rowsHtml}
       text-align:right;
     "
   >
-    —
   </td>
   <td
     style="
