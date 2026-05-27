@@ -425,22 +425,29 @@ useEffect(() => {
     setLines((l) => [...l,newLine]);
    setTempLine([]);
    setIsComboMode(false);};
-  const addComboToLine = (lineId: number) => {
-    setLines((l) =>
-      l.map((line) =>
-        line.id !== lineId
-          ? line
-          : {
-              ...line,
-              subs: [
-                ...line.subs,
-                {id: uid(),
-                  element: JUMPS[0],
-                  underRotation: '',
-                  edge: '',
-                  goe: 0,
-                  marks: [] as string[],
-                  secondHalf: false,},],}));};
+ const addComboToLine = (lineId: number) => {
+  setLines((l) =>
+    l.map((line) =>
+      line.id !== lineId
+        ? line
+        : {
+            ...line,
+            subs: [
+              ...line.subs,
+              {
+                id: uid(),
+                element: JUMPS[0],
+                underRotation: '',
+                edge: '',
+                goe: 0,
+                marks: [] as string[],
+                secondHalf: false,
+              },
+            ],
+          }
+    )
+  );
+};
   const updateSub = (
     lineId: number,
     subId: number,
@@ -1897,26 +1904,6 @@ const totalPanelScore = lines
     (sum, line) => sum + calcLineTotal(line),
     0
   )
-  .toFixed(2);
-      const totalGOE = lines
-  .reduce((sum, line) => {
-    const maxSub =
-      line.subs.length > 0
-        ? line.subs.reduce((a, b) =>
-            calcBV(a) > calcBV(b)
-              ? a
-              : b
-          )
-        : null;
-    return (
-      sum +
-      line.subs.reduce(
-        (s, sub) =>
-          s + calcGOEPoint(sub, maxSub),
-        0
-      )
-    );
-  }, 0)
   .toFixed(2);
 const elementText = line.subs
   .map((sub) => {
