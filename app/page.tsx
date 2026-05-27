@@ -2045,7 +2045,7 @@ const bv = line.subs
     font-weight:bold;
     color:#000;
   ">
-    ${infoText || '—'}
+    ${infoText || ''}
   </td>
 
   <td style="
@@ -2259,7 +2259,6 @@ ${rowsHtml}
       border:1px solid #999;
     "
   >
-    —
   </td>
 
   <td
@@ -2269,7 +2268,6 @@ ${rowsHtml}
       border:1px solid #999;
     "
   >
-    —
   </td>
 
   <td
