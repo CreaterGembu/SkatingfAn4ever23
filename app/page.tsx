@@ -1861,16 +1861,15 @@ function renderProtocolHtml(params: {
   totalTES: number;
   grandTotal: number;
   totalDeductions: number;
-  Deductions: {
-    if (Deductions.programTime)
-  DeductionsDetails.push('Time violation (-1)');
-    illegalElement: boolean;
-    illegalMovement: boolean;
-    costumeProp: boolean;
-    costumeFall: boolean;
-    lateStart: boolean;
-    interruption: number;
-  };
+ Deductions: {
+  programTime: boolean;
+  illegalElement: boolean;
+  illegalMovement: boolean;
+  costumeProp: boolean;
+  costumeFall: boolean;
+  lateStart: boolean;
+  interruption: number;
+};
 }) {
   const {
     playerName,
@@ -2023,7 +2022,7 @@ if (Deductions.interruption !== 0) {
     </tr>
   `);
 }
-if (Deductions.TimeViolation)
+if (Deductions.programTime)
   DeductionsDetails.push('Time violation (-1)');
 
 if (
