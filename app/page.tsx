@@ -2572,11 +2572,18 @@ ${rowsHtml}
     padding:8px 10px;
     font-weight:700;
     width:220px;
+    white-space:nowrap;
   ">
     Deductions:
   </td>
 
-  <td></td>
+  <td style="
+    padding:8px 10px;
+    color:#666;
+    font-size:13px;
+  ">
+    ${DeductionsDetails.join(' / ')}
+  </td>
 
   <td style="
     text-align:right;
@@ -2587,7 +2594,6 @@ ${rowsHtml}
     ${totalDeductions.toFixed(2)}
   </td>
 </tr>
-
 ${deductionRows.join('')}
 
 </tbody>
