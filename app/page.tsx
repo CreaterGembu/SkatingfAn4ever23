@@ -1615,7 +1615,7 @@ if (hasJudgeIssue) {
         }))
       }
     />
-    Program time (-1)
+    Time violation (-1)
   </label>
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
@@ -1628,7 +1628,7 @@ if (hasJudgeIssue) {
         }))
       }
     />
-    Illegal element (-2)
+    Illegal element/movement (-2)
   </label>
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
@@ -1638,19 +1638,6 @@ if (hasJudgeIssue) {
         setDeductions((d) => ({
           ...d,
           illegalMovement: e.target.checked,
-        }))
-      }
-    />
-    Illegal movement (-2)
-  </label>
-  <label style={{ display: 'block', marginBottom: 6 }}>
-    <input
-      type="checkbox"
-      checked={Deductions.costumeProp}
-      onChange={(e) =>
-        setDeductions((d) => ({
-          ...d,
-          costumeProp: e.target.checked,
         }))
       }
     />
