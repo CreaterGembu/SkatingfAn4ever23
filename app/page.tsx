@@ -569,7 +569,7 @@ useEffect(() => {
     setHistory((h) => h.filter((x) => x.id !== id));
     const downloadProtocol = () => {
   if (!showProtocol?.protocolHtml) {
-    alert('No protocol data');
+    alert('No protocol found');
     return;
   }
   const fullHtml = `
@@ -1785,12 +1785,11 @@ if (hasJudgeIssue) {
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
           <button
             onClick={() => {
-              if (!confirm('Delete History')) return;
+              if (!confirm('Delete Memories')) return;
               clearHistory();
             }}
             style={{ padding: '8px 10px' }}
           >
-            Delete All
           </button>
         </div>
         {history.length === 0 && <div>None</div>}
