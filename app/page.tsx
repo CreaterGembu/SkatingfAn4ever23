@@ -2022,9 +2022,12 @@ const bv = line.subs
   .toFixed(2);
       const total = calcLineTotal(line).toFixed(2);
      const goeMark =
-  maxSub?.goe !== undefined
-    ? `${maxSub.goe > 0 ? '+' : ''}${maxSub.goe.toFixed(0)}`
-    : '-';
+  !maxSub ||
+  maxSub.element.baseValue <= 0
+    ? '-'
+    : maxSub.goe === 0
+    ? '0'
+    : `${maxSub.goe > 0 ? '+' : ''}${maxSub.goe.toFixed(0)}`;
       const goeValue = line.subs.reduce(
   (sum, sub) => sum + calcGOEPoint(sub, maxSub),
   0
