@@ -1782,16 +1782,6 @@ if (hasJudgeIssue) {
 </div>
       <div style={{ marginTop: 12 }}>
         <h3>Memories</h3>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-          <button
-            onClick={() => {
-              if (!confirm('Delete Memories')) return;
-              clearHistory();
-            }}
-            style={{ padding: '8px 10px' }}
-          >
-          </button>
-        </div>
         {history.length === 0 && <div>None</div>}
         {history.map((h) => (
           <div
