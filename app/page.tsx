@@ -1873,31 +1873,6 @@ function renderProtocolHtml(params: {
     totalDeductions,
     Deductions
   } = params;
-  const DeductionsDetails: string[] = [];
-
-if (Deductions.programTime)
-  DeductionsDetails.push('Program time violation (-1)');
-
-if (Deductions.illegalElement)
-  DeductionsDetails.push('Illegal element (-2)');
-
-if (Deductions.illegalMovement)
-  DeductionsDetails.push('Illegal movement (-2)');
-
-if (Deductions.costumeProp)
-  DeductionsDetails.push('Costume/Prop violation (-1)');
-
-if (Deductions.costumeFall)
-  DeductionsDetails.push('Costume falls on ice (-1)');
-
-if (Deductions.lateStart)
-  DeductionsDetails.push('Late start (-1)');
-
-if (Deductions.interruption === -1)
-  DeductionsDetails.push('Interruption (-1)');
-
-if (Deductions.interruption === -2)
-  DeductionsDetails.push('Interruption (-2)');
   const totalBaseValue = lines
   .reduce(
     (sum, line) =>
@@ -1917,7 +1892,13 @@ if (Deductions.interruption === -2)
           : b
       )
     : null;
-const totalGOE = lines
+const totalPanelScore = lines
+  .reduce(
+    (sum, line) => sum + calcLineTotal(line),
+    0
+  )
+  .toFixed(2);
+      const totalGOE = lines
   .reduce((sum, line) => {
     const maxSub =
       line.subs.length > 0
