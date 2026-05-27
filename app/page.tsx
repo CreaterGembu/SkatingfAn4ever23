@@ -1907,16 +1907,6 @@ if (Deductions.interruption === -2)
         0),
     0)
   .toFixed(2);
-<td
-  style="
-    padding:8px;
-    text-align:right;
-    border:1px solid #999;
-    font-size:16px;
-  "
->
-  ${totalGOE}
-</td>
   const rowsHtml = lines
     .map((line, idx) => {
    const maxSub =
@@ -1937,7 +1927,6 @@ const totalGOE = lines
               : b
           )
         : null;
-
     return (
       sum +
       line.subs.reduce(
