@@ -805,6 +805,7 @@ ${showProtocol.protocolHtml}
                     const secondHalfHighlight =
                       sub.secondHalf && sub.element.type === 'jump';
 const hasRotationIssue =
+  sub.underRotation === 'q' ||
   sub.underRotation === '<' ||
   sub.underRotation === '<<';
 
