@@ -425,29 +425,22 @@ useEffect(() => {
     setLines((l) => [...l,newLine]);
    setTempLine([]);
    setIsComboMode(false);};
- const addComboToLine = (lineId: number) => {
-  setLines((l) =>
-    l.map((line) =>
-      line.id !== lineId
-        ? line
-        : {
-            ...line,
-            subs: [
-              ...line.subs,
-              {
-                id: uid(),
-                element: JUMPS[0],
-                underRotation: '',
-                edge: '',
-                goe: 0,
-                marks: [] as string[],
-                secondHalf: false,
-              },
-            ],
-          }
-    )
-  );
-};
+  const addComboToLine = (lineId: number) => {
+    setLines((l) =>
+      l.map((line) =>
+        line.id !== lineId
+          ? line
+          : {
+              ...line,
+              subs: [
+                ...line.subs,
+                {id: uid(),
+                  element: JUMPS[0],
+                  underRotation: '',
+                  edge: '',
+                  goe: 0,
+                  marks: [] as string[],
+                  secondHalf: false,},],}));};
   const updateSub = (
     lineId: number,
     subId: number,
@@ -806,24 +799,33 @@ ${showProtocol.protocolHtml}
                     const isMax = maxSub ? sub.id === maxSub.id : false;
                     const goePoint = calcGOEPoint(sub, maxSub);
                     const subtotal = calcSubTotal(sub, maxSub);
-                   // highlighting
-const hasRotationIssue =
+                    // highlighting
+                    const hasF = sub.marks.includes('F');
+                    const positiveGo = sub.goe > 0;
+                    const secondHalfHighlight =
+                      sub.secondHalf && sub.element.type === 'jump';
+                   const hasRotationIssue =
   sub.underRotation === '<' ||
   sub.underRotation === '<<';
+
 const hasEdgeIssue =
   sub.edge === '!' ||
   sub.edge === 'e';
-const positiveGo = sub.goe > 0;
-const negativeGo = sub.goe < 0;
+
+const hasJudgeIssue =
+  hasRotationIssue || hasEdgeIssue;
+
 const rowStyle: React.CSSProperties = {};
-// 回転不足 or edge error を最優先
-if (hasRotationIssue || hasEdgeIssue) {
-  rowStyle.background = '#fff8dc'; // light yellow
-} else if (positiveGo) {
-  rowStyle.background = '#f0fff4'; // light green
-} else if (negativeGo) {
-  rowStyle.background = '#fff0f0'; // light red
-}
+if (hasJudgeIssue) {
+  // 回転不足・エッジエラー
+  rowStyle.background = '#fff8dc';
+} else if (sub.goe > 0) {
+  // GOE+
+  rowStyle.background = '#eaffea';
+} else if (sub.goe < 0) {
+  // GOE-
+  rowStyle.background = '#ffecec';
+} 
                     return (
                       <tr key={sub.id} style={rowStyle}>
                         <td style={tdStyle}>
@@ -1880,6 +1882,31 @@ function renderProtocolHtml(params: {
     totalDeductions,
     Deductions
   } = params;
+  const DeductionsDetails: string[] = [];
+
+if (Deductions.programTime)
+  DeductionsDetails.push('Program time violation (-1)');
+
+if (Deductions.illegalElement)
+  DeductionsDetails.push('Illegal element (-2)');
+
+if (Deductions.illegalMovement)
+  DeductionsDetails.push('Illegal movement (-2)');
+
+if (Deductions.costumeProp)
+  DeductionsDetails.push('Costume/Prop violation (-1)');
+
+if (Deductions.costumeFall)
+  DeductionsDetails.push('Costume falls on ice (-1)');
+
+if (Deductions.lateStart)
+  DeductionsDetails.push('Late start (-1)');
+
+if (Deductions.interruption === -1)
+  DeductionsDetails.push('Interruption (-1)');
+
+if (Deductions.interruption === -2)
+  DeductionsDetails.push('Interruption (-2)');
   const totalBaseValue = lines
   .reduce(
     (sum, line) =>
@@ -1887,6 +1914,11 @@ function renderProtocolHtml(params: {
       line.subs.reduce(
         (s, sub) => s + calcBV(sub),
         0),
+    0)
+  .toFixed(2);
+const totalPanelScore = lines
+  .reduce(
+    (sum, line) => sum + calcLineTotal(line),
     0)
   .toFixed(2);
   const rowsHtml = lines
@@ -1899,12 +1931,7 @@ function renderProtocolHtml(params: {
           : b
       )
     : null;
-const totalPanelScore = lines
-  .reduce(
-    (sum, line) => sum + calcLineTotal(line),
-    0
-  )
-  .toFixed(2);
+
 const elementText = line.subs
   .map((sub) => {
     let text = sub.element.name;
