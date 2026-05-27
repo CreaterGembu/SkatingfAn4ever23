@@ -897,10 +897,15 @@ if (hasJudgeIssue) {
                           )}
                         </td>
 <td style={tdStyle}>
-  {(sub.element.type === 'jump' && isMax) ||
-  sub.element.type !== 'jump' ||
-  sub.element.name === 'ChSq1' ||
-  sub.element.name === 'ChSp1' ? (
+  {(
+  sub.element.baseValue > 0 &&
+  (
+    (sub.element.type === 'jump' && isMax) ||
+    sub.element.type !== 'jump' ||
+    sub.element.name === 'ChSq1' ||
+    sub.element.name === 'ChSp1'
+  )
+) ? (
     <div
       style={{
         display: 'flex',
@@ -1239,22 +1244,28 @@ if (hasJudgeIssue) {
         );
       })()
     ) : (
-      ROTATIONS.map((r) => {
-        const name = `${r}${selectedJumpType}`;
-        const el = ALL_ELEMENTS.find(
-          (x) => x.name === name
-        );
-        if (!el) return null;
-        return (
-          <button
-            key={name}
-            onClick={() => addToTemp(el)}
-            style={smallBtn}
-          >
-            {name}
-          </button>
-        );
-      })
+     [
+  selectedJumpType,
+  ...ROTATIONS.map(
+    (r) => `${r}${selectedJumpType}`
+  ),
+].map((name) => {
+  const el = ALL_ELEMENTS.find(
+    (x) => x.name === name
+  );
+
+  if (!el) return null;
+
+  return (
+    <button
+      key={name}
+      onClick={() => addToTemp(el)}
+      style={smallBtn}
+    >
+      {name}
+    </button>
+  );
+})
     )}
   </div>
 )}
@@ -2013,7 +2024,7 @@ const bv = line.subs
      const goeMark =
   maxSub?.goe !== undefined
     ? `${maxSub.goe > 0 ? '+' : ''}${maxSub.goe.toFixed(0)}`
-    : '0';
+    : '-';
       const goeValue = line.subs.reduce(
   (sum, sub) => sum + calcGOEPoint(sub, maxSub),
   0
@@ -2052,7 +2063,7 @@ const bv = line.subs
     padding:8px;
     text-align:right;
   ">
-    ${goeValue}
+    ${Number(goeValue) === 0 ? '0.00' : goeValue}
   </td>
 
   <td style="
