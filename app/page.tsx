@@ -1886,16 +1886,147 @@ function renderProtocolHtml(params: {
     Deductions
   } = params;
   const DeductionsDetails: string[] = [];
+const totalFalls = countTotalFalls(lines);
+const totalFallPenalty = calcTotalFallPenalty(lines);
 
-if (Deductions.programTime)
-  DeductionsDetails.push('Program time violation (-1)');
+const deductionRows: string[] = [];
 
-if (Deductions.illegalElement)
-  DeductionsDetails.push('Illegal element (-2)');
+// Falls
+if (totalFalls > 0) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;font-weight:600;">
+        Falls
+      </td>
 
-if (Deductions.illegalMovement)
-  DeductionsDetails.push('Illegal movement (-2)');
+      <td style="padding:6px 10px;text-align:right;">
+        ${totalFallPenalty.toFixed(2)}
+      </td>
 
+      <td style="padding:6px 10px;text-align:center;">
+        (${totalFalls})
+      </td>
+    </tr>
+  `);
+}
+
+// その他 deduction
+if (Deductions.programTime) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;">
+        Program time violation
+      </td>
+
+      <td style="padding:6px 10px;text-align:right;">
+        -1.00
+      </td>
+
+      <td></td>
+    </tr>
+  `);
+}
+
+if (Deductions.illegalElement) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;">
+        Illegal element
+      </td>
+
+      <td style="padding:6px 10px;text-align:right;">
+        -2.00
+      </td>
+
+      <td></td>
+    </tr>
+  `);
+}
+
+if (Deductions.illegalMovement) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;">
+        Illegal movement
+      </td>
+
+      <td style="padding:6px 10px;text-align:right;">
+        -2.00
+      </td>
+
+      <td></td>
+    </tr>
+  `);
+}
+
+if (Deductions.costumeProp) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;">
+        Costume/Prop violation
+      </td>
+
+      <td style="padding:6px 10px;text-align:right;">
+        -1.00
+      </td>
+
+      <td></td>
+    </tr>
+  `);
+}
+
+if (Deductions.costumeFall) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;">
+        Costume falls on ice
+      </td>
+
+      <td style="padding:6px 10px;text-align:right;">
+        -1.00
+      </td>
+
+      <td></td>
+    </tr>
+  `);
+}
+
+if (Deductions.lateStart) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;">
+        Late start
+      </td>
+
+      <td style="padding:6px 10px;text-align:right;">
+        -1.00
+      </td>
+
+      <td></td>
+    </tr>
+  `);
+}
+
+if (Deductions.interruption !== 0) {
+  deductionRows.push(`
+    <tr>
+      <td style="padding:6px 10px;">
+        Interruption
+      </td>
+
+      <td style="padding:6px 10px;text-align:right;">
+        ${Deductions.interruption.toFixed(2)}
+      </td>
+
+      <td></td>
+    </tr>
+  `);
+}
+if (Deductions.TimeViolation)
+  DeductionsDetails.push('Time violation (-1)');
+
+if (Deductions.illegalElement/movement)
+  DeductionsDetails.push('Illegal element/movement (-2)');
 if (Deductions.costumeProp)
   DeductionsDetails.push('Costume/Prop violation (-1)');
 
@@ -2417,16 +2548,46 @@ ${rowsHtml}
 </table>
 </div></div>
 <div style="
-  border-bottom:1px solid #000;
-  padding:14px;
-  display:flex;
-  justify-content:space-between;
-  font-size:18px;
+  margin-top:10px;
+  border:2px solid #000;
 ">
-  <span>Deductions</span>
-  <b>${totalDeductions.toFixed(2)}</b>
-</div>
-</div>
+
+<table style="
+  width:100%;
+  border-collapse:collapse;
+  font-size:16px;
+">
+
+<tbody>
+
+<tr style="
+  border-bottom:1px solid #000;
+">
+  <td style="
+    padding:8px 10px;
+    font-weight:700;
+    width:220px;
+  ">
+    Deductions:
+  </td>
+
+  <td></td>
+
+  <td style="
+    text-align:right;
+    padding:8px 10px;
+    font-weight:700;
+    width:120px;
+  ">
+    ${totalDeductions.toFixed(2)}
+  </td>
+</tr>
+
+${deductionRows.join('')}
+
+</tbody>
+</table>
+</div></div>
 `;
 }
 function mangleSpin(
