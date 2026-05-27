@@ -139,7 +139,7 @@ const SPINS: SkateElement[] = Object.entries(spinLevels).flatMap(
 // ====================
 
 const STEPS = createElements('step', {
-  StSqBV: 1.6,
+  StSqB: 1.6,
   StSq1: 1.9,
   StSq2: 2.7,
   StSq3: 3.5,
