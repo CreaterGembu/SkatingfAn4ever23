@@ -2167,15 +2167,15 @@ const goeMark =
 ).toFixed(2);
       return `
 <tr>
-  <td style="padding:2px 4px;">
+  <td style="padding:1px 2px;line-height:1.0;">
     ${idx + 1}
   </td>
-  <td style="padding:2px 4px;">
+  <td style="padding:1px 2px;line-height:1.0;">
     ${elementText}
   </td>
 
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
     text-align:center;
     font-weight:bold;
     color:#000;
@@ -2184,7 +2184,7 @@ const goeMark =
   </td>
 
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
     text-align:right;
     font-weight:600;
   ">
@@ -2193,7 +2193,7 @@ const goeMark =
   </td>
 
   <td style="
-  padding:2px 4px;
+  padding:1px 2px;line-height:1.0;
   text-align:right;
   line-height:1.1;
 ">
@@ -2201,7 +2201,7 @@ const goeMark =
   </td>
 
   <td style="
-  padding:2px 4px;
+  padding:1px 2px;line-height:1.0;
   text-align:right;
   line-height:1.1;
 ">
@@ -2209,7 +2209,7 @@ const goeMark =
   </td>
 
  <td style="
-  padding:2px 4px;
+  padding:1px 2px;line-height:1.0;
   text-align:right;
   line-height:1.1;
 ">
@@ -2255,27 +2255,27 @@ ${formatCategory(category)}
 <tr style="
   border-bottom:1px solid #999;
 ">
-  <th style="padding:2px 4px;text-align:left;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:12px;">
     Name
   </th>
 
-  <th style="padding:2px 4px;text-align:left;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:12px;">
     Nation
   </th>
 
-  <th style="padding:2px 4px;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
     Total
   </th>
 
-  <th style="padding:2px 4px;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
     TES
   </th>
 
-  <th style="padding:2px 4px;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
     PCS
   </th>
 
-  <th style="padding:2px 4px;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
     Ded
   </th>
 </tr>
@@ -2330,32 +2330,31 @@ ${formatCategory(category)}
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:11px;
+  font-size:10px;
   table-layout:fixed;
 ">
 <thead>
-<tr style="
-  border-bottom:1px solid #000;">
-  <th style="width:40px; padding:2px 4px;">
-    #
-  </th>
-  <th style="width:260px; padding:2px 4px;">
+<th style="width:24px;padding:2px 2px;">
+  #
+</th>
+<th style="width:140px;padding:2px 2px;">
   Executed Elements
 </th>
-<th style="width:60px; padding:2px 4px;">
+<th style="width:40px;padding:2px 2px;">
   Info
 </th>
-<th style="width:90px; padding:2px 4px;">
+<th style="width:55px;padding:2px 2px;">
   Base Value
 </th>
-<th style="width:90px; padding:2px 4px;">
+<th style="width:55px;padding:2px 2px;">
   GOE
 </th>
-<th style="width:90px; padding:2px 4px;">
+<th style="width:45px;padding:2px 2px;">
   GOE Mark
 </th>
-<th style="width:80px; padding:2px 4px;">
-  Scores of Panel
+<th style="width:60px;padding:2px 2px;">
+  Score of Panel
+</th>
 </th>
 </tr>
 </thead>
@@ -2371,13 +2370,13 @@ ${rowsHtml}
     background:#ffffff;
   "
 >
-  <td colspan="3" style="padding:2px 4px;text-align:right;">
+  <td colspan="3" style="padding:1px 2px;line-height:1.0;text-align:right;">
     Totals
   </td>
 
   <td
     style="
-      padding:2px 4px;
+      padding:1px 2px;line-height:1.0;
       text-align:right;
     "
   >
@@ -2386,7 +2385,7 @@ ${rowsHtml}
 
   <td
     style="
-      padding:2px 4px;
+      padding:1px 2px;line-height:1.0;
       text-align:right;
     "
   >
@@ -2394,7 +2393,7 @@ ${rowsHtml}
 
   <td
     style="
-      padding:2px 4px;
+      padding:1px 2px;line-height:1.0;
       text-align:right;
     "
   >
@@ -2402,7 +2401,7 @@ ${rowsHtml}
 
   <td
     style="
-      padding:2px 4px;
+      padding:1px 2px;line-height:1.0;
       text-align:right;
       font-size:16px;
     "
@@ -2429,20 +2428,20 @@ ${rowsHtml}
   border-bottom:1px solid #000;
 ">
   <th style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:left;
   ">
     Program Components
   </th>
   <th style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;">
     Factor
   </th>
   <th style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;">
   </th>
@@ -2451,7 +2450,7 @@ line-height:1.1;
 <tbody>
 <tr>
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:left;
   ">
@@ -2459,7 +2458,7 @@ line-height:1.1;
   </td>
 
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;
   ">
@@ -2467,7 +2466,7 @@ line-height:1.1;
   </td>
 
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;
   ">
@@ -2477,7 +2476,7 @@ line-height:1.1;
 
 <tr>
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:left;
   ">
@@ -2485,7 +2484,7 @@ line-height:1.1;
   </td>
 
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;
   ">
@@ -2493,7 +2492,7 @@ line-height:1.1;
   </td>
 
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;
   ">
@@ -2503,14 +2502,14 @@ line-height:1.1;
 
 <tr>
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:left;
   ">
     Skating Skills
   </td>
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;
   ">
@@ -2518,7 +2517,7 @@ line-height:1.1;
   </td>
 
   <td style="
-    padding:2px 4px;
+    padding:1px 2px;line-height:1.0;
 line-height:1.1;
     text-align:right;
   ">
@@ -2534,7 +2533,7 @@ line-height:1.1;
 >
   <td
     style="
-      padding:2px 4px;
+      padding:1px 2px;line-height:1.0;
 line-height:1.1;
       text-align:left;
     "
@@ -2544,7 +2543,7 @@ line-height:1.1;
 
   <td
     style="
-      padding:2px 4px;
+      padding:1px 2px;line-height:1.0;
 line-height:1.1;
       text-align:right;
     "
@@ -2552,7 +2551,7 @@ line-height:1.1;
   </td>
   <td
     style="
-      padding:2px 4px;
+      padding:1px 2px;line-height:1.0;
 line-height:1.1;
       text-align:right;
       font-size:16px;
