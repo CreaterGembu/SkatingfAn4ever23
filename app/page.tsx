@@ -2166,17 +2166,16 @@ const goeMark =
   0
 ).toFixed(2);
       return `
-<tr style="border-bottom:1px solid #ddd;">
-  <td style="padding:8px;">
+<tr>
+  <td style="padding:2px 4px;">
     ${idx + 1}
   </td>
-  <td style="padding:8px;">
+  <td style="padding:2px 4px;">
     ${elementText}
   </td>
 
   <td style="
-    border:1px solid #999;
-    padding:8px;
+    padding:2px 4px;
     text-align:center;
     font-weight:bold;
     color:#000;
@@ -2185,8 +2184,7 @@ const goeMark =
   </td>
 
   <td style="
-    border:1px solid #999;
-    padding:8px;
+    padding:2px 4px;
     text-align:right;
     font-weight:600;
   ">
@@ -2195,26 +2193,26 @@ const goeMark =
   </td>
 
   <td style="
-    border:1px solid #999;
-    padding:8px;
-    text-align:right;
-  ">
+  padding:2px 4px;
+  text-align:right;
+  line-height:1.1;
+">
     ${Number(goeValue) === 0 ? '0.00' : goeValue}
   </td>
 
   <td style="
-   border:1px solid #999;
-    padding:8px;
-    text-align:right;
-  ">
+  padding:2px 4px;
+  text-align:right;
+  line-height:1.1;
+">
     ${goeMark}
   </td>
 
-  <td style="
-    border:1px solid #999;
-    padding:8px;
-    text-align:right;
-  ">
+ <td style="
+  padding:2px 4px;
+  text-align:right;
+  line-height:1.1;
+">
     ${total}
   </td>
 </tr>
@@ -2257,27 +2255,27 @@ ${formatCategory(category)}
 <tr style="
   border-bottom:1px solid #999;
 ">
-  <th style="padding:8px;text-align:left;font-size:12px;">
+  <th style="padding:2px 4px;text-align:left;font-size:12px;">
     Name
   </th>
 
-  <th style="padding:8px;text-align:left;font-size:12px;">
+  <th style="padding:2px 4px;text-align:left;font-size:12px;">
     Nation
   </th>
 
-  <th style="padding:8px;text-align:right;font-size:12px;">
+  <th style="padding:2px 4px;text-align:right;font-size:12px;">
     Total
   </th>
 
-  <th style="padding:8px;text-align:right;font-size:12px;">
+  <th style="padding:2px 4px;text-align:right;font-size:12px;">
     TES
   </th>
 
-  <th style="padding:8px;text-align:right;font-size:12px;">
+  <th style="padding:2px 4px;text-align:right;font-size:12px;">
     PCS
   </th>
 
-  <th style="padding:8px;text-align:right;font-size:12px;">
+  <th style="padding:2px 4px;text-align:right;font-size:12px;">
     Ded
   </th>
 </tr>
@@ -2332,32 +2330,31 @@ ${formatCategory(category)}
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:14px;
+  font-size:11px;
   table-layout:fixed;
-  border:1px solid #000;
 ">
 <thead>
 <tr style="
   border-bottom:1px solid #000;">
-  <th style="width:40px; padding:8px;">
+  <th style="width:40px; padding:2px 4px;">
     #
   </th>
-  <th style="width:320px; padding:8px;">
+  <th style="width:260px; padding:2px 4px;">
   Executed Elements
 </th>
-<th style="width:100px; padding:8px;">
+<th style="width:60px; padding:2px 4px;">
   Info
 </th>
-<th style="width:90px; padding:8px;">
+<th style="width:90px; padding:2px 4px;">
   Base Value
 </th>
-<th style="width:90px; padding:8px;">
+<th style="width:90px; padding:2px 4px;">
   GOE
 </th>
-<th style="width:90px; padding:8px;">
+<th style="width:90px; padding:2px 4px;">
   GOE Mark
 </th>
-<th style="width:120px; padding:8px;">
+<th style="width:80px; padding:2px 4px;">
   Scores of Panel
 </th>
 </tr>
@@ -2374,15 +2371,14 @@ ${rowsHtml}
     background:#ffffff;
   "
 >
-  <td colspan="3" style="padding:8px;text-align:right;">
+  <td colspan="3" style="padding:2px 4px;text-align:right;">
     Totals
   </td>
 
   <td
     style="
-      padding:8px;
+      padding:2px 4px;
       text-align:right;
-      border:1px solid #999;
     "
   >
     ${totalBaseValue}
@@ -2390,27 +2386,24 @@ ${rowsHtml}
 
   <td
     style="
-      padding:8px;
+      padding:2px 4px;
       text-align:right;
-      border:1px solid #999;
     "
   >
   </td>
 
   <td
     style="
-      padding:8px;
+      padding:2px 4px;
       text-align:right;
-      border:1px solid #999;
     "
   >
   </td>
 
   <td
     style="
-      padding:8px;
+      padding:2px 4px;
       text-align:right;
-      border:1px solid #999;
       font-size:16px;
     "
   >
@@ -2422,7 +2415,7 @@ ${rowsHtml}
 </div>
 <div style="
   margin-top:18px;
-  font-size:14px;
+  font-size:11px;
 ">
 <div style="
   overflow-x:auto;
@@ -2430,24 +2423,27 @@ ${rowsHtml}
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:14px;">
+  font-size:11px;">
 <thead>
 <tr style="
   border-bottom:1px solid #000;
 ">
   <th style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:left;
   ">
     Program Components
   </th>
   <th style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;">
     Factor
   </th>
   <th style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;">
   </th>
 </tr>
@@ -2455,21 +2451,24 @@ ${rowsHtml}
 <tbody>
 <tr>
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:left;
   ">
     Composition
   </td>
 
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;
   ">
     ${PCS_MULTIPLIERS[category].toFixed(2)}
   </td>
 
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;
   ">
     ${pcs.comp.toFixed(2)}
@@ -2478,21 +2477,24 @@ ${rowsHtml}
 
 <tr>
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:left;
   ">
     Presentation
   </td>
 
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;
   ">
     ${PCS_MULTIPLIERS[category].toFixed(2)}
   </td>
 
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;
   ">
     ${pcs.pres.toFixed(2)}
@@ -2501,20 +2503,23 @@ ${rowsHtml}
 
 <tr>
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:left;
   ">
     Skating Skills
   </td>
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;
   ">
     ${PCS_MULTIPLIERS[category].toFixed(2)}
   </td>
 
   <td style="
-    padding:8px;
+    padding:2px 4px;
+line-height:1.1;
     text-align:right;
   ">
     ${pcs.skills.toFixed(2)}
@@ -2529,7 +2534,8 @@ ${rowsHtml}
 >
   <td
     style="
-      padding:8px;
+      padding:2px 4px;
+line-height:1.1;
       text-align:left;
     "
   >
@@ -2538,14 +2544,16 @@ ${rowsHtml}
 
   <td
     style="
-      padding:8px;
+      padding:2px 4px;
+line-height:1.1;
       text-align:right;
     "
   >
   </td>
   <td
     style="
-      padding:8px;
+      padding:2px 4px;
+line-height:1.1;
       text-align:right;
       font-size:16px;
     "
@@ -2573,7 +2581,7 @@ ${rowsHtml}
   border-bottom:1px solid #000;
 ">
   <td style="
-    padding:8px 10px;
+    padding:2px 6px;
     font-weight:700;
     width:220px;
     white-space:nowrap;
@@ -2582,7 +2590,7 @@ ${rowsHtml}
   </td>
 
   <td style="
-    padding:8px 10px;
+    padding:2px 6px;
     color:#666;
     font-size:13px;
   ">
@@ -2591,9 +2599,9 @@ ${rowsHtml}
 
   <td style="
     text-align:right;
-    padding:8px 10px;
+    padding:2px 6px;
     font-weight:700;
-    width:120px;
+    width:80px;
   ">
     ${totalDeductions.toFixed(2)}
   </td>
