@@ -2414,7 +2414,7 @@ ${rowsHtml}
 </div>
 <div style="
   margin-top:18px;
-  font-size:11px;
+  font-size:12px;
 ">
 <div style="
   overflow-x:auto;
@@ -2422,7 +2422,7 @@ ${rowsHtml}
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:11px;">
+  font-size:12px;">
 <thead>
 <tr style="
   border-bottom:1px solid #000;
