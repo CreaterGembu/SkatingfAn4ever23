@@ -2189,7 +2189,7 @@ const goeMark =
     font-weight:600;
   ">
     ${bv}
-    ${hasSecondHalf ? '<span style="font-size:12px;"> x</span>' : ''}
+    ${hasSecondHalf ? '<span style="font-size:14px;"> x</span>' : ''}
   </td>
 
   <td style="
@@ -2255,27 +2255,27 @@ ${formatCategory(category)}
 <tr style="
   border-bottom:1px solid #999;
 ">
-  <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:14px;">
     Name
   </th>
 
-  <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:14px;">
     Nation
   </th>
 
-  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     Total
   </th>
 
-  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     TES
   </th>
 
-  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     PCS
   </th>
 
-  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:12px;">
+  <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     Ded
   </th>
 </tr>
@@ -2414,7 +2414,7 @@ ${rowsHtml}
 </div>
 <div style="
   margin-top:18px;
-  font-size:12px;
+  font-size:14px;
 ">
 <div style="
   overflow-x:auto;
@@ -2422,7 +2422,7 @@ ${rowsHtml}
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:12px;">
+  font-size:14px;">
 <thead>
 <tr style="
   border-bottom:1px solid #000;
