@@ -2330,29 +2330,29 @@ ${formatCategory(category)}
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:10px;
+  font-size:14px;
   table-layout:fixed;
 ">
 <thead>
 <th style="width:24px;padding:2px 2px;">
   #
 </th>
-<th style="width:140px;padding:2px 2px;">
+<th style="width:180px;padding:2px 2px;">
   Executed Elements
 </th>
 <th style="width:40px;padding:2px 2px;">
   Info
 </th>
-<th style="width:55px;padding:2px 2px;">
+<th style="width:70px;padding:2px 2px;">
   Base Value
 </th>
-<th style="width:55px;padding:2px 2px;">
+<th style="width:70px;padding:2px 2px;">
   GOE
 </th>
 <th style="width:45px;padding:2px 2px;">
   GOE Mark
 </th>
-<th style="width:60px;padding:2px 2px;">
+<th style="width:80px;padding:2px 2px;">
   Score of Panel
 </th>
 </th>
