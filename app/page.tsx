@@ -2130,14 +2130,14 @@ const infoText = line.subs
 
     if (sub.edge === '!') infos.push('!');
     if (sub.edge === 'e') infos.push('e');
-
+    if (sub.underRotation === 'q') infos.push('q');
     if (sub.underRotation === '<') infos.push('<');
     if (sub.underRotation === '<<') infos.push('<<');
 
     return infos.join(' ');
   })
   .filter(Boolean)
-  .join(' + ');
+  .join(' ');
       const hasSecondHalf = line.subs.some(
   (s) => s.secondHalf
 );
@@ -2229,7 +2229,7 @@ const goeMark =
 ">
 <h1 style="
   text-align:center;
-  font-size:18px;
+  font-size:20px;
   margin:0;
   font-weight:700;
 ">
@@ -2237,7 +2237,7 @@ ${escapeHtml(competition)}
 </h1>
 <div style="
   text-align:center;
-  font-size:20px;
+  font-size:18px;
   font-weight:bold;
   margin-bottom:30px;
 ">
