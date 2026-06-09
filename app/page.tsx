@@ -2176,13 +2176,22 @@ const goeMark =
 ).toFixed(2);
       return `
 <tr>
-  <td style="padding:1px 2px;line-height:1.0;">
-    ${idx + 1}
-  </td>
-  <td style="padding:1px 2px;line-height:1.0;">
-    ${elementText}
-  </td>
-
+  <td style="
+  width:24px;
+  padding:1px 2px;
+  line-height:1.0;
+  text-align:center;
+">
+  ${idx + 1}
+</td>
+  <td style="
+  width:180px;
+  padding:1px 2px;
+  line-height:1.0;
+  text-align:left;
+">
+  ${elementText}
+</td>
   <td style="
     padding:1px 2px;line-height:1.0;
     text-align:center;
@@ -2194,19 +2203,21 @@ const goeMark =
 
   <td
   style="
+    width:80px;
     padding:1px 2px;
     line-height:1.0;
-    text-align:right;
+    text-align:left;
     white-space:nowrap;
   "
 >
-  <span
-    style="
-      display:inline-block;
-      width:60px;
-      text-align:right;
-    "
-  >
+ <span
+  style="
+    display:inline-block;
+    width:50px;
+    text-align:left;
+    margin-left:18px;
+  "
+>
     ${bv}
   </span>
 
@@ -2403,7 +2414,7 @@ ${rowsHtml}
  <td
   style="
     padding:1px 2px;
-    text-align:right;
+    text-align:left;
   "
 >
   <span
