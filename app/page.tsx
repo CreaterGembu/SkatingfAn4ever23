@@ -681,14 +681,17 @@ ${showProtocol.protocolHtml}
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>
         Figure Skating Judge Simulation(2026/27)
       </h1>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 8,
-          marginBottom: 12,
-        }}
-      >
+     <div
+  style={{
+    display: 'grid',
+    gridTemplateColumns:
+      window.innerWidth < 768
+        ? '1fr'
+        : '1fr 1fr',
+    gap: 8,
+    marginBottom: 12,
+  }}
+>
         <input
           placeholder="Skater"
           value={playerName}
@@ -705,8 +708,13 @@ ${showProtocol.protocolHtml}
           placeholder="Event"
           value={competition}
           onChange={(e) => setCompetition(e.target.value)}
-          style={{ ...inputStyle, gridColumn: '1 / -1' }}
-        />
+         style={{
+  ...inputStyle,
+  gridColumn:
+    window.innerWidth < 768
+      ? 'auto'
+      : '1 / -1',
+}}
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ minWidth: 120 }}> Segment </div>
           <select
@@ -785,17 +793,55 @@ ${showProtocol.protocolHtml}
                     <th style={thStyle}>GOE</th>
                     <th style={thStyle}>GOE Point</th>
                     <th style={thStyle}>Score of Panel</th>
-                    <th style={thStyle}>Rotation</th>
-                    <th style={thStyle}>Edge</th>
-                    <th style={thStyle}>V</th>
-                    <th style={thStyle}>Second Half (X)</th>
+                    {showRotationColumn && (
+  <th style={thStyle}>
+    Rotation
+  </th>
+)}
+
+{showEdgeColumn && (
+  <th style={thStyle}>
+    Edge
+  </th>
+)}
+
+{showVColumn && (
+  <th style={thStyle}>
+    V
+  </th>
+)}
+
+{showSecondHalfColumn && (
+  <th style={thStyle}>
+    Second Half (X)
+  </th>
+)}
                     <th style={thStyle}>Others</th>
                     <th style={thStyle}>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
                  {line.subs.map((sub) => {
-                    const bvWithMods = calcBV(sub);
+                    const jumpType =
+  sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
+const isJump =
+  sub.element.type === 'jump';
+const isSpin =
+  sub.element.type === 'spin';
+const isStep =
+  sub.element.type === 'step';
+const isChoreo =
+  sub.element.type === 'choreo';
+const showRotation =
+  isJump;
+const showEdge =
+  isJump &&
+  (jumpType === 'F' || jumpType === 'Lz');
+const showV =
+  isSpin;
+const showSecondHalf =
+  isJump;
+                const bvWithMods = calcBV(sub);
                     const isMax = maxSub ? sub.id === maxSub.id : false;
                     const goePoint = calcGOEPoint(sub, maxSub);
                     const subtotal = calcSubTotal(sub, maxSub);
@@ -951,8 +997,14 @@ if (hasJudgeIssue) {
 <td style={{ ...tdStyle, textAlign: 'right' }}>
   {subtotal.toFixed(2)}
 </td>
-                        <td style={tdStyle}>
-  {sub.element.type === 'jump' ? (
+    <td
+  style={{
+    ...tdStyle,
+    display: showRotation
+      ? ''
+      : 'none',
+  }}
+>
     <select
       value={sub.underRotation || ''}
       onChange={(e) =>
@@ -975,7 +1027,14 @@ if (hasJudgeIssue) {
     <div style={{ color: '#999' }}>—</div>
   )}
 </td>
-                     <td style={tdStyle}>
+                     <td
+  style={{
+    ...tdStyle,
+    display: showEdge
+      ? ''
+      : 'none',
+  }}
+>
   {(() => {
     // ジャンプ名から種類を取得
     const jumpType = sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
@@ -1004,7 +1063,14 @@ if (hasJudgeIssue) {
     );
   })()}
 </td>
-                        <td style={tdStyle}>
+                       <td
+  style={{
+    ...tdStyle,
+    display: showV
+      ? ''
+      : 'none',
+  }}
+>
   {sub.element.type === 'spin' ? (
     <input
       type="checkbox"
@@ -1017,7 +1083,14 @@ if (hasJudgeIssue) {
     <div style={{ color: '#999' }}>—</div>
   )}
 </td>
-    <td style={tdStyle}>
+   <td
+  style={{
+    ...tdStyle,
+    display: showSecondHalf
+      ? ''
+      : 'none',
+  }}
+>
   {sub.element.type === 'jump' &&
   line.subs[0].id === sub.id ? (
     <input
@@ -1041,7 +1114,18 @@ if (hasJudgeIssue) {
     />
   ) : null}
 </td>
-                       <td style={tdStyle}>
+                       <td
+  style={{
+    ...tdStyle,
+    width:
+      !showRotation &&
+      !showEdge &&
+      !showV &&
+      !showSecondHalf
+        ? 280
+        : 180,
+  }}
+>
   {sub.element.type === 'jump' ? (
     (
   line.subs.length > 1
