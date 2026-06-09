@@ -2184,11 +2184,12 @@ const goeMark =
 ">
   ${idx + 1}
 </td>
-  <td style="
+ <td style="
   width:180px;
   padding:1px 2px;
   line-height:1.0;
   text-align:left;
+  padding-left:0;
 ">
   ${elementText}
 </td>
@@ -2201,12 +2202,12 @@ const goeMark =
     ${infoText || ''}
   </td>
 
-  <td
+<td
   style="
     width:80px;
     padding:1px 2px;
     line-height:1.0;
-    text-align:left;
+    text-align:center;
     white-space:nowrap;
   "
 >
@@ -2214,39 +2215,37 @@ const goeMark =
   style="
     display:inline-block;
     width:50px;
-    text-align:left;
-    margin-left:18px;
+    text-align:center;
   "
->
+ >
     ${bv}
-  </span>
+ </span>
 
-  <span
-    style="
-      display:inline-block;
-      width:12px;
-      text-align:left;
-    "
-  >
-    ${hasSecondHalf ? 'x' : ''}
-  </span>
+ <span
+   style="
+     display:inline-block;
+     width:12px;
+     text-align:center;
+   "
+ >
+   ${hasSecondHalf ? 'x' : ''}
+ </span>
+</td>
+  <td style="
+  padding:1px 2px;
+  line-height:1.0;
+  text-align:center;
+">
+    ${goeValue}
 </td>
 
-  <td style="
-  padding:1px 2px;line-height:1.0;
-  text-align:right;
-  line-height:1.1;
-">
-    ${Number(goeValue) === 0 ? '0.00' : goeValue}
-  </td>
-
-  <td style="
-  padding:1px 2px;line-height:1.0;
-  text-align:right;
-  line-height:1.1;
+ <td style="
+  padding:1px 2px;
+  line-height:1.0;
+  text-align:center;
 ">
     ${goeMark}
-  </td>
+</td>
 
  <td style="
   padding:1px 2px;line-height:1.0;
@@ -2414,20 +2413,11 @@ ${rowsHtml}
  <td
   style="
     padding:1px 2px;
-    text-align:left;
+    text-align:center;
   "
 >
-  <span
-    style="
-      display:inline-block;
-      width:60px;
-      text-align:right;
-    "
-  >
-    ${totalBaseValue}
-  </span>
+  ${totalBaseValue}
 </td>
-
   <td
     style="
       padding:1px 2px;line-height:1.0;
