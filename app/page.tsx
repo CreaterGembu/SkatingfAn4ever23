@@ -681,13 +681,13 @@ ${showProtocol.protocolHtml}
       <h1 style={{ fontSize: 22, marginBottom: 10 }}>
         Figure Skating Judge Simulation(2026/27)
       </h1>
-      <div
+  <div
   style={{
     display: 'grid',
-    gridColumn:
-  isMobileView
-    ? 'auto'
-    : '1 / -1',
+    gridTemplateColumns:
+      isMobileView
+        ? '1fr'
+        : '1fr 1fr',
     gap: 8,
     marginBottom: 12,
   }}
@@ -711,7 +711,7 @@ ${showProtocol.protocolHtml}
           style={{
   ...inputStyle,
   gridColumn:
-    window.innerWidth < 768
+    isMobileView
       ? 'auto'
       : '1 / -1',
 }}
@@ -1639,19 +1639,19 @@ if (hasJudgeIssue) {
     />
     Illegal element/movement (-2)
   </label>
-  <label style={{ display: 'block', marginBottom: 6 }}>
-    <input
-      type="checkbox"
-     checked={Deductions.illegalMovement}
-onChange={(e) =>
-  setDeductions((d) => ({
-    ...d,
-    illegalMovement: e.target.checked,
-  }))
-}
-    />
-    Costume and prop violation (-1)
-  </label>
+ <label>
+<input
+  type="checkbox"
+  checked={Deductions.costumeProp}
+  onChange={(e)=>
+    setDeductions(d=>({
+      ...d,
+      costumeProp:e.target.checked
+    }))
+  }
+/>
+Costume and prop violation (-1)
+</label>
   <label style={{ display: 'block', marginBottom: 6 }}>
     <input
       type="checkbox"
