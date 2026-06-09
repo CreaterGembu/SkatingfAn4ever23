@@ -2203,7 +2203,7 @@ const goeMark =
   <span
     style="
       display:inline-block;
-      width:42px;
+      width:60px;
       text-align:right;
     "
   >
@@ -2372,7 +2372,7 @@ ${formatCategory(category)}
 <th style="width:40px;padding:2px 2px;">
   Info
 </th>
-<th style="width:70px;padding:2px 2px;">
+<th style="width:80px;padding:2px 2px;">
   Base Value
 </th>
 <th style="width:70px;padding:2px 2px;">
@@ -2409,7 +2409,7 @@ ${rowsHtml}
   <span
     style="
       display:inline-block;
-      width:42px;
+      width:60px;
       text-align:right;
     "
   >
