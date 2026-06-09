@@ -2197,7 +2197,6 @@ const goeMark =
     padding:1px 2px;
     line-height:1.0;
     text-align:right;
-    font-weight:600;
     white-space:nowrap;
   "
 >
@@ -2258,7 +2257,7 @@ const goeMark =
 ">
 <h1 style="
   text-align:center;
-  font-size:20px;
+  font-size:30px;
   margin:0;
   font-weight:700;
 ">
@@ -2401,14 +2400,22 @@ ${rowsHtml}
   <td colspan="3">
   </td>
 
-  <td
+ <td
+  style="
+    padding:1px 2px;
+    text-align:right;
+  "
+>
+  <span
     style="
-      padding:1px 2px;line-height:1.0;
+      display:inline-block;
+      width:54px;
       text-align:right;
     "
   >
     ${totalBaseValue}
-  </td>
+  </span>
+</td>
 
   <td
     style="
@@ -2430,7 +2437,7 @@ ${rowsHtml}
     style="
       padding:1px 2px;line-height:1.0;
       text-align:right;
-      font-size:16px;
+      font-size:14px;
     "
   >
     ${totalPanelScore}
@@ -2578,7 +2585,7 @@ line-height:1.1;
       padding:1px 2px;line-height:1.0;
 line-height:1.1;
       text-align:right;
-      font-size:16px;
+      font-size:14px;
     "
   >
     ${pcsfactored.toFixed(2)}
