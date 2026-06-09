@@ -2213,7 +2213,7 @@ const goeMark =
   ${hasSecondHalf ? `
     <span style="
       display:inline-block;
-      width:84px;
+      width:88px;
       text-align:right;
     ">
       ${bv}
@@ -2228,7 +2228,7 @@ const goeMark =
   ` : `
     <span style="
       display:inline-block;
-      width:84px;
+      width:88px;
       text-align:right;
     ">
       ${bv}
