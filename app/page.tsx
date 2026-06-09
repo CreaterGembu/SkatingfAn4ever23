@@ -2204,32 +2204,41 @@ const goeMark =
 
 <td
   style="
-    width:80px;
+    width:90px;
     padding:1px 2px;
-    line-height:1.0;
-    text-align:center;
+    text-align:right;
     white-space:nowrap;
   "
 >
- <span
-  style="
-    display:inline-block;
-    width:60px;
-    text-align:right;
-  "
- >
-    ${bv}
- </span>
-
- <span
-   style="
-     display:inline-block;
-     width:12px;
-     text-align:center;
-   "
- >
-   ${hasSecondHalf ? 'x' : ''}
- </span>
+  ${hasSecondHalf ? `
+    <span style="
+      display:inline-block;
+      width:78px;
+      text-align:right;
+    ">
+      ${bv}
+    </span>
+    <span style="
+      display:inline-block;
+      width:12px;
+      text-align:center;
+    ">
+      x
+    </span>
+  ` : `
+    <span style="
+      display:inline-block;
+      width:78px;
+      text-align:right;
+    ">
+      ${bv}
+    </span>
+    <span style="
+      display:inline-block;
+      width:12px;
+    ">
+    </span>
+  `}
 </td>
   <td style="
   padding:1px 2px;
