@@ -2339,27 +2339,34 @@ ${formatCategory(category)}
   table-layout:fixed;
 ">
 <thead>
-<th style="width:24px;padding:2px 2px;">
-  #
-</th>
-<th style="width:180px;padding:2px 0px;text-align:left;">
-  Executed Elements
-</th>
-<th style="width:40px;padding:2px 2px;">
-  Info
-</th>
-<th style="width:90px;padding:2px 2px;text-align:right;">
-  Base<br>Value
-</th>
-<th style="width:70px;padding:2px 2px;">
-  GOE
-</th>
-<th style="width:45px;padding:2px 2px;">
-  J1
-</th>
-<th style="width:80px;padding:2px 2px;">
-  Score of Panel
-</th>
+<tr>
+  <th style="width:24px;padding:2px 2px;">
+    #
+  </th>
+
+  <th style="width:180px;padding:2px 0px;text-align:left;">
+    Executed Elements
+  </th>
+
+  <th style="width:40px;padding:2px 2px;">
+    Info
+  </th>
+
+  <th style="width:90px;padding:2px 2px;text-align:right;">
+    Base<br>Value
+  </th>
+
+  <th style="width:70px;padding:2px 2px;">
+    GOE
+  </th>
+
+  <th style="width:45px;padding:2px 2px;">
+    J1
+  </th>
+
+  <th style="width:80px;padding:2px 2px;">
+    Score of Panel
+  </th>
 </tr>
 </thead>
 <tbody>
