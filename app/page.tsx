@@ -2214,8 +2214,8 @@ const goeMark =
   style="
     display:inline-block;
     width:50px;
-    text-align:center;
-    margin-center:18px;
+    text-align:left;
+    margin-left:18px;
   "
 >
     ${bv}
@@ -2231,25 +2231,23 @@ const goeMark =
     ${hasSecondHalf ? 'x' : ''}
   </span>
 </td>
-<span style="
-  display:inline-block;
-  margin-left:10px;
-">
-  ${Number(goeValue) === 0 ? '0.00' : goeValue}
-</span>
 
   <td style="
-  width:45px;
-  padding:1px 2px;
-  text-align:left;
+  padding:1px 2px;line-height:1.0;
+  text-align:right;
+  line-height:1.1;
 ">
-  <span style="
-    display:inline-block;
-    margin-left:8px;
-  ">
+    ${Number(goeValue) === 0 ? '0.00' : goeValue}
+  </td>
+
+  <td style="
+  padding:1px 2px;line-height:1.0;
+  text-align:right;
+  line-height:1.1;
+">
     ${goeMark}
-  </span>
-</td>
+  </td>
+
  <td style="
   padding:1px 2px;line-height:1.0;
   text-align:right;
@@ -2415,7 +2413,6 @@ ${rowsHtml}
 
  <td
   style="
-    width:80px;
     padding:1px 2px;
     text-align:left;
   "
@@ -2423,9 +2420,8 @@ ${rowsHtml}
   <span
     style="
       display:inline-block;
-      width:50px;
-      text-align:left;
-      margin-left:18px;
+      width:60px;
+      text-align:right;
     "
   >
     ${totalBaseValue}
