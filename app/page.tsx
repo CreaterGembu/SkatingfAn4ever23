@@ -2379,7 +2379,7 @@ ${formatCategory(category)}
   GOE
 </th>
 <th style="width:45px;padding:2px 2px;">
-  GOE Mark
+  J1
 </th>
 <th style="width:80px;padding:2px 2px;">
   Score of Panel
