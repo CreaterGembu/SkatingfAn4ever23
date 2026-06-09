@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import html2canvas from 'html2canvas';
 type LineSubElement = {
   id: number;
   element: SkateElement;
@@ -616,6 +617,25 @@ ${showProtocol.protocolHtml}
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+};const saveProtocolImage = async () => {
+  const target =
+    document.getElementById('protocol-capture');
+
+  if (!target) return;
+
+  const canvas = await html2canvas(target, {
+    scale: 3,
+    backgroundColor: '#ffffff',
+  });
+
+  const link = document.createElement('a');
+
+  link.download =
+    `${showProtocol?.playerName || 'protocol'}.png`;
+
+  link.href = canvas.toDataURL('image/png');
+
+  link.click();
 };
   const exportHistory = () => {
   const blob = new Blob(
@@ -652,7 +672,18 @@ ${showProtocol.protocolHtml}
         >
           ← Back
         </button>
+        <button
+  onClick={saveProtocolImage}
+  style={{
+    marginLeft: 8,
+    marginBottom: 12,
+    padding: '8px 10px',
+  }}
+>
+  Save Image
+</button>
        <div
+  id="protocol-capture"
   style={{
     overflowX: 'auto',
     WebkitOverflowScrolling: 'touch',
