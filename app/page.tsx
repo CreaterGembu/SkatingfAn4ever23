@@ -1,6 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import html2canvas from 'html2canvas';
+const saveProtocolImage = async () => {
+  const html2canvas =
+    (await import('html2canvas')).default;
+  ...
+};
 type LineSubElement = {
   id: number;
   element: SkateElement;
@@ -2371,36 +2375,66 @@ ${rowsHtml}
     background:#ffffff;
   "
 >
-  <td colspan="3">
-  </td>
+  <!-- #列 -->
+  <td
+    style="
+      width:24px;
+      padding:1px 2px;
+    "
+  ></td>
 
- <td
+  <!-- Executed Elements列 -->
+  <td
+    style="
+      width:180px;
+      padding:1px 2px;
+    "
+  ></td>
+
+  <!-- Info列 -->
+  <td
+    style="
+      width:40px;
+      padding:1px 2px;
+    "
+  ></td>
+<td
   style="
+    width:90px;
     padding:1px 2px;
     text-align:right;
   "
 >
-  ${totalBaseValue}
+  <span
+    style="
+      display:inline-block;
+      width:88px;
+      text-align:right;
+    "
+  >
+    ${totalBaseValue}
+  </span>
 </td>
   <td
     style="
-      padding:1px 2px;line-height:1.0;
-      text-align:right;
+      width:70px;
+      padding:1px 2px;
     "
-  >
-  </td>
+  ></td>
 
+  <!-- J1列 -->
   <td
     style="
-      padding:1px 2px;line-height:1.0;
-      text-align:right;
+      width:45px;
+      padding:1px 2px;
     "
-  >
-  </td>
+  ></td>
 
+  <!-- Score of Panel列 -->
   <td
     style="
-      padding:1px 2px;line-height:1.0;
+      width:80px;
+      padding:1px 2px;
       text-align:right;
       font-size:14px;
     "
