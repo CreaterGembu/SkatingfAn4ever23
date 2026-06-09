@@ -715,6 +715,7 @@ ${showProtocol.protocolHtml}
       ? 'auto'
       : '1 / -1',
 }}
+          />
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ minWidth: 120 }}> Segment </div>
           <select
@@ -987,9 +988,6 @@ if (hasJudgeIssue) {
         +
       </button>
     </div>
-  ) : (
-    <div style={{ color: '#999' }}>—</div>
-  )}
 </td>
 <td style={{ ...tdStyle, textAlign: 'right' }}>
   {goePoint.toFixed(2)}
