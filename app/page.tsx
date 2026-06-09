@@ -2192,14 +2192,35 @@ const goeMark =
     ${infoText || ''}
   </td>
 
-  <td style="
-    padding:1px 2px;line-height:1.0;
+  <td
+  style="
+    padding:1px 2px;
+    line-height:1.0;
     text-align:right;
     font-weight:600;
-  ">
+    white-space:nowrap;
+  "
+>
+  <span
+    style="
+      display:inline-block;
+      width:42px;
+      text-align:right;
+    "
+  >
     ${bv}
-    ${hasSecondHalf ? '<span style="font-size:14px;"> x</span>' : ''}
-  </td>
+  </span>
+
+  <span
+    style="
+      display:inline-block;
+      width:12px;
+      text-align:left;
+    "
+  >
+    ${hasSecondHalf ? 'x' : ''}
+  </span>
+</td>
 
   <td style="
   padding:1px 2px;line-height:1.0;
@@ -2291,7 +2312,6 @@ ${formatCategory(category)}
 <tr>
   <td style="
     padding:10px 8px;
-    font-weight:700;
   ">
     ${escapeHtml(playerName)}
   </td>
@@ -2378,8 +2398,7 @@ ${rowsHtml}
     background:#ffffff;
   "
 >
-  <td colspan="3" style="padding:1px 2px;line-height:1.0;text-align:right;">
-    Totals
+  <td colspan="3">
   </td>
 
   <td
