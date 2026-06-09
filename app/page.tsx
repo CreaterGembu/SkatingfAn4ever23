@@ -567,22 +567,70 @@ useEffect(() => {
   };
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
- const saveProtocolImage = async () => {
-  const html2canvas =
-    (await import('html2canvas')).default;
-
-  const target =
-    document.getElementById('protocol-capture');
-  if (!target) return;
-  const canvas = await html2canvas(target, {
-    scale: 3,
-    backgroundColor: '#ffffff',
-  });
-  const link = document.createElement('a');
-  link.download =
-    `${showProtocol?.playerName || 'protocol'}.png`;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+    const downloadProtocol = () => {
+  if (!showProtocol?.protocolHtml) {
+    alert('No protocol found');
+    return;
+  }
+  const fullHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1"
+/>
+<title>Protocol</title>
+<style>
+body {
+  margin: 0;
+  padding:12px;
+  background: #ffffff;
+  color: #000000;
+  font-family: Arial, sans-serif;
+}
+table {
+  border-collapse: collapse;
+}
+button {
+  display: none;
+}
+</style>
+</head>
+<body>
+${showProtocol.protocolHtml}
+</body>
+</html>
+`;
+  const blob = new Blob(
+    [fullHtml],
+    { type: 'text/html;charset=utf-8' }
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download =
+    `${showProtocol.playerName || 'protocol'}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+  const exportHistory = () => {
+  const blob = new Blob(
+    [JSON.stringify(history, null, 2)],
+    { type: 'application/json' }
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download =
+    `skating-history-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 };
   /* Protocol view */
   if (showProtocol) {
@@ -604,18 +652,7 @@ useEffect(() => {
         >
           ← Back
         </button>
-        <button
-  onClick={saveProtocolImage}
-  style={{
-    marginLeft: 8,
-    marginBottom: 12,
-    padding: '8px 10px',
-  }}
->
-  Save Image
-</button>
        <div
-  id="protocol-capture"
   style={{
     overflowX: 'auto',
     WebkitOverflowScrolling: 'touch',
@@ -1708,6 +1745,12 @@ Costume and prop violation (-1)
         >
           Clear
         </button>
+       <button
+  onClick={downloadProtocol}
+  style={{ padding: '10px 12px', borderRadius: 8 }}
+>
+  Download file
+</button>
       </div>
       <div
   style={{
@@ -2339,34 +2382,27 @@ ${formatCategory(category)}
   table-layout:fixed;
 ">
 <thead>
-<tr>
-  <th style="width:24px;padding:2px 2px;">
-    #
-  </th>
-
-  <th style="width:180px;padding:2px 0px;text-align:left;">
-    Executed Elements
-  </th>
-
-  <th style="width:40px;padding:2px 2px;">
-    Info
-  </th>
-
-  <th style="width:90px;padding:2px 2px;text-align:right;">
-    Base<br>Value
-  </th>
-
-  <th style="width:70px;padding:2px 2px;">
-    GOE
-  </th>
-
-  <th style="width:45px;padding:2px 2px;">
-    J1
-  </th>
-
-  <th style="width:80px;padding:2px 2px;">
-    Score of Panel
-  </th>
+<th style="width:24px;padding:2px 2px;">
+  #
+</th>
+<th style="width:180px;padding:2px 0px;text-align:left;">
+  Executed Elements
+</th>
+<th style="width:40px;padding:2px 2px;">
+  Info
+</th>
+<th style="width:90px;padding:2px 2px;text-align:right;">
+  Base<br>Value
+</th>
+<th style="width:70px;padding:2px 2px;">
+  GOE
+</th>
+<th style="width:45px;padding:2px 2px;">
+  J1
+</th>
+<th style="width:80px;padding:2px 2px;">
+  Score of Panel
+</th>
 </tr>
 </thead>
 <tbody>
@@ -2380,66 +2416,36 @@ ${rowsHtml}
     background:#ffffff;
   "
 >
-  <!-- #列 -->
-  <td
-    style="
-      width:24px;
-      padding:1px 2px;
-    "
-  ></td>
+  <td colspan="3">
+  </td>
 
-  <!-- Executed Elements列 -->
-  <td
-    style="
-      width:180px;
-      padding:1px 2px;
-    "
-  ></td>
-
-  <!-- Info列 -->
-  <td
-    style="
-      width:40px;
-      padding:1px 2px;
-    "
-  ></td>
-<td
+ <td
   style="
-    width:90px;
     padding:1px 2px;
     text-align:right;
   "
 >
-  <span
-    style="
-      display:inline-block;
-      width:88px;
-      text-align:right;
-    "
-  >
-    ${totalBaseValue}
-  </span>
+  ${totalBaseValue}
 </td>
   <td
     style="
-      width:70px;
-      padding:1px 2px;
+      padding:1px 2px;line-height:1.0;
+      text-align:right;
     "
-  ></td>
+  >
+  </td>
 
-  <!-- J1列 -->
   <td
     style="
-      width:45px;
-      padding:1px 2px;
+      padding:1px 2px;line-height:1.0;
+      text-align:right;
     "
-  ></td>
+  >
+  </td>
 
-  <!-- Score of Panel列 -->
   <td
     style="
-      width:80px;
-      padding:1px 2px;
+      padding:1px 2px;line-height:1.0;
       text-align:right;
       font-size:14px;
     "
