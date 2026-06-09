@@ -995,14 +995,13 @@ if (hasJudgeIssue) {
 <td style={{ ...tdStyle, textAlign: 'right' }}>
   {subtotal.toFixed(2)}
 </td>
-    <td
-  style={{
-    ...tdStyle,
-    display: showRotation
-      ? ''
-      : 'none',
-  }}
->
+    <td style={tdStyle}>
+  {showRotation ? (
+    <select ... />
+  ) : (
+    <div style={{ color:'#999' }}>—</div>
+  )}
+</td>
     <select
       value={sub.underRotation || ''}
       onChange={(e) =>
@@ -1115,13 +1114,14 @@ if (hasJudgeIssue) {
                        <td
   style={{
     ...tdStyle,
-    width:
-      !showRotation &&
-      !showEdge &&
-      !showV &&
-      !showSecondHalf
-        ? 280
-        : 180,
+   const hiddenCols =
+  Number(!showRotation) +
+  Number(!showEdge) +
+  Number(!showV) +
+  Number(!showSecondHalf);
+
+const othersWidth =
+  180 + hiddenCols * 50;
   }}
 >
   {sub.element.type === 'jump' ? (
