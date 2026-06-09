@@ -684,10 +684,10 @@ ${showProtocol.protocolHtml}
       <div
   style={{
     display: 'grid',
-    gridTemplateColumns:
-      window.innerWidth < 768
-        ? '1fr'
-        : '1fr 1fr',
+    gridColumn:
+  isMobileView
+    ? 'auto'
+    : '1 / -1',
     gap: 8,
     marginBottom: 12,
   }}
@@ -2363,7 +2363,6 @@ ${formatCategory(category)}
 </th>
 <th style="width:80px;padding:2px 2px;">
   Score of Panel
-</th>
 </th>
 </tr>
 </thead>
