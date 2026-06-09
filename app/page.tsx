@@ -1,5 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect,useState,useRef} from 'react';
+import html2canvas from 'html2canvas';
 type LineSubElement = {
   id: number;
   element: SkateElement;
@@ -354,6 +355,7 @@ useEffect(() => {
   return () =>
     window.removeEventListener('resize', checkMobile);
 }, []);
+  const protocolRef = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [tempLine, setTempLine] = useState<SkateElement[]>([]);
   const [playerName, setPlayerName] = useState('');
@@ -565,6 +567,27 @@ useEffect(() => {
     if (!confirm('Delete All')) return;
     setHistory([]);
   };
+  const saveProtocolImage = async () => {
+  if (!protocolRef.current) return;
+
+  const canvas = await html2canvas(
+    protocolRef.current,
+    {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+    }
+  );
+
+  const link = document.createElement('a');
+
+  link.download =
+    `${showProtocol?.playerName || 'protocol'}.png`;
+
+  link.href = canvas.toDataURL('image/png');
+
+  link.click();
+};
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
   const exportHistory = () => {
@@ -584,10 +607,11 @@ useEffect(() => {
 };
   /* Protocol view */
   if (showProtocol) {
-    return (
-      <div
-        style={{
-          padding: 18,
+  return (
+    <div
+      ref={protocolRef}
+      style={{
+        padding: 18,
           fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
           maxWidth: isMobileView ? '100%' : 980,
           margin: '0 auto',
@@ -602,7 +626,17 @@ useEffect(() => {
         >
           ← Back
         </button>
-       <div
+       <button
+  onClick={saveProtocolImage}
+  style={{
+    marginLeft: 10,
+    marginBottom: 12,
+    padding: '8px 10px'
+  }}
+>
+  Save Image
+</button>
+      <div
   style={{
     overflowX: 'auto',
     WebkitOverflowScrolling: 'touch',
