@@ -2203,7 +2203,7 @@ const goeMark =
   <span
     style="
       display:inline-block;
-      width:60px;
+      width:38px;
       text-align:right;
     "
   >
@@ -2409,7 +2409,7 @@ ${rowsHtml}
   <span
     style="
       display:inline-block;
-      width:60px;
+      width:38px;
       text-align:right;
     "
   >
