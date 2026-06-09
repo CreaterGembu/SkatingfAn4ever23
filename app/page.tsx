@@ -2265,7 +2265,7 @@ ${escapeHtml(competition)}
 </h1>
 <div style="
   text-align:center;
-  font-size:16px;
+  font-size:20px;
   font-weight:bold;
   margin-bottom:10px;
 ">
@@ -2409,7 +2409,7 @@ ${rowsHtml}
   <span
     style="
       display:inline-block;
-      width:54px;
+      width:42px;
       text-align:right;
     "
   >
