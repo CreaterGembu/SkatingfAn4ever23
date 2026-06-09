@@ -2403,7 +2403,7 @@ ${rowsHtml}
  <td
   style="
     padding:1px 2px;
-    text-align:right;
+    text-align:left;
   "
 >
   <span
