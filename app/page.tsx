@@ -2258,7 +2258,6 @@ ${formatCategory(category)}
   margin-bottom:18px;
   border:2px solid #000;
 ">
-
 <thead>
 <tr>
   <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:14px;">
@@ -2533,7 +2532,6 @@ line-height:1.1;
 </tr>
 <tr
   style="
-    border-top:2px solid #000;
     font-weight:bold;
     background:#ffffff;
   "
@@ -2570,11 +2568,11 @@ line-height:1.1;
 </tbody>
 </table>
 </div></div>
+</div>
 <div style="
   margin-top:10px;
   border:2px solid #000;
 ">
-
 <table style="
   width:100%;
   border-collapse:collapse;
