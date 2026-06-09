@@ -1,10 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-const saveProtocolImage = async () => {
-  const html2canvas =
-    (await import('html2canvas')).default;
-  ...
-};
 type LineSubElement = {
   id: number;
   element: SkateElement;
@@ -573,6 +568,9 @@ useEffect(() => {
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
  const saveProtocolImage = async () => {
+  const html2canvas =
+    (await import('html2canvas')).default;
+
   const target =
     document.getElementById('protocol-capture');
   if (!target) return;
