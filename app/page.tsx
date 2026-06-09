@@ -567,56 +567,6 @@ useEffect(() => {
   };
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
-    const downloadProtocol = () => {
-  if (!showProtocol?.protocolHtml) {
-    alert('No protocol found');
-    return;
-  }
-  const fullHtml = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1"
-/>
-<title>Protocol</title>
-<style>
-body {
-  margin: 0;
-  padding:12px;
-  background: #ffffff;
-  color: #000000;
-  font-family: Arial, sans-serif;
-}
-table {
-  border-collapse: collapse;
-}
-button {
-  display: none;
-}
-</style>
-</head>
-<body>
-${showProtocol.protocolHtml}
-</body>
-</html>
-`;
-  const blob = new Blob(
-    [fullHtml],
-    { type: 'text/html;charset=utf-8' }
-  );
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download =
-    `${showProtocol.playerName || 'protocol'}.html`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
   const exportHistory = () => {
   const blob = new Blob(
     [JSON.stringify(history, null, 2)],
@@ -1745,12 +1695,6 @@ Costume and prop violation (-1)
         >
           Clear
         </button>
-       <button
-  onClick={downloadProtocol}
-  style={{ padding: '10px 12px', borderRadius: 8 }}
->
-  Download file
-</button>
       </div>
       <div
   style={{
