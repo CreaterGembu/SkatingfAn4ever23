@@ -682,13 +682,16 @@ ${showProtocol.protocolHtml}
         Figure Skating Judge Simulation(2026/27)
       </h1>
       <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 8,
-          marginBottom: 12,
-        }}
-      >
+  style={{
+    display: 'grid',
+    gridTemplateColumns:
+      window.innerWidth < 768
+        ? '1fr'
+        : '1fr 1fr',
+    gap: 8,
+    marginBottom: 12,
+  }}
+>
         <input
           placeholder="Skater"
           value={playerName}
@@ -705,8 +708,13 @@ ${showProtocol.protocolHtml}
           placeholder="Event"
           value={competition}
           onChange={(e) => setCompetition(e.target.value)}
-          style={{ ...inputStyle, gridColumn: '1 / -1' }}
-        />
+          style={{
+  ...inputStyle,
+  gridColumn:
+    window.innerWidth < 768
+      ? 'auto'
+      : '1 / -1',
+}}
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ minWidth: 120 }}> Segment </div>
           <select
