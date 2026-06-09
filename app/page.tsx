@@ -2230,7 +2230,6 @@ const goeMark =
     .join('');
  return `
 <div style="
-  border:1px solid #000;
   padding:10px 16px;
   background:white;
   color:black;
@@ -2246,9 +2245,9 @@ ${escapeHtml(competition)}
 </h1>
 <div style="
   text-align:center;
-  font-size:18px;
+  font-size:16px;
   font-weight:bold;
-  margin-bottom:30px;
+  margin-bottom:10px;
 ">
 ${formatCategory(category)}
 </div>
@@ -2261,9 +2260,7 @@ ${formatCategory(category)}
 ">
 
 <thead>
-<tr style="
-  border-bottom:1px solid #999;
-">
+<tr>
   <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:14px;">
     Name
   </th>
@@ -2308,7 +2305,7 @@ ${formatCategory(category)}
     padding:10px 8px;
     text-align:right;
     font-weight:700;
-    font-size:22px;
+    font-size:16px;
   ">
     ${grandTotal.toFixed(2)}
   </td>
@@ -2333,6 +2330,11 @@ ${formatCategory(category)}
 </tbody>
 </table>
 <div class="protocol-box">
+<div style="
+  border:2px solid #000;
+  padding:4px;
+  margin-top:10px;
+">
 <div style="
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;">
@@ -2373,7 +2375,6 @@ ${rowsHtml}
 <tfoot>
 <tr
   style="
-    border-top:2px solid #000;
     font-weight:bold;
     background:#ffffff;
   "
@@ -2432,9 +2433,7 @@ ${rowsHtml}
   border-collapse:collapse;
   font-size:14px;">
 <thead>
-<tr style="
-  border-bottom:1px solid #000;
-">
+<tr>
   <th style="
     padding:1px 2px;line-height:1.0;
 line-height:1.1;
@@ -2581,12 +2580,8 @@ line-height:1.1;
   border-collapse:collapse;
   font-size:16px;
 ">
-
 <tbody>
-
-<tr style="
-  border-bottom:1px solid #000;
-">
+<tr>
   <td style="
     padding:2px 6px;
     font-weight:700;
