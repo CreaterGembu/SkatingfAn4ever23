@@ -30,13 +30,11 @@ type HistoryItem = {
   protocolHtml?: string;};
 const uid = () => Math.floor(Math.random() * 1e9);
 type ElementType = 'jump' | 'spin' | 'step' | 'choreo';
-
 interface SkateElement {
   name: string;
   baseValue: number;
   type: ElementType;
 }
-
 const createElements = (
   type: ElementType,
   data: Record<string, number>
@@ -59,7 +57,6 @@ const jumpLevels: Record<string, number[]> = {
   S: [0.4, 1.3, 4.3, 9.7, 14.0],
   T: [0.4, 1.3, 4.2, 9.5, 14.0],
 };
-
 const JUMPS: SkateElement[] = [
   ...Object.entries(jumpLevels).flatMap(([prefix, vals]) => [
     {
@@ -73,14 +70,12 @@ const JUMPS: SkateElement[] = [
       type: 'jump' as const,
     })),
   ]),
-
   {
     name: '1Eu',
     baseValue: 0,
     type: 'jump',
   },
 ];
-
 // ====================
 // SPINS
 // ====================
@@ -232,7 +227,6 @@ function calcBV(
   // edge call
   const jumpType =
     sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
-
   if (
     (jumpType === 'F' ||
       jumpType === 'Lz') &&
@@ -578,7 +572,6 @@ useEffect(() => {
       useCORS: true,
     }
   );
-
   const link = document.createElement('a');
 
   link.download =
