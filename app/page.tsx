@@ -1168,15 +1168,30 @@ if (hasJudgeIssue) {
       </div>
     </div>
   )}
-  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-    background:
-  cat === 'JUMP'
-    ? '#dbeafe'
-    : cat === 'SPIN'
-    ? '#dcfce7'
-    : cat === 'STEP'
-    ? '#fef3c7'
-    : '#fce7f3',
+ {['JUMP','SPIN','STEP','CHOREO'].map((cat) => (
+  <button
+    key={cat}
+    onClick={() =>
+      setSelectedCategory(cat as 'JUMP' | 'SPIN' | 'STEP' | 'CHOREO')
+    }
+    style={{
+      ...smallBtn,
+      background:
+        cat === selectedCategory
+          ? '#1f7ae0'
+          : cat === 'JUMP'
+          ? '#dbeafe'
+          : cat === 'SPIN'
+          ? '#dcfce7'
+          : cat === 'STEP'
+          ? '#fef3c7'
+          : '#fce7f3',
+      color: cat === selectedCategory ? '#fff' : '#000',
+    }}
+  >
+    {cat}
+  </button>
+))}
       <button
         key={cat}
         onClick={() => {
