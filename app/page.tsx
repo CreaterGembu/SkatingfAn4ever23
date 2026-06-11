@@ -1,5 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect,useState,useRef} from 'react';
+import html2canvas from 'html2canvas';
 type LineSubElement = {
   id: number;
   element: SkateElement;
@@ -29,13 +30,11 @@ type HistoryItem = {
   protocolHtml?: string;};
 const uid = () => Math.floor(Math.random() * 1e9);
 type ElementType = 'jump' | 'spin' | 'step' | 'choreo';
-
 interface SkateElement {
   name: string;
   baseValue: number;
   type: ElementType;
 }
-
 const createElements = (
   type: ElementType,
   data: Record<string, number>
@@ -58,7 +57,6 @@ const jumpLevels: Record<string, number[]> = {
   S: [0.4, 1.3, 4.3, 9.7, 14.0],
   T: [0.4, 1.3, 4.2, 9.5, 14.0],
 };
-
 const JUMPS: SkateElement[] = [
   ...Object.entries(jumpLevels).flatMap(([prefix, vals]) => [
     {
@@ -72,14 +70,12 @@ const JUMPS: SkateElement[] = [
       type: 'jump' as const,
     })),
   ]),
-
   {
     name: '1Eu',
     baseValue: 0,
     type: 'jump',
   },
 ];
-
 // ====================
 // SPINS
 // ====================
@@ -231,7 +227,6 @@ function calcBV(
   // edge call
   const jumpType =
     sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
-
   if (
     (jumpType === 'F' ||
       jumpType === 'Lz') &&
@@ -354,6 +349,7 @@ useEffect(() => {
   return () =>
     window.removeEventListener('resize', checkMobile);
 }, []);
+  const protocolRef = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [tempLine, setTempLine] = useState<SkateElement[]>([]);
   const [playerName, setPlayerName] = useState('');
@@ -565,6 +561,26 @@ useEffect(() => {
     if (!confirm('Delete All')) return;
     setHistory([]);
   };
+  const saveProtocolImage = async () => {
+  if (!protocolRef.current) return;
+
+  const canvas = await html2canvas(
+    protocolRef.current,
+    {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+    }
+  );
+  const link = document.createElement('a');
+
+  link.download =
+    `${showProtocol?.playerName || 'protocol'}.png`;
+
+  link.href = canvas.toDataURL('image/png');
+
+  link.click();
+};
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
   const exportHistory = () => {
@@ -584,10 +600,11 @@ useEffect(() => {
 };
   /* Protocol view */
   if (showProtocol) {
-    return (
-      <div
-        style={{
-          padding: 18,
+  return (
+    <div
+      ref={protocolRef}
+      style={{
+        padding: 18,
           fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
           maxWidth: isMobileView ? '100%' : 980,
           margin: '0 auto',
@@ -597,42 +614,22 @@ useEffect(() => {
         }}
       >
         <button
-  onClick={async () => {
-    const element = document.querySelector('.protocol-box') as HTMLElement;
-
-    if (!element) {
-      alert('Protocol not found');
-      return;
-    }
-
-    const canvas = await html2canvas(element, {
-      scale: 2, // 画質UP（任意だけど推奨）
-    });
-
-    const link = document.createElement('a');
-    link.download = 'protocol.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }}
-  style={{
-    marginBottom: 12,
-    padding: '8px 12px',
-    background: '#1f7ae0',
-    color: '#fff',
-    borderRadius: 8,
-    border: 'none',
-    cursor: 'pointer',
-  }}
->
-  Save Image
-</button>
-        <button
           onClick={() => setShowProtocol(null)}
           style={{ marginBottom: 12, padding: '8px 10px' }}
         >
           ← Back
         </button>
-       <div
+       <button
+  onClick={saveProtocolImage}
+  style={{
+    marginLeft: 10,
+    marginBottom: 12,
+    padding: '8px 10px'
+  }}
+>
+  Save Image
+</button>
+      <div
   style={{
     overflowX: 'auto',
     WebkitOverflowScrolling: 'touch',
@@ -1122,7 +1119,7 @@ if (hasJudgeIssue) {
     cursor: 'pointer',
   }}
 >
-  <span>Total Element Score</span>
+  <span>Elements</span>
   <button
     style={{
       width: 32,
@@ -1371,20 +1368,18 @@ if (hasJudgeIssue) {
       ))}
     </div>
   )}
- {selectedCategory === 'JUMP' && (
   <div style={{ marginTop: 12 }}>
-    <button
-      onClick={() => setIsComboMode(true)}
-      style={{
-        ...smallBtn,
-        background: isComboMode ? '#1f7ae0' : '#fff',
-        color: isComboMode ? '#fff' : '#000',
-      }}
-    >
-      ＋Add Combo
-    </button>
-  </div>
-)}
+  <button
+    onClick={() => setIsComboMode(true)}
+    style={{
+      ...smallBtn,
+      background: isComboMode ? '#1f7ae0' : '#fff',
+      color: isComboMode ? '#fff' : '#000',
+    }}
+  >
+    ＋Add Combo
+  </button>
+</div>
   {/* temp line */}
   {tempLine.length > 0 && (
     <div style={{ marginTop: 12 }}>
