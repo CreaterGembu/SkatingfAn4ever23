@@ -564,21 +564,28 @@ useEffect(() => {
   const saveProtocolImage = async () => {
   if (!protocolRef.current) return;
 
+  const element = protocolRef.current;
+
   const canvas = await html2canvas(
-    protocolRef.current,
+    element,
     {
       backgroundColor: '#ffffff',
-      scale: 2,
+      scale: 3,
       useCORS: true,
+
+      width: element.scrollWidth,
+      height: element.scrollHeight,
+
+      windowWidth: element.scrollWidth,
+      windowHeight: element.scrollHeight,
+      scrollX: 0,
+      scrollY: 0,
     }
   );
   const link = document.createElement('a');
-
   link.download =
     `${showProtocol?.playerName || 'protocol'}.png`;
-
   link.href = canvas.toDataURL('image/png');
-
   link.click();
 };
   const deleteHistoryItem = (id: number) =>
@@ -601,18 +608,19 @@ useEffect(() => {
   /* Protocol view */
   if (showProtocol) {
   return (
-    <div
-      ref={protocolRef}
-      style={{
-        padding: 18,
-          fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
-          maxWidth: isMobileView ? '100%' : 980,
-          margin: '0 auto',
-           backgroundColor: '#ffffff',
-           color: '#000000',
-           minHeight: '100vh',
-        }}
-      >
+   <div
+  ref={protocolRef}
+  style={{
+    padding: 18,
+    fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
+    maxWidth: 'none',
+    width: 'fit-content',
+    minWidth: '100%',
+    margin: '0 auto',
+    backgroundColor: '#ffffff',
+    color: '#000000',
+  }}
+>
         <button
           onClick={() => setShowProtocol(null)}
           style={{ marginBottom: 12, padding: '8px 10px' }}
@@ -630,14 +638,12 @@ useEffect(() => {
   Save Image
 </button>
       <div
+  id="protocol-content"
   style={{
-    overflowX: 'auto',
-    WebkitOverflowScrolling: 'touch',
+    overflowX: 'visible'
   }}
   dangerouslySetInnerHTML={{
-    __html:
-      showProtocol.protocolHtml ||
-      'No data',
+    __html: showProtocol.protocolHtml || 'No data',
   }}
 />
       </div>
