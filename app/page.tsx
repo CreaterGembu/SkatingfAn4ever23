@@ -561,10 +561,14 @@ useEffect(() => {
     if (!confirm('Delete All')) return;
     setHistory([]);
   };
-  const saveProtocolImage = async () => {
+ const saveProtocolImage = async () => {
   if (!protocolRef.current) return;
 
   const element = protocolRef.current;
+
+  await new Promise(resolve =>
+    setTimeout(resolve, 300)
+  );
 
   const canvas = await html2canvas(
     element,
@@ -574,18 +578,27 @@ useEffect(() => {
       useCORS: true,
 
       width: element.scrollWidth,
-      height: element.scrollHeight,
 
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight,
-      scrollX: 0,
-      scrollY: 0,
+      height:
+        element.scrollHeight + 200,
+
+      windowWidth:
+        element.scrollWidth,
+
+      windowHeight:
+        element.scrollHeight + 200,
     }
   );
-  const link = document.createElement('a');
+
+  const link =
+    document.createElement('a');
+
   link.download =
     `${showProtocol?.playerName || 'protocol'}.png`;
-  link.href = canvas.toDataURL('image/png');
+
+  link.href =
+    canvas.toDataURL('image/png');
+
   link.click();
 };
   const deleteHistoryItem = (id: number) =>
@@ -613,9 +626,6 @@ useEffect(() => {
   style={{
     padding: 18,
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
-    maxWidth: 'none',
-    width: 'fit-content',
-    minWidth: '100%',
     margin: '0 auto',
     backgroundColor: '#ffffff',
     color: '#000000',
@@ -2599,7 +2609,8 @@ line-height:1.1;
 </tr>
 </tbody>
 </table>
-</div></div>
+</div>
+<div style="height:120px;"></div></div>
 `;
 }
 function mangleSpin(
