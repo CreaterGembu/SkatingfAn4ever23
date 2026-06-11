@@ -2181,7 +2181,6 @@ const goeMark =
   padding:1px 2px;
   text-align:right;
   white-space:nowrap;
-  font-family:Courier New, monospace;
 ">
   ${bv}${hasSecondHalf ? ' x' : ''}
 </td>
