@@ -1168,50 +1168,25 @@ if (hasJudgeIssue) {
       </div>
     </div>
   )}
- {['JUMP','SPIN','STEP','CHOREO'].map((cat) => (
+ {['JUMP', 'SPIN', 'STEP', 'CHOREO'].map((cat) => (
   <button
     key={cat}
-    onClick={() =>
-      setSelectedCategory(cat as 'JUMP' | 'SPIN' | 'STEP' | 'CHOREO')
-    }
+    onClick={() => {
+      setSelectedCategory(cat as 'JUMP' | 'SPIN' | 'STEP' | 'CHOREO');
+      setSelectedJumpType('');
+      setSelectedSpinType('');
+    }}
     style={{
       ...smallBtn,
       background:
-        cat === selectedCategory
-          ? '#1f7ae0'
-          : cat === 'JUMP'
-          ? '#dbeafe'
-          : cat === 'SPIN'
-          ? '#dcfce7'
-          : cat === 'STEP'
-          ? '#fef3c7'
-          : '#fce7f3',
-      color: cat === selectedCategory ? '#fff' : '#000',
+        selectedCategory === cat ? '#1f7ae0' : '#fff',
+      color:
+        selectedCategory === cat ? '#fff' : '#000',
     }}
   >
     {cat}
   </button>
 ))}
-      <button
-        key={cat}
-        onClick={() => {
-          setSelectedCategory(
-  cat as 'JUMP' | 'SPIN' | 'STEP' | 'CHOREO'
-);
-          setSelectedJumpType('');
-          setSelectedSpinType('');
-        }}
-        style={{
-          ...smallBtn,
-          background:
-            selectedCategory === cat ? '#1f7ae0' : '#fff',
-          color:
-            selectedCategory === cat ? '#fff' : '#000',
-        }}
-      >
-        {cat}
-      </button>
-    ))}
   </div>
   {selectedCategory === 'JUMP' && (
     <div style={{ marginTop: 12 }}>
