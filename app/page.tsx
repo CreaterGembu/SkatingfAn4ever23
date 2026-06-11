@@ -561,12 +561,12 @@ useEffect(() => {
     if (!confirm('Delete All')) return;
     setHistory([]);
   };
- const saveProtocolImage = async () => {
-  console.log(
-  'scrollHeight',
-  element.scrollHeight
-);
+const saveProtocolImage = async () => {
+  if (!protocolRef.current) return;
 
+  const element = protocolRef.current;
+
+  console.log('scrollHeight', element.scrollHeight);
 console.log(
   'offsetHeight',
   element.offsetHeight
@@ -596,13 +596,13 @@ console.log(
     width: element.scrollWidth,
 
     height:
-      element.scrollHeight + 500,
+      element.scrollHeight,
 
     windowWidth:
       element.scrollWidth,
 
     windowHeight:
-      element.scrollHeight + 500,
+      element.scrollHeight,
   }
 );
   const link =
