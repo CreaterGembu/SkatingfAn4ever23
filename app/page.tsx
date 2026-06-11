@@ -1,6 +1,5 @@
 'use client';
-import React, {useEffect,useState,useRef} from 'react';
-import html2canvas from 'html2canvas';
+import React, { useEffect, useState } from 'react';
 type LineSubElement = {
   id: number;
   element: SkateElement;
@@ -30,11 +29,13 @@ type HistoryItem = {
   protocolHtml?: string;};
 const uid = () => Math.floor(Math.random() * 1e9);
 type ElementType = 'jump' | 'spin' | 'step' | 'choreo';
+
 interface SkateElement {
   name: string;
   baseValue: number;
   type: ElementType;
 }
+
 const createElements = (
   type: ElementType,
   data: Record<string, number>
@@ -57,6 +58,7 @@ const jumpLevels: Record<string, number[]> = {
   S: [0.4, 1.3, 4.3, 9.7, 14.0],
   T: [0.4, 1.3, 4.2, 9.5, 14.0],
 };
+
 const JUMPS: SkateElement[] = [
   ...Object.entries(jumpLevels).flatMap(([prefix, vals]) => [
     {
@@ -70,12 +72,14 @@ const JUMPS: SkateElement[] = [
       type: 'jump' as const,
     })),
   ]),
+
   {
     name: '1Eu',
     baseValue: 0,
     type: 'jump',
   },
 ];
+
 // ====================
 // SPINS
 // ====================
@@ -227,6 +231,7 @@ function calcBV(
   // edge call
   const jumpType =
     sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
+
   if (
     (jumpType === 'F' ||
       jumpType === 'Lz') &&
@@ -349,7 +354,6 @@ useEffect(() => {
   return () =>
     window.removeEventListener('resize', checkMobile);
 }, []);
-  const protocolRef = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<Line[]>([]);
   const [tempLine, setTempLine] = useState<SkateElement[]>([]);
   const [playerName, setPlayerName] = useState('');
@@ -561,26 +565,6 @@ useEffect(() => {
     if (!confirm('Delete All')) return;
     setHistory([]);
   };
-  const saveProtocolImage = async () => {
-  if (!protocolRef.current) return;
-
-  const canvas = await html2canvas(
-    protocolRef.current,
-    {
-      backgroundColor: '#ffffff',
-      scale: 2,
-      useCORS: true,
-    }
-  );
-  const link = document.createElement('a');
-
-  link.download =
-    `${showProtocol?.playerName || 'protocol'}.png`;
-
-  link.href = canvas.toDataURL('image/png');
-
-  link.click();
-};
   const deleteHistoryItem = (id: number) =>
     setHistory((h) => h.filter((x) => x.id !== id));
   const exportHistory = () => {
@@ -600,11 +584,10 @@ useEffect(() => {
 };
   /* Protocol view */
   if (showProtocol) {
-  return (
-    <div
-      ref={protocolRef}
-      style={{
-        padding: 18,
+    return (
+      <div
+        style={{
+          padding: 18,
           fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
           maxWidth: isMobileView ? '100%' : 980,
           margin: '0 auto',
@@ -619,17 +602,7 @@ useEffect(() => {
         >
           ← Back
         </button>
-       <button
-  onClick={saveProtocolImage}
-  style={{
-    marginLeft: 10,
-    marginBottom: 12,
-    padding: '8px 10px'
-  }}
->
-  Save Image
-</button>
-      <div
+       <div
   style={{
     overflowX: 'auto',
     WebkitOverflowScrolling: 'touch',
@@ -1168,25 +1141,28 @@ if (hasJudgeIssue) {
       </div>
     </div>
   )}
- {['JUMP', 'SPIN', 'STEP', 'CHOREO'].map((cat) => (
-  <button
-    key={cat}
-    onClick={() => {
-      setSelectedCategory(cat as 'JUMP' | 'SPIN' | 'STEP' | 'CHOREO');
-      setSelectedJumpType('');
-      setSelectedSpinType('');
-    }}
-    style={{
-      ...smallBtn,
-      background:
-        selectedCategory === cat ? '#1f7ae0' : '#fff',
-      color:
-        selectedCategory === cat ? '#fff' : '#000',
-    }}
-  >
-    {cat}
-  </button>
-))}
+  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+    {['JUMP', 'SPIN', 'STEP', 'CHOREO'].map((cat) => (
+      <button
+        key={cat}
+        onClick={() => {
+          setSelectedCategory(
+  cat as 'JUMP' | 'SPIN' | 'STEP' | 'CHOREO'
+);
+          setSelectedJumpType('');
+          setSelectedSpinType('');
+        }}
+        style={{
+          ...smallBtn,
+          background:
+            selectedCategory === cat ? '#1f7ae0' : '#fff',
+          color:
+            selectedCategory === cat ? '#fff' : '#000',
+        }}
+      >
+        {cat}
+      </button>
+    ))}
   </div>
   {selectedCategory === 'JUMP' && (
     <div style={{ marginTop: 12 }}>
@@ -1365,7 +1341,7 @@ if (hasJudgeIssue) {
       ))}
     </div>
   )}
-  {selectedCategory === 'JUMP' && (
+ {selectedCategory === 'JUMP' && (
   <div style={{ marginTop: 12 }}>
     <button
       onClick={() => setIsComboMode(true)}
