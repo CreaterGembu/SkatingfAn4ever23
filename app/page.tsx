@@ -2177,42 +2177,23 @@ const goeMark =
   </td>
 
 <td
-  style="
-    width:90px;
-    padding:1px 2px;
-    text-align:right;
-    white-space:nowrap;
-  "
+  style={{
+    width: 90,
+    padding: '1px 2px',
+    textAlign: 'right',
+    whiteSpace: 'nowrap',
+    fontFamily: 'Courier New, monospace', // ←追加（超重要）
+  }}
 >
-  ${hasSecondHalf ? `
-    <span style="
-      display:inline-block;
-      width:88px;
-      text-align:right;
-    ">
-      ${bv}
-    </span>
-    <span style="
-      display:inline-block;
-      width:12px;
-      text-align:center;
-    ">
+  <span style={{ textAlign: 'right' }}>
+    {bv}
+  </span>
+
+  {hasSecondHalf && (
+    <span style={{ marginLeft: 4 }}>
       x
     </span>
-  ` : `
-    <span style="
-      display:inline-block;
-      width:88px;
-      text-align:right;
-    ">
-      ${bv}
-    </span>
-    <span style="
-      display:inline-block;
-      width:12px;
-    ">
-    </span>
-  `}
+  )}
 </td>
   <td style="
   padding:1px 2px;
@@ -2229,7 +2210,6 @@ const goeMark =
 ">
     ${goeMark}
 </td>
-
  <td style="
   padding:1px 2px;line-height:1.0;
   text-align:right;
