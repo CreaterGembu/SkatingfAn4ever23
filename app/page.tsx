@@ -2181,8 +2181,14 @@ const goeMark =
   padding:1px 2px;
   text-align:right;
   white-space:nowrap;
+  position:relative;
 ">
-  ${bv}${hasSecondHalf ? ' x' : ''}
+  <span>${bv}</span>
+  ${
+    hasSecondHalf
+      ? '<span style="position:absolute; right:-10px; font-weight:bold;">x</span>'
+      : ''
+  }
 </td>
   <td style="
   padding:1px 2px;
