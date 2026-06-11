@@ -1119,7 +1119,7 @@ if (hasJudgeIssue) {
     cursor: 'pointer',
   }}
 >
-  <span>Elements</span>
+  <span>Total Element Score</span>
   <button
     style={{
       width: 32,
