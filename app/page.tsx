@@ -2176,24 +2176,14 @@ const goeMark =
     ${infoText || ''}
   </td>
 
-<td
-  style={{
-    width: 90,
-    padding: '1px 2px',
-    textAlign: 'right',
-    whiteSpace: 'nowrap',
-    fontFamily: 'Courier New, monospace', // ←追加（超重要）
-  }}
->
-  <span style={{ textAlign: 'right' }}>
-    {bv}
-  </span>
-
-  {hasSecondHalf && (
-    <span style={{ marginLeft: 4 }}>
-      x
-    </span>
-  )}
+<td style="
+  width:90px;
+  padding:1px 2px;
+  text-align:right;
+  white-space:nowrap;
+  font-family:Courier New, monospace;
+">
+  ${bv}${hasSecondHalf ? ' x' : ''}
 </td>
   <td style="
   padding:1px 2px;
