@@ -562,7 +562,20 @@ useEffect(() => {
     setHistory([]);
   };
  const saveProtocolImage = async () => {
-  if (!protocolRef.current) return;
+  console.log(
+  'scrollHeight',
+  element.scrollHeight
+);
+
+console.log(
+  'offsetHeight',
+  element.offsetHeight
+);
+
+console.log(
+  'clientHeight',
+  element.clientHeight
+);if (!protocolRef.current) return;
 
   const element = protocolRef.current;
 
