@@ -2143,7 +2143,7 @@ const goeMark =
     ? '-'
     : maxSub?.goe === 0
     ? '0'
-    : `${maxSub && maxSub.goe > 0 ? '+' : ''}${maxSub?.goe.toFixed(0)}`;
+    : `${maxSub?.goe.toFixed(0)}`;
       const goeValue = line.subs.reduce(
   (sum, sub) => sum + calcGOEPoint(sub, maxSub),
   0
