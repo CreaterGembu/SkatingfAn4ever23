@@ -1169,7 +1169,14 @@ if (hasJudgeIssue) {
     </div>
   )}
   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-    {['JUMP', 'SPIN', 'STEP', 'CHOREO'].map((cat) => (
+    background:
+  cat === 'JUMP'
+    ? '#dbeafe'
+    : cat === 'SPIN'
+    ? '#dcfce7'
+    : cat === 'STEP'
+    ? '#fef3c7'
+    : '#fce7f3',
       <button
         key={cat}
         onClick={() => {
@@ -1368,18 +1375,20 @@ if (hasJudgeIssue) {
       ))}
     </div>
   )}
+  {selectedCategory === 'JUMP' && (
   <div style={{ marginTop: 12 }}>
-  <button
-    onClick={() => setIsComboMode(true)}
-    style={{
-      ...smallBtn,
-      background: isComboMode ? '#1f7ae0' : '#fff',
-      color: isComboMode ? '#fff' : '#000',
-    }}
-  >
-    ＋Add Combo
-  </button>
-</div>
+    <button
+      onClick={() => setIsComboMode(true)}
+      style={{
+        ...smallBtn,
+        background: isComboMode ? '#1f7ae0' : '#fff',
+        color: isComboMode ? '#fff' : '#000',
+      }}
+    >
+      ＋Add Combo
+    </button>
+  </div>
+)}
   {/* temp line */}
   {tempLine.length > 0 && (
     <div style={{ marginTop: 12 }}>
