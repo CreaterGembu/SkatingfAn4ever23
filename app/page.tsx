@@ -567,53 +567,26 @@ const saveProtocolImage = async () => {
   const element = protocolRef.current;
 
   console.log('scrollHeight', element.scrollHeight);
-console.log(
-  'offsetHeight',
-  element.offsetHeight
-);
+  console.log('offsetHeight', element.offsetHeight);
+  console.log('clientHeight', element.clientHeight);
 
-console.log(
-  'clientHeight',
-  element.clientHeight
-);if (!protocolRef.current) return;
+  await new Promise(resolve => setTimeout(resolve, 300));
 
-  const element = protocolRef.current;
-
-  await new Promise(resolve =>
-    setTimeout(resolve, 300)
-  );
-
- const canvas = await html2canvas(
-  element,
-  {
+  const canvas = await html2canvas(element, {
     backgroundColor: '#ffffff',
     scale: 3,
     useCORS: true,
-
     scrollX: 0,
     scrollY: -window.scrollY,
-
     width: element.scrollWidth,
+    height: element.scrollHeight,
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight,
+  });
 
-    height:
-      element.scrollHeight,
-
-    windowWidth:
-      element.scrollWidth,
-
-    windowHeight:
-      element.scrollHeight,
-  }
-);
-  const link =
-    document.createElement('a');
-
-  link.download =
-    `${showProtocol?.playerName || 'protocol'}.png`;
-
-  link.href =
-    canvas.toDataURL('image/png');
-
+  const link = document.createElement('a');
+  link.download = `${showProtocol?.playerName || 'protocol'}.png`;
+  link.href = canvas.toDataURL('image/png');
   link.click();
 };
   const deleteHistoryItem = (id: number) =>
