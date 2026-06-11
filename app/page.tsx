@@ -570,26 +570,28 @@ useEffect(() => {
     setTimeout(resolve, 300)
   );
 
-  const canvas = await html2canvas(
-    element,
-    {
-      backgroundColor: '#ffffff',
-      scale: 3,
-      useCORS: true,
+ const canvas = await html2canvas(
+  element,
+  {
+    backgroundColor: '#ffffff',
+    scale: 3,
+    useCORS: true,
 
-      width: element.scrollWidth,
+    scrollX: 0,
+    scrollY: -window.scrollY,
 
-      height:
-        element.scrollHeight + 200,
+    width: element.scrollWidth,
 
-      windowWidth:
-        element.scrollWidth,
+    height:
+      element.scrollHeight + 500,
 
-      windowHeight:
-        element.scrollHeight + 200,
-    }
-  );
+    windowWidth:
+      element.scrollWidth,
 
+    windowHeight:
+      element.scrollHeight + 500,
+  }
+);
   const link =
     document.createElement('a');
 
@@ -621,14 +623,17 @@ useEffect(() => {
   /* Protocol view */
   if (showProtocol) {
   return (
-   <div
+  <div
   ref={protocolRef}
   style={{
     padding: 18,
-    fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
+    paddingBottom: 500,
+    fontFamily:
+      "system-ui, -apple-system, 'Segoe UI', Roboto",
     margin: '0 auto',
     backgroundColor: '#ffffff',
     color: '#000000',
+    overflow: 'visible',
   }}
 >
         <button
