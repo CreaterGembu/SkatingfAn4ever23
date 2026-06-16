@@ -535,31 +535,25 @@ useEffect(() => {
     setHistory([]);
   };
 const saveProtocolImage = async () => {
-  if (!protocolRef.current) return;
-
   const element = protocolRef.current;
-
-  // 重要：スクロール影響を無効化
-  const originalScroll = window.scrollY;
-
-  window.scrollTo(0, 0);
+  if (!element) return;
   const canvas = await html2canvas(element, {
     backgroundColor: '#ffffff',
-    scale: 2, // 3だと重すぎるので2で安定
+    scale: 2,
     useCORS: true,
+
     scrollX: 0,
     scrollY: 0,
-    // ★ここが最重要
-    windowWidth: document.documentElement.scrollWidth,
-    windowHeight: document.documentElement.scrollHeight,
-    // 安定化オプション
-    ignoreElements: (el) => {
-      return el.tagName === 'BUTTON'; // ボタン消してもOKなら軽くなる
-    },
+
+    width: element.scrollWidth,
+    height: element.scrollHeight,
+
+    windowWidth: element.scrollWidth,
+    windowHeight: element.scrollHeight,
   });
-  window.scrollTo(0, originalScroll);
   const link = document.createElement('a');
-  link.download = `${showProtocol?.playerName || 'protocol'}.png`;
+  link.download =
+    `${showProtocol?.playerName || 'protocol'}.png`;
   link.href = canvas.toDataURL('image/png');
   link.click();
 };
@@ -587,7 +581,6 @@ const saveProtocolImage = async () => {
   ref={protocolRef}
   style={{
     padding: 18,
-    paddingBottom: 500,
     fontFamily:
       "system-ui, -apple-system, 'Segoe UI', Roboto",
     margin: '0 auto',
@@ -612,8 +605,9 @@ const saveProtocolImage = async () => {
 >
   Save Image
 </button>
-      <div
+     <div
   id="protocol-content"
+  ref={protocolRef}
   style={{
     overflowX: 'visible'
   }}
@@ -2290,10 +2284,10 @@ ${formatCategory(category)}
   margin-top:10px;
 ">
 <div style="
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;">
+  overflow:visible;">
 <table style="
-  width:100%;
+  width:max-content;
+  min-width:100%;
   border-collapse:collapse;
   font-size:14px;
   table-layout:fixed;
@@ -2374,8 +2368,7 @@ ${rowsHtml}
   font-size:14px;
 ">
 <div style="
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;">
+  overflow:visible;">
 <table style="
   width:100%;
   border-collapse:collapse;
