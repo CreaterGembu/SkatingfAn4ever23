@@ -1187,12 +1187,24 @@ if (hasJudgeIssue) {
           setSelectedSpinType('');
         }}
         style={{
-          ...smallBtn,
-          background:
-            selectedCategory === cat ? '#1f7ae0' : '#fff',
-          color:
-            selectedCategory === cat ? '#fff' : '#000',
-        }}
+  ...(cat === 'JUMP'
+    ? jumpBtn
+    : cat === 'SPIN'
+    ? spinBtn
+    : cat === 'STEP'
+    ? stepBtn
+    : choreoBtn),
+
+  border:
+    selectedCategory === cat
+      ? '2px solid #1f7ae0'
+      : '1px solid #ccc',
+
+  color:
+    selectedCategory === cat
+      ? '#000'
+      : '#000',
+}}
       >
         {cat}
       </button>
@@ -1205,7 +1217,7 @@ if (hasJudgeIssue) {
           <button
             key={j}
             onClick={() => setSelectedJumpType(j)}
-            style={smallBtn}
+            style={jumpTypeBtn}
           >
             {j}
           </button>
@@ -1230,7 +1242,7 @@ if (hasJudgeIssue) {
           <button
             key="1Eu"
             onClick={() => addToTemp(el)}
-            style={smallBtn}
+            style={jumpTypeBtn}
           >
             1Eu
           </button>
@@ -1253,7 +1265,7 @@ if (hasJudgeIssue) {
     <button
       key={name}
       onClick={() => addToTemp(el)}
-      style={smallBtn}
+      style={jumpRotationBtn}
     >
       {name}
     </button>
@@ -1271,7 +1283,9 @@ if (hasJudgeIssue) {
           <button
             key={s}
             onClick={() => setSelectedSpinType(s)}
-            style={smallBtn}
+            style={{...smallBtn,
+                   background:'#bbf7d0'
+                   }}
           >
             {s}
           </button>
@@ -1290,7 +1304,9 @@ if (hasJudgeIssue) {
             <button
               key={m || 'normal'}
               onClick={() => setSelectedSpinMode(m)}
-              style={smallBtn}
+              style={{...smallBtn,
+                     background:'#86efac'
+                     }}
             >
               {m || 'Normal'}
             </button>
@@ -1325,7 +1341,10 @@ if (hasJudgeIssue) {
              <button
   key={lv === '' ? selectedSpinType : name}
   onClick={() => addToTemp(el)}
-  style={smallBtn}
+  style={{...smallBtn,
+        background:'#4ade80',
+          color:'#fff'
+                     }}
 >
                 {name}
               </button>
@@ -1811,7 +1830,8 @@ Costume and prop violation (-1)
             </div>
           </div>
         ))}
-      </div>
+      <
+  /div>
        <div style={{ height: 48 }} />
     </div>
   );
@@ -1833,6 +1853,36 @@ const smallBtn: React.CSSProperties = {
   border: '1px solid #ccc',
   background: '#fff',
   fontSize: 14,
+};
+const jumpBtn = {
+  ...smallBtn,
+  background: '#dbeafe',
+};
+
+const spinBtn = {
+  ...smallBtn,
+  background: '#dcfce7',
+};
+
+const stepBtn = {
+  ...smallBtn,
+  background: '#fed7aa',
+};
+
+const choreoBtn = {
+  ...smallBtn,
+  background: '#e9d5ff',
+};
+
+const jumpTypeBtn = {
+  ...smallBtn,
+  background: '#93c5fd',
+};
+
+const jumpRotationBtn = {
+  ...smallBtn,
+  background: '#60a5fa',
+  color: '#fff',
 };
 const tdStyle: React.CSSProperties = {
 padding: '8px 10px',
