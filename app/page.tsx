@@ -1536,7 +1536,7 @@ if (hasJudgeIssue) {
     <div style={{ marginTop: 8 }}>
       PCS raw:{' '}
       {(pcs.comp + pcs.pres + pcs.skills).toFixed(2)}
-      × multiplier ({PCS_MULTIPLIERS[category]})
+      × Factor ({PCS_MULTIPLIERS[category]})
       = {pcsfactored.toFixed(2)}
     </div>
   </div>
