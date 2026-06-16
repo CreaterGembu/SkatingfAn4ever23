@@ -1090,7 +1090,7 @@ if (hasJudgeIssue) {
     padding: 12,
     border: '1px solid #eee',
     borderRadius: 10,
-    background: '#fafafa',
+    background: '#f0fdf4',
     fontWeight: 700,
     display: 'flex',
     justifyContent: 'space-between',
@@ -1339,7 +1339,10 @@ if (hasJudgeIssue) {
         <button
           key={s.name}
           onClick={() => addToTemp(s)}
-          style={smallBtn}
+          style={{...smallBtn,
+                 background:'#fb923c',
+                 color:'#fff',
+                 }}
         >
           {s.name}
         </button>
@@ -1359,7 +1362,10 @@ if (hasJudgeIssue) {
         <button
           key={c.name}
           onClick={() => addToTemp(c)}
-          style={smallBtn}
+          style={{...smallBtn,
+                 background:'#a855f7',
+                 color:'fff',
+                 }}
         >
           {c.name}
         </button>
