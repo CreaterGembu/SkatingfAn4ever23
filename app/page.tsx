@@ -539,23 +539,25 @@ const saveProtocolImage = async () => {
 
   const element = protocolRef.current;
 
-  console.log('scrollHeight', element.scrollHeight);
-  console.log('offsetHeight', element.offsetHeight);
-  console.log('clientHeight', element.clientHeight);
+  // 重要：スクロール影響を無効化
+  const originalScroll = window.scrollY;
 
-  await new Promise(resolve => setTimeout(resolve, 300));
-
+  window.scrollTo(0, 0);
   const canvas = await html2canvas(element, {
     backgroundColor: '#ffffff',
-    scale: 3,
+    scale: 2, // 3だと重すぎるので2で安定
     useCORS: true,
     scrollX: 0,
-    scrollY: -window.scrollY,
-    width: element.scrollWidth,
-    height: element.scrollHeight,
-    windowWidth: element.scrollWidth,
-    windowHeight: element.scrollHeight,
+    scrollY: 0,
+    // ★ここが最重要
+    windowWidth: document.documentElement.scrollWidth,
+    windowHeight: document.documentElement.scrollHeight,
+    // 安定化オプション
+    ignoreElements: (el) => {
+      return el.tagName === 'BUTTON'; // ボタン消してもOKなら軽くなる
+    },
   });
+  window.scrollTo(0, originalScroll);
   const link = document.createElement('a');
   link.download = `${showProtocol?.playerName || 'protocol'}.png`;
   link.href = canvas.toDataURL('image/png');
@@ -1364,7 +1366,7 @@ if (hasJudgeIssue) {
           onClick={() => addToTemp(c)}
           style={{...smallBtn,
                  background:'#a855f7',
-                 color:'fff',
+                 color:'#fff',
                  }}
         >
           {c.name}
@@ -1835,27 +1837,22 @@ const jumpBtn = {
   ...smallBtn,
   background: '#dbeafe',
 };
-
 const spinBtn = {
   ...smallBtn,
   background: '#dcfce7',
 };
-
 const stepBtn = {
   ...smallBtn,
   background: '#fed7aa',
 };
-
 const choreoBtn = {
   ...smallBtn,
   background: '#e9d5ff',
 };
-
 const jumpTypeBtn = {
   ...smallBtn,
   background: '#93c5fd',
 };
-
 const jumpRotationBtn = {
   ...smallBtn,
   background: '#60a5fa',
@@ -1911,7 +1908,6 @@ if (totalFalls > 0) {
   );
 }
 const deductionRows: string[] = [];
-
 // Falls
 if (totalFalls > 0) {
   deductionRows.push(`
@@ -1919,133 +1915,108 @@ if (totalFalls > 0) {
       <td style="padding:6px 10px;font-weight:600;">
         Falls
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         ${totalFallPenalty.toFixed(2)}
       </td>
-
       <td style="padding:6px 10px;text-align:center;">
         (${totalFalls})
       </td>
     </tr>
   `);
 }
-
-// その他 deduction
 if (Deductions.programTime) {
   deductionRows.push(`
     <tr>
       <td style="padding:6px 10px;">
         Program time violation
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         -1.00
       </td>
-
       <td></td>
     </tr>
   `);
 }
-
 if (Deductions.illegalElement) {
   deductionRows.push(`
     <tr>
       <td style="padding:6px 10px;">
         Illegal element
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         -2.00
       </td>
-
       <td></td>
     </tr>
   `);
 }
-
 if (Deductions.illegalMovement) {
   deductionRows.push(`
     <tr>
       <td style="padding:6px 10px;">
         Illegal movement
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         -2.00
       </td>
-
       <td></td>
     </tr>
   `);
 }
-
 if (Deductions.costumeProp) {
   deductionRows.push(`
     <tr>
       <td style="padding:6px 10px;">
         Costume/Prop violation
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         -1.00
       </td>
-
       <td></td>
     </tr>
   `);
 }
-
 if (Deductions.costumeFall) {
   deductionRows.push(`
     <tr>
       <td style="padding:6px 10px;">
         Costume falls on ice
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         -1.00
       </td>
-
       <td></td>
     </tr>
   `);
 }
-
 if (Deductions.lateStart) {
   deductionRows.push(`
     <tr>
       <td style="padding:6px 10px;">
         Late start
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         -1.00
       </td>
-
       <td></td>
     </tr>
   `);
 }
-
 if (Deductions.interruption !== 0) {
   deductionRows.push(`
     <tr>
       <td style="padding:6px 10px;">
         Interruption
       </td>
-
       <td style="padding:6px 10px;text-align:right;">
         ${Deductions.interruption.toFixed(2)}
       </td>
-
       <td></td>
     </tr>
   `);
 }
 if (Deductions.programTime)
   DeductionsDetails.push('Time violation (-1)');
-
 if (
   Deductions.illegalElement ||
   Deductions.illegalMovement
@@ -2055,16 +2026,12 @@ if (
   );
 if (Deductions.costumeProp)
   DeductionsDetails.push('Costume/Prop violation (-1)');
-
 if (Deductions.costumeFall)
   DeductionsDetails.push('Costume falls on ice (-1)');
-
 if (Deductions.lateStart)
   DeductionsDetails.push('Late start (-1)');
-
 if (Deductions.interruption === -1)
   DeductionsDetails.push('Interruption (-1)');
-
 if (Deductions.interruption === -2)
   DeductionsDetails.push('Interruption (-2)');
   const totalBaseValue = lines
@@ -2091,66 +2058,46 @@ const totalPanelScore = lines
           : b
       )
     : null;
-
 const elementText = line.subs
   .map((sub) => {
     let text = sub.element.name;
-
-    // edge を先に
     if (sub.edge) {
       text += sub.edge;
     }
-
-    // rotation は後
     if (sub.underRotation) {
       text += sub.underRotation;
     }
-
-    // V mark
     if (
       sub.marks.includes('V') &&
       sub.element.type === 'spin'
     ) {
       text += 'V';
     }
-
-    // REP
     if (sub.marks.includes('REP')) {
       text += '+REP';
     }
-
-    // *
     if (sub.marks.includes('*')) {
       text += '*';
     }
-
-    // SEQ
     if (sub.marks.includes('SEQ')) {
       text += '+SEQ';
     }
-
-    // COMBO
     if (sub.marks.includes('COMBO')) {
       text += '+COMBO';
     }
-
     return text;
   })
   .join('+');
-
 const infoText = line.subs
   .map((sub) => {
     const infos: string[] = [];
-
     if (sub.marks.includes('F')) infos.push('F');
     if (sub.marks.includes('*')) infos.push('*');
-
     if (sub.edge === '!') infos.push('!');
     if (sub.edge === 'e') infos.push('e');
     if (sub.underRotation === 'q') infos.push('q');
     if (sub.underRotation === '<') infos.push('<');
     if (sub.underRotation === '<<') infos.push('<<');
-
     return infos.join(' ');
   })
   .filter(Boolean)
@@ -2169,7 +2116,6 @@ const bv = line.subs
   (sum, sub) => sum + calcGOEPoint(sub, maxSub),
   0
 );
-
 const goeMark =
   totalGOE === 0 &&
   (!maxSub ||
@@ -2209,7 +2155,6 @@ const goeMark =
   ">
     ${infoText || ''}
   </td>
-
 <td style="
   width:90px;
   padding:1px 2px;
@@ -2231,7 +2176,6 @@ const goeMark =
 ">
     ${goeValue}
 </td>
-
  <td style="
   padding:1px 2px;
   line-height:1.0;
@@ -2285,42 +2229,33 @@ ${formatCategory(category)}
   <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:14px;">
     Name
   </th>
-
   <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:14px;">
     Nation/Club
   </th>
-
   <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     Total
   </th>
-
   <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     TES
   </th>
-
   <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     PCS
   </th>
-
   <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
     Ded
   </th>
 </tr>
 </thead>
-
 <tbody>
-
 <tr>
   <td style="
     padding:10px 8px;
   ">
     ${escapeHtml(playerName)}
   </td>
-
   <td style="padding:10px 8px;">
     ${escapeHtml(country)}
   </td>
-
   <td style="
     padding:10px 8px;
     text-align:right;
@@ -2329,7 +2264,6 @@ ${formatCategory(category)}
   ">
     ${grandTotal.toFixed(2)}
   </td>
-
   <td style="
     padding:10px 8px;
     text-align:right;
@@ -2391,7 +2325,6 @@ ${formatCategory(category)}
 <tbody>
 ${rowsHtml}
 </tbody>
-
 <tfoot>
 <tr
   style="
@@ -2401,7 +2334,6 @@ ${rowsHtml}
 >
   <td colspan="3">
   </td>
-
  <td
   style="
     padding:1px 2px;
@@ -2417,7 +2349,6 @@ ${rowsHtml}
     "
   >
   </td>
-
   <td
     style="
       padding:1px 2px;line-height:1.0;
@@ -2425,7 +2356,6 @@ ${rowsHtml}
     "
   >
   </td>
-
   <td
     style="
       padding:1px 2px;line-height:1.0;
@@ -2481,7 +2411,6 @@ line-height:1.1;
   ">
     Composition
   </td>
-
   <td style="
     padding:1px 2px;line-height:1.0;
 line-height:1.1;
@@ -2489,7 +2418,6 @@ line-height:1.1;
   ">
     ${PCS_MULTIPLIERS[category].toFixed(2)}
   </td>
-
   <td style="
     padding:1px 2px;line-height:1.0;
 line-height:1.1;
@@ -2498,7 +2426,6 @@ line-height:1.1;
     ${pcs.comp.toFixed(2)}
   </td>
 </tr>
-
 <tr>
   <td style="
     padding:1px 2px;line-height:1.0;
@@ -2507,7 +2434,6 @@ line-height:1.1;
   ">
     Presentation
   </td>
-
   <td style="
     padding:1px 2px;line-height:1.0;
 line-height:1.1;
@@ -2515,7 +2441,6 @@ line-height:1.1;
   ">
     ${PCS_MULTIPLIERS[category].toFixed(2)}
   </td>
-
   <td style="
     padding:1px 2px;line-height:1.0;
 line-height:1.1;
@@ -2524,7 +2449,6 @@ line-height:1.1;
     ${pcs.pres.toFixed(2)}
   </td>
 </tr>
-
 <tr>
   <td style="
     padding:1px 2px;line-height:1.0;
@@ -2540,7 +2464,6 @@ line-height:1.1;
   ">
     ${PCS_MULTIPLIERS[category].toFixed(2)}
   </td>
-
   <td style="
     padding:1px 2px;line-height:1.0;
 line-height:1.1;
@@ -2607,7 +2530,6 @@ line-height:1.1;
   ">
     Deductions:
   </td>
-
   <td style="
     padding:2px 6px;
     color:#666;
@@ -2615,7 +2537,6 @@ line-height:1.1;
   ">
     ${DeductionsDetails.join(' / ')}
   </td>
-
   <td style="
     text-align:right;
     padding:2px 6px;
@@ -2673,7 +2594,6 @@ function mangleCoSp(
   }
   return `CoSp${level}`;
 }
-
 function formatCategory(category: string) {
   const map: Record<string, string> = {
     MenSP: 'MEN SHORT PROGRAM',
@@ -2681,10 +2601,8 @@ function formatCategory(category: string) {
     WomenSP: 'WOMEN SHORT PROGRAM',
     WomenFS: 'WOMEN FREE SKATING',
   };
-
   return map[category] || category;
 }
-
 function escapeHtml(s: string) {
   return s
     .replace(/&/g, '&amp;')
