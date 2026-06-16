@@ -537,6 +537,9 @@ useEffect(() => {
 const saveProtocolImage = async () => {
   const element = protocolRef.current;
   if (!element) return;
+  console.log('clientHeight', element.clientHeight);
+console.log('scrollHeight', element.scrollHeight);
+console.log('offsetHeight', element.offsetHeight);
   const canvas = await html2canvas(element, {
     backgroundColor: '#ffffff',
     scale: 2,
