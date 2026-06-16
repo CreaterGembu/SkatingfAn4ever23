@@ -597,6 +597,41 @@ useEffect(() => {
         }}
       >
         <button
+  onClick={async () => {
+    const element = document.querySelector('.protocol-box') as HTMLElement;
+
+    if (!element) {
+      alert('Protocol not found');
+      return;
+    }
+ alert(
+    `clientHeight=${element.clientHeight}
+scrollHeight=${element.scrollHeight}
+offsetHeight=${element.offsetHeight}
+scrollWidth=${element.scrollWidth}`
+  );
+    const canvas = await html2canvas(element, {
+      scale: 2, // 画質UP（任意だけど推奨）
+    });
+
+    const link = document.createElement('a');
+    link.download = 'protocol.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }}
+  style={{
+    marginBottom: 12,
+    padding: '8px 12px',
+    background: '#1f7ae0',
+    color: '#fff',
+    borderRadius: 8,
+    border: 'none',
+    cursor: 'pointer',
+  }}
+>
+  Save Image
+</button>
+        <button
           onClick={() => setShowProtocol(null)}
           style={{ marginBottom: 12, padding: '8px 10px' }}
         >
