@@ -655,7 +655,7 @@ const saveProtocolImage = async () => {
           style={inputStyle}
         />
         <input
-          placeholder="Nation"
+          placeholder="Nation/Club"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           style={inputStyle}
@@ -1391,7 +1391,7 @@ if (hasJudgeIssue) {
   {tempLine.length > 0 && (
     <div style={{ marginTop: 12 }}>
       <div>
-        追加予定：
+        Element：
         {tempLine.map((t, i) => (
           <span key={`${t.name}-${i}`}>
             {' '}
@@ -1405,13 +1405,13 @@ if (hasJudgeIssue) {
           onClick={addLineFromTemp}
           style={{ ...smallBtn, marginRight: 8 }}
         >
-          行追加
+          Add
         </button>
         <button
           onClick={clearTemp}
           style={smallBtn}
         >
-          クリア
+          Clear
         </button>
       </div>
     </div>
@@ -2287,7 +2287,7 @@ ${formatCategory(category)}
   </th>
 
   <th style="padding:1px 2px;line-height:1.0;text-align:left;font-size:14px;">
-    Nation
+    Nation/Club
   </th>
 
   <th style="padding:1px 2px;line-height:1.0;text-align:right;font-size:14px;">
