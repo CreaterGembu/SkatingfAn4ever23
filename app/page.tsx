@@ -44,11 +44,6 @@ const createElements = (
     baseValue,
     type,
   }));
-
-// ====================
-// JUMPS
-// ====================
-
 const jumpLevels: Record<string, number[]> = {
   A: [1.1, 3.3, 8.0, 12.5],
   Lz: [0.6, 2.1, 5.9, 11.5, 14.0],
@@ -76,38 +71,28 @@ const JUMPS: SkateElement[] = [
     type: 'jump',
   },
 ];
-// ====================
-// SPINS
-// ====================
-
 const spinLevels: Record<string, number[]> = {
   USp: [2.9, 2.3, 1.8, 1.4, 1.2],
   LSp: [3.2, 2.9, 2.3, 1.8, 1.4],
   CSp: [3.1, 2.8, 2.2, 1.7, 1.3],
   SSp: [3.0, 2.5, 1.9, 1.6, 1.3],
-
   FUSp: [3.5, 2.9, 2.4, 2.0, 1.8],
   FLSp: [3.8, 3.5, 2.9, 2.4, 2.0],
   FCSp: [3.8, 3.4, 2.8, 2.3, 1.9],
   FSSp: [3.6, 3.1, 2.8, 2.4, 2.0],
-
   CUSp: [3.5, 2.9, 2.4, 2.0, 1.8],
   CLSp: [3.8, 3.5, 2.9, 2.4, 2.0],
   CCSp: [3.8, 3.4, 2.8, 2.4, 2.0],
   CSSp: [3.6, 3.1, 2.8, 2.3, 1.9],
-
   FCUSp: [3.5, 2.9, 2.4, 2.0, 1.8],
   FCLSp: [3.8, 3.5, 2.9, 2.4, 2.0],
   FCCSp: [3.8, 3.4, 2.8, 2.4, 2.0],
   FCSSp: [3.6, 3.1, 2.8, 2.3, 1.9],
-
   CoSp: [3.6, 3.0, 2.4, 2.0, 1.8],
   FCoSp: [3.6, 3.0, 2.4, 2.0, 1.8],
-
   CCoSp: [4.2, 3.6, 3.0, 2.4, 2.0],
   FCCoSp: [4.2, 3.6, 3.0, 2.4, 2.0],
 };
-
 const SPINS: SkateElement[] = Object.entries(spinLevels).flatMap(
   ([prefix, vals]) => [
     ...vals.slice(0, 4).map((v, i) => ({
@@ -129,11 +114,6 @@ const SPINS: SkateElement[] = Object.entries(spinLevels).flatMap(
     },
   ]
 );
-
-// ====================
-// STEPS
-// ====================
-
 const STEPS = createElements('step', {
   StSqB: 1.6,
   StSq1: 1.9,
@@ -141,11 +121,6 @@ const STEPS = createElements('step', {
   StSq3: 3.5,
   StSq4: 4.1,
 });
-
-// ====================
-// CHOREO
-// ====================
-
 const CHOREO = createElements('choreo', {
   ChSq1: 3.5,
   ChSp1: 3.5,
@@ -234,7 +209,6 @@ function calcBV(
   ) {
     bv *= 0.8;
   }
-
   // REP
   if (
     applyREP &&
@@ -242,7 +216,6 @@ function calcBV(
   ) {
     bv *= 0.8;
   }
-
   // V mark
   if (
     sub.element.type === 'spin' &&
@@ -583,7 +556,6 @@ const saveProtocolImage = async () => {
     windowWidth: element.scrollWidth,
     windowHeight: element.scrollHeight,
   });
-
   const link = document.createElement('a');
   link.download = `${showProtocol?.playerName || 'protocol'}.png`;
   link.href = canvas.toDataURL('image/png');
@@ -1830,8 +1802,7 @@ Costume and prop violation (-1)
             </div>
           </div>
         ))}
-      <
-  /div>
+        </div>
        <div style={{ height: 48 }} />
     </div>
   );
