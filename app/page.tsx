@@ -579,7 +579,6 @@ console.log('offsetHeight', element.offsetHeight);
 };
   /* Protocol view */
   if (showProtocol) {
-<<<<<<< HEAD
     return (
       <div
         style={{
@@ -615,11 +614,11 @@ scrollWidth=${element.scrollWidth}`
     link.href = canvas.toDataURL('image/png');
     link.click();
   }}
-=======
+
   return (
   <div
   ref={protocolRef}
->>>>>>> 365edbb80a101fc565c2f54872b6608a9bd21bfd
+>>>>>> 365edbb80a101fc565c2f54872b6608a9bd21bfd
   style={{
     padding: 18,
     fontFamily:
