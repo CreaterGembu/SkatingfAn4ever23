@@ -6,7 +6,7 @@ type LineSubElement = {
   element: SkateElement;
   underRotation?: '' | 'q' | '<' | '<<';
   edge?: '' | '!' | 'e';
-  goe: number; // integer -5..5
+  goe: number;
   marks: string[]; // "F","REP","*","V","SEQ","COMBO"
   secondHalf?: boolean;};
 type Line = {
@@ -242,7 +242,6 @@ function countTotalFalls(allLines: Line[]): number {
   );
 }
 /** 転倒ペナルティ（累積） */
-function calcTotalFallPenalty(allLines: Line[]): number {
   const totalF = allLines.reduce(
     (sum, line) =>
       sum +
@@ -347,7 +346,6 @@ useEffect(() => {
       if (raw) setHistory(JSON.parse(raw));
     } catch {}
   }, []);
-  // show ISU-like protocol view after pressing 決定して表示
   const [showProtocol, setShowProtocol] = useState<HistoryItem | null>(null);
   const [isDeductionsOpen, setIsDeductionsOpen] = useState(false);
   const [isPCSOpen, setIsPCSOpen] = useState(false);
@@ -394,22 +392,6 @@ useEffect(() => {
     setLines((l) => [...l,newLine]);
    setTempLine([]);
    setIsComboMode(false);};
-  const addComboToLine = (lineId: number) => {
-    setLines((l) =>
-      l.map((line) =>
-        line.id !== lineId
-          ? line
-          : {
-              ...line,
-              subs: [
-                ...line.subs,
-                {id: uid(),
-                  element: JUMPS[0],
-                  underRotation: '',
-                  edge: '',
-                  goe: 0,
-                  marks: [] as string[],
-                  secondHalf: false,},],}));};
   const updateSub = (
     lineId: number,
     subId: number,
@@ -537,9 +519,6 @@ useEffect(() => {
 const saveProtocolImage = async () => {
   const element = protocolRef.current;
   if (!element) return;
-  console.log('clientHeight', element.clientHeight);
-console.log('scrollHeight', element.scrollHeight);
-console.log('offsetHeight', element.offsetHeight);
   const canvas = await html2canvas(element, {
     backgroundColor: '#ffffff',
     scale: 2,
@@ -1896,16 +1875,9 @@ function renderProtocolHtml(params: {
     totalDeductions,
     Deductions
   } = params;
-  const DeductionsDetails: string[] = [];
 const totalFalls = countTotalFalls(lines);
 const totalFallPenalty = calcTotalFallPenalty(lines);
-if (totalFalls > 0) {
-  DeductionsDetails.push(
-    `Falls (${totalFalls}) ${totalFallPenalty.toFixed(2)}`
-  );
-}
 const deductionRows: string[] = [];
-// Falls
 if (totalFalls > 0) {
   deductionRows.push(`
     <tr>
@@ -2012,25 +1984,6 @@ if (Deductions.interruption !== 0) {
     </tr>
   `);
 }
-if (Deductions.programTime)
-  DeductionsDetails.push('Time violation (-1)');
-if (
-  Deductions.illegalElement ||
-  Deductions.illegalMovement
-)
-  DeductionsDetails.push(
-    'Illegal element/movement (-2)'
-  );
-if (Deductions.costumeProp)
-  DeductionsDetails.push('Costume/Prop violation (-1)');
-if (Deductions.costumeFall)
-  DeductionsDetails.push('Costume falls on ice (-1)');
-if (Deductions.lateStart)
-  DeductionsDetails.push('Late start (-1)');
-if (Deductions.interruption === -1)
-  DeductionsDetails.push('Interruption (-1)');
-if (Deductions.interruption === -2)
-  DeductionsDetails.push('Interruption (-2)');
   const totalBaseValue = lines
   .reduce(
     (sum, line) =>
