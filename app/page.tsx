@@ -199,7 +199,6 @@ function calcBV(
       bv = lower.baseValue;
     }
   }
-  // edge call
   const jumpType =
     sub.element.name.match(/[A-Za-z]+/)?.[0] || '';
   if (
@@ -209,20 +208,17 @@ function calcBV(
   ) {
     bv *= 0.8;
   }
-  // REP
   if (
     applyREP &&
     sub.marks.includes('REP')
   ) {
     bv *= 0.8;
   }
-  // V mark
   if (
     sub.element.type === 'spin' &&
     sub.marks.includes('V')
   ) {
     bv *= 0.75;}
-  // second half bonus
   if (
     applySecondHalf &&
     sub.secondHalf &&
@@ -241,7 +237,7 @@ function countTotalFalls(allLines: Line[]): number {
     0
   );
 }
-/** 転倒ペナルティ（累積） */
+
 function calcTotalFallPenalty(allLines: Line[]): number {
   const totalF = allLines.reduce(
     (sum, line) =>
@@ -364,13 +360,10 @@ useEffect(() => {
     localStorage.setItem('fs_protocol_history_v1', JSON.stringify(history));
   }, [history]);
  const addToTemp = (el: SkateElement) => {
-  // コンボモードでない場合
   if (!isComboMode) {
     setTempLine([el]);
   } else {
-    // コンボモードなら追加
     setTempLine((t) => [...t, el]);}
-  // 最近使用
   setRecentElements((prev) => {
     const filtered = prev.filter((p) => p.name !== el.name);
     return [el, ...filtered].slice(0, 10);
@@ -471,13 +464,11 @@ useEffect(() => {
   Deductions.interruption;
   const totalDeductions =
   totalFallPenalty + additionalDeductions;
-  // TES は純粋に技術点のみ
   const totalTES = Number(
   totalTESbeforeFalls.toFixed(2)
 );
   const pcsRaw = Number((pcs.comp + pcs.pres + pcs.skills).toFixed(2));
   const pcsfactored = Number((pcsRaw * PCS_MULTIPLIERS[category]).toFixed(2));
-// Total Segment Score で Deductions を引く
   const grandTotal = Number(
   (totalTES + pcsfactored + totalDeductions).toFixed(2)
 );
@@ -577,48 +568,47 @@ console.log('offsetHeight', element.offsetHeight);
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
-  /* Protocol view */
   if (showProtocol) {
-    return (
-      <div
+  return (
+    <div
+      ref={protocolRef}
+      style={{
+        padding: 18,
+        fontFamily:
+          "system-ui, -apple-system, 'Segoe UI', Roboto",
+        margin: '0 auto',
+        backgroundColor: '#ffffff',
+        color: '#000000',
+        overflow: 'visible',
+      }}
+    >
+      <button
+        onClick={() => setShowProtocol(null)}
+        style={{ marginBottom: 12, padding: '8px 10px' }}
+      >
+        ← Back
+      </button>
+
+      <button
+        onClick={saveProtocolImage}
         style={{
-          padding: 18,
-          fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
-          maxWidth: isMobileView ? '100%' : 980,
-          margin: '0 auto',
-           backgroundColor: '#ffffff',
-           color: '#000000',
-           minHeight: '100vh',
+          marginLeft: 10,
+          marginBottom: 12,
+          padding: '8px 10px',
         }}
       >
-        <button
-  onClick={async () => {
-    const element = document.querySelector('.protocol-box') as HTMLElement;
+        Save Image
+      </button>
 
-    if (!element) {
-      alert('Protocol not found');
-      return;
-    }
- alert(
-    `clientHeight=${element.clientHeight}
-scrollHeight=${element.scrollHeight}
-offsetHeight=${element.offsetHeight}
-scrollWidth=${element.scrollWidth}`
+      <div
+        id="protocol-content"
+        dangerouslySetInnerHTML={{
+          __html: showProtocol.protocolHtml || 'No data',
+        }}
+      />
+    </div>
   );
-    const canvas = await html2canvas(element, {
-      scale: 2, // 画質UP（任意だけど推奨）
-    });
-
-    const link = document.createElement('a');
-    link.download = 'protocol.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }}
-
-  return (
-  <div
-  ref={protocolRef}
->>>>>> 365edbb80a101fc565c2f54872b6608a9bd21bfd
+}
   style={{
     padding: 18,
     fontFamily:
