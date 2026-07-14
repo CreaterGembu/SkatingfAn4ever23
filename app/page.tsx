@@ -577,56 +577,45 @@ const saveProtocolImage = async () => {
   /* Protocol view */
   if (showProtocol) {
   return (
+    <div
+      ref={protocolRef}
+      style={{
+        padding: 18,
+        width: 900,
+        minWidth: 900,
+        maxWidth: 'none',
+        margin: '0 auto',
+        background: '#fff',
+        boxSizing: 'border-box',
+      }}
+    >
+      <button
+        onClick={() => setShowProtocol(null)}
+      >
+        ← Back
+      </button>
+
+      <button
+        onClick={saveProtocolImage}
+      >
+        Save Image
+      </button>
+
+      <div
+        id="protocol-content"
+        style={{
+          overflowX: 'visible',
+        }}
+        dangerouslySetInnerHTML={{
+          __html: showProtocol.protocolHtml || 'No data',
+        }}
+      />
+    </div>
+  );   
+}
+
+return (
   <div
-  ref={protocolRef}
-  style={{
-    padding: 18,
-    width: 900,
-    minWidth: 900,
-    maxWidth: 'none',
-    margin: '0 auto',
-    background: '#fff',
-    boxSizing: 'border-box',
-  }}
->
-boxSizing:'border-box',
-    fontFamily:
-      "system-ui, -apple-system, 'Segoe UI', Roboto",
-    backgroundColor: '#ffffff',
-    color: '#000000',
-    overflow: 'visible',
-  }}
->
-        <button
-          onClick={() => setShowProtocol(null)}
-          style={{ marginBottom: 12, padding: '8px 10px' }}
-        >
-          ← Back
-        </button>
-       <button
-  onClick={saveProtocolImage}
-  style={{
-    marginLeft: 10,
-    marginBottom: 12,
-    padding: '8px 10px'
-  }}
->
-  Save Image
-</button>
-    <div
-  id="protocol-content"
-  style={{
-    overflowX: 'visible',
-  }}
-  dangerouslySetInnerHTML={{
-    __html: showProtocol.protocolHtml || 'No data',
-  }}
-/>
-      </div>
-    );
-  }
-  return (
-    <div
       style={{
         padding: 14,
         fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
