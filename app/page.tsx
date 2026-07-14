@@ -1447,7 +1447,6 @@ if (hasJudgeIssue) {
     </div>
   )}
   {/* JUMP選択時のみ表示 */}
-{selectedCategory === 'JUMP' && (
   <div style={{ marginTop: 12 }}>
     <button
       onClick={() => setIsComboMode(true)}
@@ -1460,7 +1459,6 @@ if (hasJudgeIssue) {
       ＋Add Combo
     </button>
   </div>
-)}
   {/* temp line */}
   {tempLine.length > 0 && (
     <div style={{ marginTop: 12 }}>
