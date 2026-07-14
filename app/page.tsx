@@ -2547,35 +2547,26 @@ line-height:1.1;
 <tr
   style="
     font-weight:bold;
-    background:#ffffff;
-  "
->
+    background:#ffffff;">
   <td
     style="
       padding:1px 2px;line-height:1.0;
 line-height:1.1;
-      text-align:left;
-    "
-  >
+      text-align:left;">
     Judge Total Program Component Score (factored)
   </td>
-
   <td
     style="
       padding:1px 2px;line-height:1.0;
 line-height:1.1;
-      text-align:right;
-    "
-  >
+      text-align:right;">
   </td>
   <td
     style="
       padding:1px 2px;line-height:1.0;
 line-height:1.1;
       text-align:right;
-      font-size:14px;
-    "
-  >
+      font-size:14px;">
     ${pcsfactored.toFixed(2)}
   </td>
 </tr>
@@ -2585,99 +2576,77 @@ line-height:1.1;
 </div>
 <div style="
   margin-top:10px;
-  border:2px solid #000;
-">
+  border:2px solid #000;">
 <table style="
   width:100%;
   border-collapse:collapse;
-  font-size:16px;
-">
+  font-size:16px;">
 <tbody>
 <tr>
   <td style="
     padding:2px 6px;
     font-weight:700;
     width:220px;
-    white-space:nowrap;
-  ">
+    white-space:nowrap;">
     Deductions:
   </td>
   <td style="
     padding:2px 6px;
     color:#666;
-    font-size:13px;
-  ">
+    font-size:13px;">
     ${DeductionsDetails.join(' / ')}
   </td>
   <td style="
     text-align:right;
     padding:2px 6px;
     font-weight:700;
-    width:80px;
-  ">
+    width:80px;">
     ${totalDeductions.toFixed(2)}
   </td>
 </tr>
 </tbody>
 </table>
 </div>
-<div style="height:120px;"></div></div>
-`;
-}
+<div style="height:120px;"></div></div>`;}
 function mangleSpin(
   type: string,
   mode: string,
-  level: string
-) {
+  level: string) {
   // Normal
   if (!mode) {
-    return `${type}${level}`;
-  }
+    return `${type}${level}`;}
   // F + type
   if (mode === 'F') {
-    return `F${type}${level}`;
-  }
+    return `F${type}${level}`;}
   // C + type
   if (mode === 'C') {
-    return `C${type}${level}`;
-  }
+    return `C${type}${level}`;}
   // FC + type
   if (mode === 'FC') {
-    return `FC${type}${level}`;
-  }
-  return `${type}${level}`;
-}
+    return `FC${type}${level}`;}
+  return `${type}${level}`;}
 function mangleCoSp(
   mode: string,
-  level: string
-) {
+  level: string) {
   // CoSp は特殊命名
   if (!mode) {
-    return `CoSp${level}`;
-  }
+    return `CoSp${level}`;}
   if (mode === 'F') {
-    return `FCoSp${level}`;
-  }
+    return `FCoSp${level}`;}
   if (mode === 'C') {
-    return `CCoSp${level}`;
-  }
+    return `CCoSp${level}`;}
   if (mode === 'FC') {
-    return `FCCoSp${level}`;
-  }
-  return `CoSp${level}`;
-}
+    return `FCCoSp${level}`;}
+  return `CoSp${level}`;}
 function formatCategory(category: string) {
   const map: Record<string, string> = {
     MenSP: 'MEN SHORT PROGRAM',
     MenFS: 'MEN FREE SKATING',
     WomenSP: 'WOMEN SHORT PROGRAM',
-    WomenFS: 'WOMEN FREE SKATING',
-  };
-  return map[category] || category;
-}
+    WomenFS: 'WOMEN FREE SKATING',};
+  return map[category] || category;}
 function escapeHtml(s: string) {
   return s
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+    .replace(/>/g, '&gt;');}
