@@ -537,36 +537,27 @@ useEffect(() => {
 const saveProtocolImage = async () => {
   const element = protocolRef.current;
   if (!element) return;
-  console.log('clientHeight', element.clientHeight);
-console.log('scrollHeight', element.scrollHeight);
-console.log('offsetHeight', element.offsetHeight);
-  const canvas = await html2canvas(element,{
-  backgroundColor:"#fff",
-  scale:2,
-  useCORS:true,
 
-  width: element.scrollWidth,
-  height: element.scrollHeight,
-
-  windowWidth: element.scrollWidth,
-  windowHeight: element.scrollHeight,
-
-  scrollX: -window.scrollX,
-  scrollY: -window.scrollY,
-});
-    backgroundColor: '#ffffff',
+  const canvas = await html2canvas(element, {
+    backgroundColor: "#fff",
     scale: 2,
     useCORS: true,
-
-    scrollX: 0,
-    scrollY: 0,
 
     width: element.scrollWidth,
     height: element.scrollHeight,
 
     windowWidth: element.scrollWidth,
     windowHeight: element.scrollHeight,
+
+    scrollX: -window.scrollX,
+    scrollY: -window.scrollY,
   });
+
+  const link = document.createElement("a");
+  link.download = `${showProtocol?.playerName || "protocol"}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+};
   const link = document.createElement('a');
   link.download =
     `${showProtocol?.playerName || 'protocol'}.png`;
@@ -2390,7 +2381,6 @@ table-layout:fixed;
   min-width:100%;
   border-collapse:collapse;
   font-size:14px;
-  table-layout:fixed;
 ">
 <thead>
 <th style="width:24px;padding:2px 2px;">
