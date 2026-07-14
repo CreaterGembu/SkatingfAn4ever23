@@ -647,30 +647,105 @@ console.log('offsetHeight', element.offsetHeight);
     marginBottom: 12,
   }}
 >
-        <input
-          placeholder="Skater"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          style={inputStyle}
-        />
-        <input
-          placeholder="Nation/Club"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          style={inputStyle}
-        />
-        <input
-          placeholder="Event"
-          value={competition}
-          onChange={(e) => setCompetition(e.target.value)}
-          style={{
-  ...inputStyle,
-  gridColumn:
-    isMobileView
-      ? 'auto'
-      : '1 / -1',
-}}
-          />
+        <div style={{position:'relative'}}>
+  <input
+    placeholder="Skater"
+    value={playerName}
+    onChange={(e)=>setPlayerName(e.target.value)}
+    style={{
+      ...inputStyle,
+      width:'100%',
+      paddingRight:32,
+    }}
+  />
+
+  {playerName && (
+    <button
+      onClick={()=>setPlayerName('')}
+      style={{
+        position:'absolute',
+        right:8,
+        top:'50%',
+        transform:'translateY(-50%)',
+        border:'none',
+        background:'transparent',
+        cursor:'pointer',
+        fontSize:18,
+      }}
+    >
+      ×
+    </button>
+  )}
+</div>
+        <div style={{ position: 'relative' }}>
+  <input
+    placeholder="Nation/Club"
+    value={country}
+    onChange={(e) => setCountry(e.target.value)}
+    style={{
+      ...inputStyle,
+      width: '100%',
+      paddingRight: 32,
+      boxSizing: 'border-box',
+    }}
+  />
+
+  {country && (
+    <button
+      onClick={() => setCountry('')}
+      style={{
+        position: 'absolute',
+        right: 8,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        border: 'none',
+        background: 'transparent',
+        cursor: 'pointer',
+        fontSize: 18,
+        color: '#666',
+      }}
+    >
+      ×
+    </button>
+  )}
+</div>
+       <div
+  style={{
+    position: 'relative',
+    gridColumn: isMobileView ? 'auto' : '1 / -1',
+  }}
+>
+  <input
+    placeholder="Event"
+    value={competition}
+    onChange={(e) => setCompetition(e.target.value)}
+    style={{
+      ...inputStyle,
+      width: '100%',
+      paddingRight: 32,
+      boxSizing: 'border-box',
+    }}
+  />
+
+  {competition && (
+    <button
+      onClick={() => setCompetition('')}
+      style={{
+        position: 'absolute',
+        right: 8,
+        top: '50%',
+        transform: 'translateY(-50%)',
+        border: 'none',
+        background: 'transparent',
+        cursor: 'pointer',
+        fontSize: 18,
+        color: '#666',
+      }}
+    >
+      ×
+    </button>
+  )}
+</div>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ minWidth: 120 }}> Segment </div>
           <select
