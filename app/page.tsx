@@ -584,6 +584,10 @@ console.log('offsetHeight', element.offsetHeight);
   ref={protocolRef}
   style={{
     padding: 18,
+    width:'100%',
+maxWidth:430,
+margin:'0 auto',
+boxSizing:'border-box',
     fontFamily:
       "system-ui, -apple-system, 'Segoe UI', Roboto",
     margin: '0 auto',
@@ -2209,7 +2213,7 @@ const goeMark =
   ${idx + 1}
 </td>
  <td style="
-  width:180px;
+  width:auto
   padding:1px 2px;
   line-height:1.0;
   text-align:left;
@@ -2362,7 +2366,8 @@ ${formatCategory(category)}
 <div style="
   overflow:visible;">
 <table style="
-  width:max-content;
+  width:100%;
+table-layout:fixed;
   min-width:100%;
   border-collapse:collapse;
   font-size:14px;
