@@ -590,7 +590,6 @@ margin:'0 auto',
 boxSizing:'border-box',
     fontFamily:
       "system-ui, -apple-system, 'Segoe UI', Roboto",
-    margin: '0 auto',
     backgroundColor: '#ffffff',
     color: '#000000',
     overflow: 'visible',
@@ -612,9 +611,10 @@ boxSizing:'border-box',
 >
   Save Image
 </button>
-     <div id="protocol-content">
-style={{
-    overflowX: 'visible'
+    <div
+  id="protocol-content"
+  style={{
+    overflowX: 'visible',
   }}
   dangerouslySetInnerHTML={{
     __html: showProtocol.protocolHtml || 'No data',
