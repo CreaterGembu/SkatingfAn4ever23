@@ -612,10 +612,8 @@ boxSizing:'border-box',
 >
   Save Image
 </button>
-     <div
-  id="protocol-content"
-  ref={protocolRef}
-  style={{
+     <div id="protocol-content">
+</div> style={{
     overflowX: 'visible'
   }}
   dangerouslySetInnerHTML={{
@@ -2213,7 +2211,7 @@ const goeMark =
   ${idx + 1}
 </td>
  <td style="
-  width:auto
+  width:auto;
   padding:1px 2px;
   line-height:1.0;
   text-align:left;
