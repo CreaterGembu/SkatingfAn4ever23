@@ -540,7 +540,20 @@ const saveProtocolImage = async () => {
   console.log('clientHeight', element.clientHeight);
 console.log('scrollHeight', element.scrollHeight);
 console.log('offsetHeight', element.offsetHeight);
-  const canvas = await html2canvas(element, {
+  const canvas = await html2canvas(element,{
+  backgroundColor:"#fff",
+  scale:2,
+  useCORS:true,
+
+  width: element.scrollWidth,
+  height: element.scrollHeight,
+
+  windowWidth: element.scrollWidth,
+  windowHeight: element.scrollHeight,
+
+  scrollX: -window.scrollX,
+  scrollY: -window.scrollY,
+});
     backgroundColor: '#ffffff',
     scale: 2,
     useCORS: true,
@@ -584,9 +597,14 @@ console.log('offsetHeight', element.offsetHeight);
   ref={protocolRef}
   style={{
     padding: 18,
-    width:'100%',
-maxWidth:430,
-margin:'0 auto',
+    width: 900,
+    minWidth: 900,
+    maxWidth: 'none',
+    margin: '0 auto',
+    background: '#fff',
+    boxSizing: 'border-box',
+  }}
+>
 boxSizing:'border-box',
     fontFamily:
       "system-ui, -apple-system, 'Segoe UI', Roboto",
@@ -2268,6 +2286,9 @@ const goeMark =
     .join('');
  return `
 <div style="
+  width:860px;
+  min-width:860px;
+  box-sizing:border-box;
   padding:10px 16px;
   background:white;
   color:black;
