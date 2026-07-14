@@ -613,7 +613,7 @@ boxSizing:'border-box',
   Save Image
 </button>
      <div id="protocol-content">
-</div> style={{
+style={{
     overflowX: 'visible'
   }}
   dangerouslySetInnerHTML={{
