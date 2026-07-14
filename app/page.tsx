@@ -1457,7 +1457,6 @@ if (hasJudgeIssue) {
       ))}
     </div>
   )}
-  {/* JUMP選択時のみ表示 */}
   <div style={{ marginTop: 12 }}>
     <button
       onClick={() => setIsComboMode(true)}
@@ -1893,7 +1892,6 @@ Costume and prop violation (-1)
         ))}
         </div>
        <div style={{ height: 48 }} />
-    </div>
   );
 }
 const inputStyle: React.CSSProperties = {
