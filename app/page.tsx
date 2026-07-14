@@ -537,7 +537,6 @@ useEffect(() => {
 const saveProtocolImage = async () => {
   const element = protocolRef.current;
   if (!element) return;
-
   const canvas = await html2canvas(element, {
     backgroundColor: "#fff",
     scale: 2,
@@ -556,12 +555,6 @@ const saveProtocolImage = async () => {
   const link = document.createElement("a");
   link.download = `${showProtocol?.playerName || "protocol"}.png`;
   link.href = canvas.toDataURL("image/png");
-  link.click();
-};
-  const link = document.createElement('a');
-  link.download =
-    `${showProtocol?.playerName || 'protocol'}.png`;
-  link.href = canvas.toDataURL('image/png');
   link.click();
 };
   const deleteHistoryItem = (id: number) =>
