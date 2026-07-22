@@ -537,24 +537,27 @@ useEffect(() => {
 const saveProtocolImage = async () => {
   const element = protocolRef.current;
   if (!element) return;
+  console.log('clientHeight', element.clientHeight);
+console.log('scrollHeight', element.scrollHeight);
+console.log('offsetHeight', element.offsetHeight);
   const canvas = await html2canvas(element, {
-    backgroundColor: "#fff",
+    backgroundColor: '#ffffff',
     scale: 2,
     useCORS: true,
+
+    scrollX: 0,
+    scrollY: 0,
 
     width: element.scrollWidth,
     height: element.scrollHeight,
 
     windowWidth: element.scrollWidth,
     windowHeight: element.scrollHeight,
-
-    scrollX: -window.scrollX,
-    scrollY: -window.scrollY,
   });
-
-  const link = document.createElement("a");
-  link.download = `${showProtocol?.playerName || "protocol"}.png`;
-  link.href = canvas.toDataURL("image/png");
+  const link = document.createElement('a');
+  link.download =
+    `${showProtocol?.playerName || 'protocol'}.png`;
+  link.href = canvas.toDataURL('image/png');
   link.click();
 };
   const deleteHistoryItem = (id: number) =>
@@ -577,45 +580,51 @@ const saveProtocolImage = async () => {
   /* Protocol view */
   if (showProtocol) {
   return (
-    <div
-      ref={protocolRef}
-      style={{
-        padding: 18,
-        width: 900,
-        minWidth: 900,
-        maxWidth: 'none',
-        margin: '0 auto',
-        background: '#fff',
-        boxSizing: 'border-box',
-      }}
-    >
-      <button
-        onClick={() => setShowProtocol(null)}
-      >
-        ← Back
-      </button>
-
-      <button
-        onClick={saveProtocolImage}
-      >
-        Save Image
-      </button>
-
-      <div
-        id="protocol-content"
-        style={{
-          overflowX: 'visible',
-        }}
-        dangerouslySetInnerHTML={{
-          __html: showProtocol.protocolHtml || 'No data',
-        }}
-      />
-    </div>
-  );   
-}
-
-return (
   <div
+  ref={protocolRef}
+  style={{
+    padding: 18,
+    width:'100%',
+maxWidth:430,
+margin:'0 auto',
+boxSizing:'border-box',
+    fontFamily:
+      "system-ui, -apple-system, 'Segoe UI', Roboto",
+    backgroundColor: '#ffffff',
+    color: '#000000',
+    overflow: 'visible',
+  }}
+>
+        <button
+          onClick={() => setShowProtocol(null)}
+          style={{ marginBottom: 12, padding: '8px 10px' }}
+        >
+          ← Back
+        </button>
+       <button
+  onClick={saveProtocolImage}
+  style={{
+    marginLeft: 10,
+    marginBottom: 12,
+    padding: '8px 10px'
+  }}
+>
+  Save Image
+</button>
+    <div
+  id="protocol-content"
+  style={{
+    overflowX: 'visible',
+  }}
+  dangerouslySetInnerHTML={{
+    __html: showProtocol.protocolHtml || 'No data',
+  }}
+/>
+      </div>
+    );
+  }
+  return (
+    <div
       style={{
         padding: 14,
         fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto",
@@ -1439,6 +1448,7 @@ if (hasJudgeIssue) {
       ))}
     </div>
   )}
+  {/* JUMP選択時のみ表示 */}
   <div style={{ marginTop: 12 }}>
     <button
       onClick={() => setIsComboMode(true)}
@@ -1874,6 +1884,7 @@ Costume and prop violation (-1)
         ))}
         </div>
        <div style={{ height: 48 }} />
+    </div>
   );
 }
 const inputStyle: React.CSSProperties = {
@@ -2257,9 +2268,6 @@ const goeMark =
     .join('');
  return `
 <div style="
-  width:860px;
-  min-width:860px;
-  box-sizing:border-box;
   padding:10px 16px;
   background:white;
   color:black;
@@ -2361,6 +2369,7 @@ table-layout:fixed;
   min-width:100%;
   border-collapse:collapse;
   font-size:14px;
+  table-layout:fixed;
 ">
 <thead>
 <th style="width:24px;padding:2px 2px;">
