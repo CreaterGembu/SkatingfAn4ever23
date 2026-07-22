@@ -577,52 +577,66 @@ console.log('offsetHeight', element.offsetHeight);
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
-  /* Protocol view */
-  if (showProtocol) {
+ if (showProtocol) {
   return (
-  <div
-  ref={protocolRef}
-  style={{
-    padding: 18,
-    width:'100%',
-maxWidth:430,
-margin:'0 auto',
-boxSizing:'border-box',
-    fontFamily:
-      "system-ui, -apple-system, 'Segoe UI', Roboto",
-    backgroundColor: '#ffffff',
-    color: '#000000',
-    overflow: 'visible',
-  }}
->
+    <div
+      ref={protocolRef}
+      style={{
+        width: '100%',
+        maxWidth: 'none',
+        minHeight: '100vh',
+        padding: 18,
+        boxSizing: 'border-box',
+        fontFamily:
+          "system-ui, -apple-system, 'Segoe UI', Roboto",
+        backgroundColor: '#ffffff',
+        color: '#000000',
+        overflow: 'visible',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          gap: 10,
+          marginBottom: 12,
+          flexWrap: 'wrap',
+        }}
+      >
         <button
           onClick={() => setShowProtocol(null)}
-          style={{ marginBottom: 12, padding: '8px 10px' }}
+          style={{
+            padding: '8px 10px',
+          }}
         >
           ← Back
         </button>
-       <button
-  onClick={saveProtocolImage}
-  style={{
-    marginLeft: 10,
-    marginBottom: 12,
-    padding: '8px 10px'
-  }}
->
-  Save Image
-</button>
-    <div
-  id="protocol-content"
-  style={{
-    overflowX: 'visible',
-  }}
-  dangerouslySetInnerHTML={{
-    __html: showProtocol.protocolHtml || 'No data',
-  }}
-/>
+
+        <button
+          onClick={saveProtocolImage}
+          style={{
+            padding: '8px 10px',
+          }}
+        >
+          Save Image
+        </button>
       </div>
-    );
-  }
+
+      <div
+        id="protocol-content"
+        style={{
+          width: '100%',
+          maxWidth: 'none',
+          overflowX: 'auto',
+          overflowY: 'visible',
+          boxSizing: 'border-box',
+        }}
+        dangerouslySetInnerHTML={{
+          __html: showProtocol.protocolHtml || 'No data',
+        }}
+      />
+    </div>
+  );
+}
   return (
     <div
       style={{
@@ -2355,21 +2369,31 @@ ${formatCategory(category)}
 </tr>
 </tbody>
 </table>
-<div class="protocol-box">
-<div style="
-  border:2px solid #000;
-  padding:4px;
-  margin-top:10px;
-">
+<div
+  class="protocol-box"
+  style="
+    width:100%;
+    max-width:none;
+    box-sizing:border-box;
+    overflow-x:auto;
+  "
+>
+  <div style="
+    border:2px solid #000;
+    padding:8px;
+    margin-top:10px;
+    width:100%;
+    min-width:720px;
+    box-sizing:border-box;
+  ">
 <div style="
   overflow:visible;">
 <table style="
   width:100%;
-table-layout:fixed;
-  min-width:100%;
+  min-width:720px;
   border-collapse:collapse;
   font-size:14px;
-  table-layout:fixed;
+  table-layout:auto;
 ">
 <thead>
 <th style="width:24px;padding:2px 2px;">
